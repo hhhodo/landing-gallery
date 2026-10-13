@@ -55,3 +55,24 @@ main{padding-top:28px;padding-bottom:80px}
 .comments{padding:0 24px 40px}
 @media (max-width:600px){.wrap{padding:0 16px}.grid{gap:16px}h1{font-size:24px}#q{width:100%}.panel-h,.panel-actions,.hint,.comments{padding-left:16px;padding-right:16px}.hint{margin-left:0;margin-right:0}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* comments */
+.btn .n:not(:empty){margin-left:4px;font-size:12px;color:var(--ink-2)}
+.cform{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.cform input,.cform textarea,#lform input,.rform textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.cform textarea,.rform textarea{resize:vertical}
+.cform input:focus,.cform textarea:focus,#lform input:focus,.rform textarea:focus{outline:2px solid var(--ink);outline-offset:1px}
+.cform-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.hp{position:absolute!important;left:-9999px;width:1px;height:1px;opacity:0}
+.msg,.err{color:#c0392b;font-size:13px}
+.none{color:var(--ink-3);text-align:center;padding:24px 0}
+.c{padding:14px 0;border-top:1px solid var(--line)}
+.c p{margin:6px 0 0;white-space:pre-wrap;word-break:break-word}
+.c-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14px}
+.c-h time{color:var(--ink-3);font-size:12px;margin-right:auto}
+.reply{margin:10px 0 0 14px;padding:10px 12px;border:0;border-left:3px solid var(--ink);background:var(--surface);border-radius:0 10px 10px 0}
+.badge{background:var(--accent);color:var(--on-accent);font-size:11px;padding:1px 7px;border-radius:999px}
+.lnk{border:0;background:none;color:var(--ink-2);font:inherit;font-size:13px;cursor:pointer;padding:2px 4px;text-decoration:underline}
+.lnk.danger{color:#c0392b}
+.reply-slot .rform{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+.admin-bar{margin-top:24px;padding-top:12px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-3)}
+#lform{display:flex;flex-direction:column;gap:8px;width:100%}
