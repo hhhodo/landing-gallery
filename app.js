@@ -9,7 +9,41 @@ const sites = window.SITES;
 const state = { cat: '전체', q: '' };
 
 const pagesUrl = s => `https://${OWNER}.github.io/${s.repo}/`;
-const zipUrl = s => `https://github.com/${OWNER}/${s.repo}/archive/refs/heads/main.zip`;
+const zipName = s => `${s.repo}_${s.category}.zip`.replace(/[\\/:*?"<>|\s]/g, '');
+
+async function downloadZip(s, btn) {
+  const label = btn.textContent;
+  const setP = t => { btn.textContent = t; };
+  btn.disabled = true;
+  try {
+    setP('준비 중…');
+    const tree = await (await fetch(`https://api.github.com/repos/${OWNER}/${s.repo}/git/trees/main?recursive=1`)).json();
+    if (!tree.tree) throw new Error('파일 목록 조회 실패 (잠시 후 다시 시도)');
+    const files = tree.tree.filter(f => f.type === 'blob');
+    const zip = new JSZip();
+    let done = 0, i = 0;
+    const worker = async () => {
+      while (i < files.length) {
+        const f = files[i++];
+        const url = `https://raw.githubusercontent.com/${OWNER}/${s.repo}/main/` + f.path.split('/').map(encodeURIComponent).join('/');
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(f.path + ' ' + r.status);
+        zip.file(f.path, await r.blob(), { binary: true });
+        setP(`내려받는 중 ${Math.round(++done / files.length * 100)}%`);
+      }
+    };
+    await Promise.all(Array.from({ length: 6 }, worker));
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 1 }, streamFiles: true },
+      m => setP(`압축 중 ${Math.round(m.percent)}%`));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = zipName(s);
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  } catch (e) {
+    alert('다운로드 실패: ' + e.message);
+  }
+  btn.textContent = label; btn.disabled = false;
+}
 const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 function renderChips() {
@@ -36,7 +70,7 @@ function renderGrid() {
         <p class="tagline">${esc(s.tagline || s.desc)}</p>
         <div class="actions">
           <a class="btn primary" href="${pagesUrl(s)}" target="_blank" rel="noopener">사이트 바로가기 ↗</a>
-          <a class="btn" href="${zipUrl(s)}" download title="소스 파일 ZIP 다운로드" aria-label="${esc(s.name)} 파일 다운로드">⬇ ZIP</a>
+          <button class="btn" data-zip="${s.id}" title="소스 파일 ZIP 다운로드" aria-label="${esc(s.name)} 파일 다운로드">⬇ ZIP</button>
           <button class="btn" data-comment="${s.id}" aria-label="${esc(s.name)} 코멘트">💬<span class="n"></span></button>
         </div>
       </div>
@@ -128,7 +162,7 @@ function openDrawer(id, push = true) {
   $('#d-sub').textContent = s.tagline;
   $('#d-actions').innerHTML = `
     <a class="btn primary" href="${pagesUrl(s)}" target="_blank" rel="noopener">사이트 바로가기 ↗</a>
-    <a class="btn" href="${zipUrl(s)}" download>⬇ 파일 다운로드</a>`;
+    <button class="btn" data-zip="${s.id}">⬇ 파일 다운로드</button>`;
   renderPanel();
   $('#drawer').classList.add('open');
   $('#drawer').setAttribute('aria-hidden', 'false');
@@ -207,6 +241,8 @@ document.addEventListener('click', async e => {
 document.addEventListener('click', e => {
   const chip = e.target.closest('[data-cat]');
   if (chip) { state.cat = chip.dataset.cat; renderChips(); renderGrid(); return; }
+  const z = e.target.closest('[data-zip]');
+  if (z) return downloadZip(sites.find(x => x.id === z.dataset.zip), z);
   const c = e.target.closest('[data-comment]');
   if (c) return openDrawer(c.dataset.comment);
   if (e.target.closest('[data-close]')) closeDrawer();
