@@ -103,7 +103,7 @@ async function loadComments() {
 function renderPanel() {
   $('#comments').innerHTML = `
     <form class="cform" id="cform" autocomplete="off">
-      <input name="author" placeholder="닉네임" maxlength="30" required value="${esc(store.name())}">
+      <input name="author" placeholder="닉네임 (선택)" maxlength="30" value="${esc(store.name())}">
       <textarea name="body" placeholder="코멘트를 남겨주세요" maxlength="1000" rows="3" required></textarea>
       <input name="website" class="hp" tabindex="-1" aria-hidden="true" autocomplete="off">
       <div class="cform-row"><span class="msg" id="cmsg"></span><button class="btn primary" type="submit">등록</button></div>
@@ -163,12 +163,12 @@ document.addEventListener('submit', async e => {
     e.preventDefault();
     const f = e.target, msg = $('#cmsg');
     if (f.website.value) return; // honeypot
-    const author = f.author.value.trim(), body = f.body.value.trim();
-    if (!author || !body) return;
+    const author = f.author.value.trim() || '익명', body = f.body.value.trim();
+    if (!body) return;
     f.querySelector('button').disabled = true; msg.textContent = '';
     try {
       await sb('/rest/v1/comments', { method: 'POST', body: { site: current, author, body }, auth: isAdmin(), prefer: 'return=minimal' });
-      store.setName(author); f.body.value = ''; await loadComments();
+      store.setName(author === '익명' ? '' : author); f.body.value = ''; await loadComments();
     } catch (err) { msg.textContent = '등록 실패: ' + err.message; }
     f.querySelector('button').disabled = false;
   } else if (e.target.classList.contains('rform')) {
