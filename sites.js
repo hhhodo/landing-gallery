@@ -189,6 +189,15 @@ window.SITES = [
     "updated": "2026-08-25"
   },
   {
+    "id": "prestra",
+    "repo": "prestra-landing",
+    "name": "PRESTRA",
+    "tagline": "정밀 제조의 기준, 설계에서 양산까지",
+    "desc": "PRESTRA는 냉간단조·CNC 정밀가공·열처리를 일원화한 글로벌 제조 파트너입니다.",
+    "category": "제조",
+    "updated": "2026-10-14"
+  },
+  {
     "id": "prism",
     "repo": "prism-landing",
     "name": "PRISM",
