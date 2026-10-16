@@ -207,6 +207,15 @@ window.SITES = [
     "updated": "2026-09-09"
   },
   {
+    "id": "sniff-society",
+    "repo": "sniff-society-landing",
+    "name": "Sniff Society",
+    "tagline": "시그니처 향수 브랜드",
+    "desc": "한정판 시그니처 향수 컬렉션. 노트, 브랜드 스토리, 문의를 한 곳에서.",
+    "category": "뷰티·향수",
+    "updated": "2026-10-16"
+  },
+  {
     "id": "yeoul",
     "repo": "yeoul-landing",
     "name": "여울 YEOUL",

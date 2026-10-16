@@ -1,6 +1,6 @@
 import fs from 'fs';
 const root = '..';
-const cat = {amble:'라이프스타일',arcnode:'IT',beacon:'IT',biosense:'바이오·헬스케어',carebridge:'헬스케어',castell:'제조',cove:'라이프스타일',eduspark:'교육',florae:'라이프스타일',forgex:'IT',formax:'제조',freshline:'수산·유통',goodstock:'물류',gyeol:'라이프스타일',hypecast:'미디어',kinetiq:'모빌리티',lunara:'라이프스타일',nexora:'IT',noksu:'F&B',novaiq:'IT',onair:'미디어',prism:'미디어',prestra:'제조',yeoul:'바이오·헬스케어'};
+const cat = {amble:'라이프스타일',arcnode:'IT',beacon:'IT',biosense:'바이오·헬스케어',carebridge:'헬스케어',castell:'제조',cove:'라이프스타일',eduspark:'교육',florae:'라이프스타일',forgex:'IT',formax:'제조',freshline:'수산·유통',goodstock:'물류',gyeol:'라이프스타일',hypecast:'미디어',kinetiq:'모빌리티',lunara:'라이프스타일',nexora:'IT',noksu:'F&B','sniff-society':'뷰티·향수',novaiq:'IT',onair:'미디어',prism:'미디어',prestra:'제조',yeoul:'바이오·헬스케어'};
 const out = [];
 for (const d of fs.readdirSync(root).filter(x=>x.endsWith('-landing')).sort()) {
   const id = d.replace('-landing','');
