@@ -144,6 +144,15 @@ window.SITES = [
     "updated": "2026-08-06"
   },
   {
+    "id": "knot-studio",
+    "repo": "knot-studio-landing",
+    "name": "Knot Studio",
+    "tagline": "뜨개공방",
+    "desc": "뜨개질 공방 Knot Studio — 원데이클래스 예약, 정규 강의, 실과 도안 판매",
+    "category": "공방·클래스",
+    "updated": "2026-10-19"
+  },
+  {
     "id": "lunara",
     "repo": "lunara-landing",
     "name": "LUNARA",
