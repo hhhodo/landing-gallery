@@ -61,12 +61,12 @@ function renderGrid() {
   $('#empty').hidden = list.length > 0;
   $('#grid').innerHTML = list.map(s => `
     <article class="card">
-      <a class="thumb" href="${pagesUrl(s)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+      <a class="thumb" href="${s.id}/" aria-label="${esc(s.name)} 상세">
         <img src="thumbs/${s.repo}.jpg" alt="" loading="lazy" width="800" height="500">
       </a>
       <div class="body">
         <div class="meta"><span class="tag">${esc(s.category)}</span><span>업데이트 ${esc(s.updated)}</span></div>
-        <h3 class="name">${esc(s.name)}</h3>
+        <h3 class="name"><a href="${s.id}/">${esc(s.name)}</a></h3>
         <p class="tagline">${esc(s.tagline || s.desc)}</p>
         <div class="actions">
           <a class="btn primary" href="${pagesUrl(s)}" target="_blank" rel="noopener">사이트 바로가기 ↗</a>

@@ -13,3 +13,38 @@ for (const d of fs.readdirSync(root).filter(x=>x.endsWith('-landing')).sort()) {
 }
 fs.writeFileSync('sites.js','window.SITES = '+JSON.stringify(out,null,2)+';\n');
 console.log(out.length);
+
+// per-site detail pages -> /<id>/ (static address, no JS)
+const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+for (const s of out) {
+  fs.mkdirSync(s.id, { recursive: true });
+  const live = `https://hhhodo.github.io/${s.repo}/`;
+  fs.writeFileSync(`${s.id}/index.html`, `<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(s.name)} — Landing Gallery</title>
+<meta name="description" content="${esc(s.desc)}">
+<meta property="og:title" content="${esc(s.name)} — Landing Gallery">
+<meta property="og:description" content="${esc(s.tagline || s.desc)}">
+<meta property="og:image" content="https://hhhodo.github.io/landing-gallery/thumbs/${s.repo}.jpg">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body class="detail-page">
+<main class="wrap detail">
+  <a class="back" href="../">← 갤러리</a>
+  <a class="detail-thumb" href="${live}" target="_blank" rel="noopener"><img src="../thumbs/${s.repo}.jpg" alt="${esc(s.name)} 미리보기" width="800" height="500"></a>
+  <div class="detail-meta"><span class="tag">${esc(s.category)}</span><span>업데이트 ${esc(s.updated)}</span></div>
+  <h1>${esc(s.name)}</h1>
+  <p class="detail-tagline">${esc(s.tagline)}</p>
+  <p class="detail-desc">${esc(s.desc)}</p>
+  <div class="detail-actions">
+    <a class="btn primary" href="${live}" target="_blank" rel="noopener">사이트 바로가기 ↗</a>
+    <a class="btn" href="../#${s.id}">💬 코멘트</a>
+  </div>
+</main>
+</body>
+</html>
+`);
+}
