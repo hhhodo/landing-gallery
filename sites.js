@@ -162,6 +162,15 @@ window.SITES = [
     "updated": "2026-08-07"
   },
   {
+    "id": "maru",
+    "repo": "maru-landing",
+    "name": "maru ranch",
+    "tagline": "초원에서 식탁까지",
+    "desc": "건강한 초원과 정직한 사양관리로 한우를 키우는 목장, MARU RANCH.",
+    "category": "축산",
+    "updated": "2026-10-21"
+  },
+  {
     "id": "nexora",
     "repo": "nexora-landing",
     "name": "NEXORA",
