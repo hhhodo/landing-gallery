@@ -234,6 +234,15 @@ window.SITES = [
     "updated": "2026-10-16"
   },
   {
+    "id": "velto",
+    "repo": "velto-landing",
+    "name": "VELTO",
+    "tagline": "Every Route, Moving",
+    "desc": "VELTO는 전동킥보드와 퍼스널 모빌리티로 도시의 모든 이동을 잇는 모빌리티 브랜드입니다.",
+    "category": "모빌리티",
+    "updated": "2026-10-28"
+  },
+  {
     "id": "yeoul",
     "repo": "yeoul-landing",
     "name": "여울 YEOUL",
