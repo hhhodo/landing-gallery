@@ -36,11 +36,13 @@ window.CW_CONFIG['cw-fl'] = {
     sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
     pad: 84,                  // 상하 여백 (px · 0~400)
     bg2: "#f6f7f7",           // 섹션 배경 (탭 영역) (색상 hex)
-    pos: "left",              // 탭 위치 : left=좌측 (기본) | right=우측 | top=상단 | bottom=하단
+    pos: "left",              // 탭 위치 : left=좌측 (기본) | right=우측 | top=상단
     tabstyle: "underline",    // 탭 스타일 : underline=밑줄 (기본) | pill=알약 | box=박스 | text=텍스트만
     tfs: 16,                  // 탭 글자 크기 (px · 10~40)
     tpy: 24,                  // 탭 위아래 여백 (px · 0~60)
-    tpx: 20,                  // 탭 좌우 여백 (알약·박스) (px · 0~60)
+    tpx: 20,                  // 탭 좌우 여백 (박스) (px · 0~60)
+    ppy: 8,                   // 알약 위아래 여백 (px · 0~30)
+    ppx: 16,                  // 알약 좌우 여백 (px · 4~60)
     tgap: 0,                  // 탭 간격 (추가) (px · 0~60)
     trad: 12,                 // 탭 모서리 (박스) (px · 0~60)
     tline: "#e1e1e3",         // 탭 테두리·밑줄색 (색상 hex)
@@ -191,23 +193,22 @@ window.CW_CONFIG['cw-fl'] = {
 .fl[data-pos=left] .fl-tabs{grid-column:1/4}.fl[data-pos=left] .fl-content{grid-column:4/13}
 .fl[data-pos=right] .fl-tabs{grid-column:10/13}.fl[data-pos=right] .fl-content{grid-column:1/10}
 .fl[data-pos=top] .fl-tabs{grid-column:1/13;grid-row:1}.fl[data-pos=top] .fl-content{grid-column:1/13;grid-row:2}
-.fl[data-pos=bottom] .fl-tabs{grid-column:1/13;grid-row:2}.fl[data-pos=bottom] .fl-content{grid-column:1/13;grid-row:1}
-.fl[data-pos=top] .spotlight__panel,.fl[data-pos=bottom] .spotlight__panel{padding-block-start:0}
-.fl[data-pos=top] .fl-tabs,.fl[data-pos=bottom] .fl-tabs{padding-block-start:0}
-/* 상/하단 탭 = 가로 나열 */
-.fl[data-pos=top] .spotlight__list,.fl[data-pos=bottom] .spotlight__list{flex-direction:row;flex-wrap:wrap}
-.fl[data-pos=top] .spotlight__item,.fl[data-pos=bottom] .spotlight__item{width:auto;flex:none;white-space:nowrap}
-.fl[data-pos=top]{--fl-gap-base:24px}.fl[data-pos=bottom]{--fl-gap-base:24px}
+.fl[data-pos=top] .spotlight__panel{padding-block-start:0}
+.fl[data-pos=top] .fl-tabs{padding-block-start:0}
+/* 상단 탭 = 가로 나열 */
+.fl[data-pos=top] .spotlight__list{flex-direction:row;flex-wrap:wrap}
+.fl[data-pos=top] .spotlight__item{width:auto;flex:none;white-space:nowrap}
+.fl[data-pos=top]{--fl-gap-base:24px}
 @media(max-width:768px){.fl .fl-tabs,.fl .fl-content{grid-row:auto!important}}
 /* ── 탭 디자인 ── */
-.fl{--fl-tab-gap:0px;--fl-tab-fs:var(--fs-body-2);--fl-tab-py:var(--space-5);--fl-tab-px:20px;--fl-tab-radius:12px;--fl-tab-line:#e1e1e3;--fl-tab-active-bg:#262628;--fl-tab-active-fg:#ffffff;--fl-tab-accent:#262628}
+.fl{--fl-pill-py:8px;--fl-pill-px:16px;--fl-tab-gap:0px;--fl-tab-fs:var(--fs-body-2);--fl-tab-py:var(--space-5);--fl-tab-px:20px;--fl-tab-radius:12px;--fl-tab-line:#e1e1e3;--fl-tab-active-bg:#262628;--fl-tab-active-fg:#ffffff;--fl-tab-accent:#262628}
 .fl .spotlight__list{gap:calc(var(--fl-tab-gap) + var(--fl-gap-base))}
 .fl .spotlight__item{padding-block:var(--fl-tab-py);font-size:var(--fl-tab-fs);transition:background .2s,color .2s,border-color .2s,opacity .2s}
 .fl .spotlight__item--active{border-bottom:2px solid var(--fl-tab-accent)}
 .fl[data-tabstyle=pill]{--fl-gap-base:8px}.fl[data-tabstyle=box]{--fl-gap-base:8px}
-.fl[data-tabstyle=pill][data-pos=top],.fl[data-tabstyle=pill][data-pos=bottom],.fl[data-tabstyle=box][data-pos=top],.fl[data-tabstyle=box][data-pos=bottom]{--fl-gap-base:8px}
+.fl[data-tabstyle=pill][data-pos=top],.fl[data-tabstyle=box][data-pos=top]{--fl-gap-base:8px}
 .fl[data-tabstyle=pill] .spotlight__item,.fl[data-tabstyle=box] .spotlight__item{border:1px solid transparent;border-block-end:1px solid transparent;padding-inline:var(--fl-tab-px)}
-.fl[data-tabstyle=pill] .spotlight__item{border-radius:999px}
+.fl[data-tabstyle=pill] .spotlight__item{border-radius:999px;width:auto;align-self:flex-start;flex:none;white-space:nowrap;padding-block:var(--fl-pill-py);padding-inline:var(--fl-pill-px)}
 .fl[data-tabstyle=box] .spotlight__item{border-color:var(--fl-tab-line);border-radius:var(--fl-tab-radius)}
 .fl[data-tabstyle=pill] .spotlight__item--active,.fl[data-tabstyle=box] .spotlight__item--active{background:var(--fl-tab-active-bg);color:var(--fl-tab-active-fg);border-color:var(--fl-tab-active-bg)}
 .fl[data-tabstyle=pill] .spotlight__item:hover,.fl[data-tabstyle=box] .spotlight__item:hover{opacity:1;background:rgba(0,0,0,.05)}
@@ -330,11 +331,13 @@ window.CW_CONFIG['cw-fl'] = {
    {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:84},
    {key:'bg2',type:'color',label:"섹션 배경 (탭 영역)",css:'--color-primary-050',default:'#f6f7f7'},
    {type:'group',label:"탭 위치·디자인"},
-   {key:'pos',type:'select',label:"탭 위치",attr:'data-pos',options:[{"value": "left", "label": "좌측 (기본)"}, {"value": "right", "label": "우측"}, {"value": "top", "label": "상단"}, {"value": "bottom", "label": "하단"}],default:'left'},
+   {key:'pos',type:'select',label:"탭 위치",attr:'data-pos',options:[{"value": "left", "label": "좌측 (기본)"}, {"value": "right", "label": "우측"}, {"value": "top", "label": "상단"}],default:'left'},
    {key:'tabstyle',type:'select',label:"탭 스타일",attr:'data-tabstyle',options:[{"value": "underline", "label": "밑줄 (기본)"}, {"value": "pill", "label": "알약"}, {"value": "box", "label": "박스"}, {"value": "text", "label": "텍스트만"}],default:'underline'},
    {key:'tfs',type:'range',label:"탭 글자 크기",css:'--fl-tab-fs',unit:'px',min:10,max:40,step:1,default:16},
    {key:'tpy',type:'range',label:"탭 위아래 여백",css:'--fl-tab-py',unit:'px',min:0,max:60,step:1,default:24},
-   {key:'tpx',type:'range',label:"탭 좌우 여백 (알약·박스)",css:'--fl-tab-px',unit:'px',min:0,max:60,step:1,default:20},
+   {key:'tpx',type:'range',label:"탭 좌우 여백 (박스)",css:'--fl-tab-px',unit:'px',min:0,max:60,step:1,default:20},
+   {key:'ppy',type:'range',label:"알약 위아래 여백",css:'--fl-pill-py',unit:'px',min:0,max:30,step:1,default:8},
+   {key:'ppx',type:'range',label:"알약 좌우 여백",css:'--fl-pill-px',unit:'px',min:4,max:60,step:1,default:16},
    {key:'tgap',type:'range',label:"탭 간격 (추가)",css:'--fl-tab-gap',unit:'px',min:0,max:60,step:1,default:0},
    {key:'trad',type:'range',label:"탭 모서리 (박스)",css:'--fl-tab-radius',unit:'px',min:0,max:60,step:1,default:12},
    {key:'tline',type:'color',label:"탭 테두리·밑줄색",css:'--fl-tab-line',default:'#e1e1e3'},
