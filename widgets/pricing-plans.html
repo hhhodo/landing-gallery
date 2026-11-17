@@ -1,10 +1,72 @@
 <!DOCTYPE html>
-<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pricing Plans Widget</title>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>요금제 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-
+<style>body{margin:0;background:#f4f4f2}</style></head><body>
+<!-- 요금제 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
+<script>
+/* ============================================================
+   요금제 위젯 설정값 — 아래 숫자/값만 고치면 위젯에 반영됩니다.
+   ============================================================ */
+window.CW_CONFIG = window.CW_CONFIG || {};
+window.CW_CONFIG['cw-pw'] = {
+  settings: {
+    badge: 1,                 // 뱃지 표시 (1=켜기, 0=끄기)
+    feat: 1,                  // 혜택 목록 표시 (1=켜기, 0=끄기)
+    lift: 1,                  // 강조 카드 띄우기 (1=켜기, 0=끄기)
+    align: "left",            // 제목 정렬 : left=왼쪽 | center=가운데
+    cols: 3,                  // 열 수 (숫자 · 1~4)
+    bg: "#f6f3ee",            // 섹션 배경 (색상 hex)
+    card: "#ffffff",          // 카드 배경 (색상 hex)
+    text: "#1b1b1b",          // 글자색 (색상 hex)
+    accent: "#1b1b1b",        // 강조색 (색상 hex)
+    atext: "#ffffff",         // 강조 글자색 (색상 hex)
+    line: "#e2ddd4",          // 테두리색 (색상 hex)
+    radius: 20,               // 모서리 (px · 0~40)
+    gap: 24,                  // 카드 간격 (px · 8~56)
+    pad: 96,                  // 상하 여백 (px · 16~200)
+  },
+  // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  meta: {
+      "eyebrow": "PLANS",
+      "title": "나에게 맞는 플랜을 고르세요",
+      "note": "모든 플랜은 언제든 변경하거나 해지할 수 있습니다."
+  },
+  plans: [
+      {
+          "badge": "LIGHT",
+          "name": "라이트",
+          "desc": "가볍게 시작하고 싶은 분을 위한 격월 플랜.",
+          "price": "29,000원",
+          "unit": "/ 격월",
+          "features": "오브제 2~3종 큐레이션\n무료 배송\n언제든 해지 가능",
+          "cta": "라이트 시작하기",
+          "featured": false
+      },
+      {
+          "badge": "STANDARD",
+          "name": "스탠다드",
+          "desc": "가장 많이 선택하는 균형 잡힌 월간 플랜.",
+          "price": "49,000원",
+          "unit": "/ 월",
+          "features": "오브제 3~5종 큐레이션\n무료 배송 · 반품\n1:1 스타일 상담 월 1회\n언제든 해지 가능",
+          "cta": "스탠다드 시작하기",
+          "featured": true
+      },
+      {
+          "badge": "PREMIUM",
+          "name": "프리미엄",
+          "desc": "아웃도어까지 폭넓게 경험하고 싶은 분께.",
+          "price": "79,000원",
+          "unit": "/ 월",
+          "features": "오브제 5종 이상 큐레이션\n무료 배송 · 반품\n전담 스타일리스트\n언제든 해지 가능",
+          "cta": "프리미엄 시작하기",
+          "featured": false
+      }
+  ]
+};
+</script>
 <style>
-body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
+.pw{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
 .pw{--pw-bg:#f6f3ee;--pw-card:#ffffff;--pw-text:#1b1b1b;--pw-sub:#6b6b6b;--pw-line:#e2ddd4;--pw-accent:#1b1b1b;--pw-accent-text:#ffffff;--pw-radius:20px;--pw-cols:3;--pw-gap:24px;--pw-pad:96px;--pw-width:1160px;
  background:var(--pw-bg);color:var(--pw-text);padding:var(--pw-pad) 20px}
 .pw__in{max-width:var(--pw-width);margin:0 auto}
@@ -30,97 +92,30 @@ body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
 .pw[data-feat=false] .pw__feat{display:none}
 .pw__card.is-featured .pw__feat li:before{content:"✓"}
 @media(max-width:900px){.pw__grid{grid-template-columns:1fr}.pw[data-lift=true] .pw__card.is-featured{transform:none}}
-.cw-panel{position:fixed;top:16px;right:16px;z-index:9999;width:280px;max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1a1a1a;border:1px solid #d9d9d9;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
-.cw-panel *{box-sizing:border-box}
-.cw-panel__head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;font-weight:700}
-.cw-panel__toggle{border:0;background:#f0f0f0;border-radius:8px;padding:4px 10px;cursor:pointer;font:inherit;font-size:12px}
-.cw-panel.is-closed .cw-panel__body{display:none}
-.cw-panel__body{padding:6px 14px 14px}
-.cw-group{margin:12px 0 4px;font-size:11px;font-weight:700;letter-spacing:.04em;color:#888;text-transform:uppercase}
-.cw-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
-.cw-row label{flex:0 0 auto;color:#444}
-.cw-row input[type=color]{width:44px;height:28px;border:1px solid #ccc;border-radius:6px;padding:0;background:none;cursor:pointer}
-.cw-row input[type=range]{flex:1;min-width:0}
-.cw-row .cw-val{width:44px;text-align:right;font-size:12px;color:#777}
-.cw-row select,.cw-row input[type=text]{flex:1;min-width:0;font:inherit;padding:4px 6px;border:1px solid #ccc;border-radius:6px}
-.cw-btns{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
-.cw-btns button{flex:1;font:inherit;font-size:12px;padding:6px 8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
-.cw-btns button.is-primary{background:#1a1a1a;color:#fff}
-.cw-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
-[contenteditable=true]{outline:1px dashed rgba(120,120,255,.7);outline-offset:2px;cursor:text}
-@media (max-width:640px){.cw-panel{top:auto;bottom:0;right:0;left:0;width:auto;border-radius:14px 14px 0 0;max-height:55vh}}
-
-.cw-row input[type=number]{width:88px;flex:none;font:inherit;padding:4px 6px;border:1px solid #ccc;border-radius:6px;text-align:right}
-.cw-row input[type=number]+.cw-val{width:auto;text-align:left}
-.cw-row label{flex:1}
-
-</style></head><body>
+</style>
 <section class="pw" id="cw-pw" data-align="left" data-lift="true" data-badge="true" data-feat="true">
  <div class="pw__in">
   <div class="pw__head"><p class="pw__eyebrow" data-g="eyebrow"></p><h2 class="pw__title" data-g="title"></h2><p class="pw__note" data-g="note"></p></div>
   <div class="pw__grid" id="cw-pw-grid"></div>
  </div>
 </section>
-<script>/* Widget control panel. Usage: CWPanel.mount({title, root, controls, defaults, onChange})
-   control types: color | range | select | toggle | text | button | group
-   - {key, type, label, css:'--var', unit:'px'}  -> sets CSS var on root
-   - {key, type:'select'|'toggle', attr:'data-x'} -> sets attribute on root
-   - any control may be read in onChange(state) for re-render. */
-(function(){
-  function mount(cfg){
-    window.__cwSchema={controls:cfg.controls.filter(function(c){return c.key}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});if(o.type==='range')o.type='number';return o}),title:cfg.title};
-    document.documentElement.setAttribute('data-cw-schema',JSON.stringify(window.__cwSchema));
-    var root=cfg.root, state=Object.assign({},cfg.defaults||{}), initial;
-    var panel=document.createElement('aside'); panel.className='cw-panel';
-    panel.innerHTML='<div class="cw-panel__head"><span>'+(cfg.title||'위젯 설정')+'</span><button class="cw-panel__toggle" type="button">접기</button></div><div class="cw-panel__body"></div>';
-    var body=panel.querySelector('.cw-panel__body');
-    panel.querySelector('.cw-panel__toggle').onclick=function(e){panel.classList.toggle('is-closed');e.target.textContent=panel.classList.contains('is-closed')?'펼치기':'접기'};
-    var inputs={};
-    function apply(c){
-      var v=state[c.key];
-      if(c.css) root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);
-      if(c.attr) root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v);
-    }
-    function emit(c){apply(c);cfg.onChange&&cfg.onChange(state,c.key)}
-    cfg.controls.forEach(function(c){
-      if(c.type==='group'){var g=document.createElement('div');g.className='cw-group';g.textContent=c.label;body.appendChild(g);return}
-      if(c.type==='button'){var b=document.createElement('div');b.className='cw-btns';var btn=document.createElement('button');btn.type='button';btn.textContent=c.label;btn.onclick=c.onClick;b.appendChild(btn);body.appendChild(b);return}
-      var row=document.createElement('div');row.className='cw-row';
-      var id='cw_'+c.key, lab=document.createElement('label');lab.htmlFor=id;lab.textContent=c.label;row.appendChild(lab);
-      var el;
-      if(c.type==='select'){el=document.createElement('select');c.options.forEach(function(o){var op=document.createElement('option');op.value=o.value!==undefined?o.value:o;op.textContent=o.label||o;el.appendChild(op)})}
-      else{el=document.createElement('input');el.type=c.type==='toggle'?'checkbox':(c.type==='range'?'number':c.type);if(c.type==='range'){el.min=c.min;el.max=c.max;el.step=c.step||1;el.inputMode='decimal'}}
-      el.id=id;inputs[c.key]=el;
-      if(state[c.key]===undefined) state[c.key]=c.default;
-      var val=null;if(c.type==='range'&&c.unit){val=document.createElement('span');val.className='cw-val';val.textContent=c.unit}
-      function sync(){if(c.type==='toggle')el.checked=!!state[c.key];else el.value=state[c.key];}
-      sync();
-      el.addEventListener(c.type==='range'||c.type==='color'||c.type==='text'?'input':'change',function(){if(c.type==='range'){if(el.value==='')return;var n=Number(el.value);if(isNaN(n))return;n=Math.min(c.max,Math.max(c.min,n));state[c.key]=n}else state[c.key]=c.type==='toggle'?el.checked:el.value;emit(c)});
-      if(c.type==='range')el.addEventListener('blur',function(){sync()});
-      row.appendChild(el);if(val)row.appendChild(val);body.appendChild(row);
-      c._sync=sync;
-    });
-    initial=JSON.stringify(state);
-    var bar=document.createElement('div');bar.className='cw-btns';
-    bar.innerHTML='<button type="button" data-a="reset">초기화</button><button type="button" class="is-primary" data-a="copy">설정 복사(JSON)</button>';
-    body.appendChild(bar);
-    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='reset'){state=JSON.parse(initial);cfg.controls.forEach(function(c){if(c.key&&c._sync){c._sync();apply(c)}});cfg.onReset&&cfg.onReset();cfg.onChange&&cfg.onChange(state,null)}
-      if(a==='copy'){var t=JSON.stringify(cfg.getExport?cfg.getExport(state):state,null,2);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){toast('설정을 복사했습니다')},function(){window.prompt('복사하세요',t)})}};
-    document.body.appendChild(panel);
-    if(/[?&]nopanel/.test(location.search))panel.style.display='none';
-    cfg.controls.forEach(function(c){if(c.key&&(c.css||c.attr))apply(c)});
-    cfg.onChange&&cfg.onChange(state,null);
-    return {state:function(){return state},panel:panel};
-  }
-  function toast(m){var t=document.createElement('div');t.className='cw-toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},1600)}
-  /* inline text editing: elements with data-i (index) + data-f (field) write back into data[i][f]; data-g edits data.meta[g] */
-  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'});}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});
-    container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()});}
-  window.CWPanel={mount:mount,toast:toast,setEditable:setEditable,bindEdit:bindEdit};
-})();
-</script>
 <script>
+/* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
+(function(){
+  var R=window.CWWidgets=window.CWWidgets||{};
+  window.CWPanel={toast:function(){},setEditable:function(){},bindEdit:function(){},
+  mount:function(cfg){
+    var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
+    function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
+    function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
+    cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
+    cfg.onChange&&cfg.onChange(state,null);
+    var api=R[root.id]={state:state,set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
+    return api}};
+})();
+
 (function(){
  var root=document.getElementById('cw-pw'),grid=document.getElementById('cw-pw-grid');
  var initMeta={eyebrow:'PLANS',title:'나에게 맞는 플랜을 고르세요',note:'모든 플랜은 언제든 변경하거나 해지할 수 있습니다.'};
@@ -137,6 +132,7 @@ body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
   grid.querySelectorAll('.pw__btn').forEach(function(a){a.onclick=function(e){e.preventDefault()}});
   CWPanel.setEditable(root,editing);
  }
+ var CFG=(window.CW_CONFIG||{})['cw-pw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.plans){data.length=0;CFG.plans.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
  CWPanel.mount({title:'요금제 위젯 설정',root:root,defaults:{edit:false},
   getExport:function(s){return{settings:s,meta:meta,plans:data}},
@@ -166,4 +162,5 @@ body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
    {key:'pad',type:'range',label:'상하 여백',css:'--pw-pad',unit:'px',min:16,max:200,step:4,default:96}
   ]});
 })();
-</script></body></html>
+</script>
+</body></html>
