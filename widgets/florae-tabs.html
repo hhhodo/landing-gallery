@@ -36,13 +36,26 @@ window.CW_CONFIG['cw-fl'] = {
     sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
     pad: 84,                  // 상하 여백 (px · 0~400)
     bg2: "#f6f7f7",           // 섹션 배경 (탭 영역) (색상 hex)
-    split: "4",               // 탭 영역 너비 (12열 중) : 3=3열 | 4=4열(기본) | 5=5열 | 6=6열
+    pos: "left",              // 탭 위치 : left=좌측 (기본) | right=우측 | top=상단 | bottom=하단
+    tabstyle: "underline",    // 탭 스타일 : underline=밑줄 (기본) | pill=알약 | box=박스 | text=텍스트만
+    tfs: 16,                  // 탭 글자 크기 (px · 10~40)
+    tpy: 24,                  // 탭 위아래 여백 (px · 0~60)
+    tpx: 20,                  // 탭 좌우 여백 (알약·박스) (px · 0~60)
+    tgap: 0,                  // 탭 간격 (추가) (px · 0~60)
+    trad: 12,                 // 탭 모서리 (박스) (px · 0~60)
+    tline: "#e1e1e3",         // 탭 테두리·밑줄색 (색상 hex)
+    tacc: "#262628",          // 선택 탭 강조색 (밑줄·텍스트) (색상 hex)
+    tabg: "#262628",          // 선택 탭 배경 (알약·박스) (색상 hex)
+    tafg: "#ffffff",          // 선택 탭 글자색 (알약·박스) (색상 hex)
+    ratio: "16/9",            // 이미지 비율 : 16/9=16:9 (기본) | 4/3=4:3 | 3/2=3:2 | 1/1=1:1 | 4/5=4:5
+    fit: "cover",             // 이미지 채우기 : cover=꽉 채우기(잘림) | contain=전체 보이기(여백)
     imgr: 0,                  // 이미지 모서리 (px · 0~48)
     showimg: 1,               // 이미지 표시 (1=켜기, 0=끄기)
     showbody: 1,              // 설명 표시 (1=켜기, 0=끄기)
     wrap: 0,                  // 설명 줄바꿈 허용 (1=켜기, 0=끄기)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  // 항목의 img → 이미지 주소(https://…) 또는 업로드한 이미지(data:image/…). 업로드 이미지는 글자 수가 매우 길어요 — 실제 사이트에는 이미지를 호스팅하고 주소를 넣는 걸 권장 
   meta: {},
   items: [
       {
@@ -137,7 +150,7 @@ window.CW_CONFIG['cw-fl'] = {
 .fl .grid--snug{gap:var(--grid-gutter-md);}
 .fl .section{padding-block:var(--space-section);}
 .fl .img{background:var(--color-placeholder);display:block;width:100%;}
-.fl .img--16-9{aspect-ratio:16/9;}
+.fl .img--16-9{aspect-ratio:var(--fl-ratio,16/9);}
 .fl .img--4-3{aspect-ratio:4/3;}
 .fl .img--1-1{aspect-ratio:1/1;}
 @media (max-width:1024px){.fl{--gutter:40px;}.fl .grid{gap:var(--grid-gutter-md);}}
@@ -172,24 +185,61 @@ window.CW_CONFIG['cw-fl'] = {
     gap:var(--space-6);border-block-end:var(--border-1);scrollbar-width:none;}.fl .spotlight__list::-webkit-scrollbar{display:none;}.fl .spotlight__item{width:auto;flex:none;border-block-end:none;white-space:nowrap;
     padding-block:var(--space-3);padding-inline:0;}.fl .spotlight__item--active{border-bottom:var(--border-2);}}
 @media (max-width:600px){.fl .gcell--2up{grid-column:1/13!important;}}
-.fl{--fl-img-radius:0px}
-.fl .fl-left{grid-column:1/5}.fl .fl-right{grid-column:5/13}
-.fl[data-split="3"] .fl-left{grid-column:1/4}.fl[data-split="3"] .fl-right{grid-column:4/13}
-.fl[data-split="5"] .fl-left{grid-column:1/6}.fl[data-split="5"] .fl-right{grid-column:6/13}
-.fl[data-split="6"] .fl-left{grid-column:1/7}.fl[data-split="6"] .fl-right{grid-column:7/13}
+.fl{--fl-img-radius:0px;--fl-fit:cover;--fl-gap-base:0px}
+/* ── 탭 위치 (탭 영역 너비는 3열 고정) ── */
+.fl .fl-tabs{grid-row:1}.fl .fl-content{grid-row:1}
+.fl[data-pos=left] .fl-tabs{grid-column:1/4}.fl[data-pos=left] .fl-content{grid-column:4/13}
+.fl[data-pos=right] .fl-tabs{grid-column:10/13}.fl[data-pos=right] .fl-content{grid-column:1/10}
+.fl[data-pos=top] .fl-tabs{grid-column:1/13;grid-row:1}.fl[data-pos=top] .fl-content{grid-column:1/13;grid-row:2}
+.fl[data-pos=bottom] .fl-tabs{grid-column:1/13;grid-row:2}.fl[data-pos=bottom] .fl-content{grid-column:1/13;grid-row:1}
+.fl[data-pos=top] .spotlight__panel,.fl[data-pos=bottom] .spotlight__panel{padding-block-start:0}
+.fl[data-pos=top] .fl-tabs,.fl[data-pos=bottom] .fl-tabs{padding-block-start:0}
+/* 상/하단 탭 = 가로 나열 */
+.fl[data-pos=top] .spotlight__list,.fl[data-pos=bottom] .spotlight__list{flex-direction:row;flex-wrap:wrap}
+.fl[data-pos=top] .spotlight__item,.fl[data-pos=bottom] .spotlight__item{width:auto;flex:none;white-space:nowrap}
+.fl[data-pos=top]{--fl-gap-base:24px}.fl[data-pos=bottom]{--fl-gap-base:24px}
+@media(max-width:768px){.fl .fl-tabs,.fl .fl-content{grid-row:auto!important}}
+/* ── 탭 디자인 ── */
+.fl{--fl-tab-gap:0px;--fl-tab-fs:var(--fs-body-2);--fl-tab-py:var(--space-5);--fl-tab-px:20px;--fl-tab-radius:12px;--fl-tab-line:#e1e1e3;--fl-tab-active-bg:#262628;--fl-tab-active-fg:#ffffff;--fl-tab-accent:#262628}
+.fl .spotlight__list{gap:calc(var(--fl-tab-gap) + var(--fl-gap-base))}
+.fl .spotlight__item{padding-block:var(--fl-tab-py);font-size:var(--fl-tab-fs);transition:background .2s,color .2s,border-color .2s,opacity .2s}
+.fl .spotlight__item--active{border-bottom:2px solid var(--fl-tab-accent)}
+.fl[data-tabstyle=pill]{--fl-gap-base:8px}.fl[data-tabstyle=box]{--fl-gap-base:8px}
+.fl[data-tabstyle=pill][data-pos=top],.fl[data-tabstyle=pill][data-pos=bottom],.fl[data-tabstyle=box][data-pos=top],.fl[data-tabstyle=box][data-pos=bottom]{--fl-gap-base:8px}
+.fl[data-tabstyle=pill] .spotlight__item,.fl[data-tabstyle=box] .spotlight__item{border:1px solid transparent;border-block-end:1px solid transparent;padding-inline:var(--fl-tab-px)}
+.fl[data-tabstyle=pill] .spotlight__item{border-radius:999px}
+.fl[data-tabstyle=box] .spotlight__item{border-color:var(--fl-tab-line);border-radius:var(--fl-tab-radius)}
+.fl[data-tabstyle=pill] .spotlight__item--active,.fl[data-tabstyle=box] .spotlight__item--active{background:var(--fl-tab-active-bg);color:var(--fl-tab-active-fg);border-color:var(--fl-tab-active-bg)}
+.fl[data-tabstyle=pill] .spotlight__item:hover,.fl[data-tabstyle=box] .spotlight__item:hover{opacity:1;background:rgba(0,0,0,.05)}
+.fl[data-tabstyle=pill] .spotlight__item--active:hover,.fl[data-tabstyle=box] .spotlight__item--active:hover{background:var(--fl-tab-active-bg)}
+.fl[data-tabstyle=text] .spotlight__item{border:none}
+.fl[data-tabstyle=text] .spotlight__item--active{border:none;color:var(--fl-tab-accent)}
+.fl[data-tabstyle=underline] .spotlight__item{border-block-end:1px solid var(--fl-tab-line)}
+.fl[data-tabstyle=underline] .spotlight__item--active{border-block-end:2px solid var(--fl-tab-accent)}
+/* ── 콘텐츠 ── */
 .fl .spotlight__frame{border-radius:var(--fl-img-radius)}
+.fl .spotlight__frame img{display:block;object-fit:var(--fl-fit)}
 .fl[data-showimg=false] .spotlight__frame{display:none}
 .fl[data-showbody=false] .spotlight__body{display:none}
 .fl[data-wrap=true] .spotlight__body{white-space:normal}
 .fl .spotlight__item{cursor:pointer}
-.fl[data-editing=true] .spotlight__frame{outline:1px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer}
-.fl .spotlight__frame img{display:block}
+.fl[data-editing=true] .spotlight__frame{outline:2px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer;position:relative}
+.fl[data-editing=true] .spotlight__frame::after{content:'클릭 또는 파일을 끌어다 놓아 이미지 교체';position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.7);color:#fff;font-size:13px;padding:6px 10px;border-radius:999px;pointer-events:none}
+.fl .spotlight__frame.is-drag{outline-color:#ff6d0e}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
+.fl-pop{position:fixed;z-index:10001;width:320px;background:#fff;color:#262628;border:1px solid #e1e1e3;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:16px;font:14px/1.4 'Pretendard',sans-serif}
+.fl-pop *{box-sizing:border-box}.fl-pop h4{margin:0 0 10px;font-size:14px}
+.fl-pop .row{display:flex;gap:6px;margin-top:8px}
+.fl-pop input[type=text]{flex:1;min-width:0;font:inherit;padding:8px;border:1px solid #c5c6c8;border-radius:8px}
+.fl-pop button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #262628;background:#fff;color:#262628;border-radius:8px;cursor:pointer;white-space:nowrap}
+.fl-pop button.p{background:#262628;color:#fff}.fl-pop button.wide{width:100%}
+.fl-pop small{display:block;margin-top:10px;color:#838486;font-size:11px;line-height:1.45}
+.fl-pop .msg{margin-top:8px;font-size:12px;color:#d33}
 </style>
-<div class="fl" id="cw-fl" data-split="4" data-showimg="true" data-showbody="true" data-wrap="false" data-editing="false">
+<div class="fl" id="cw-fl" data-pos="left" data-tabstyle="underline" data-showimg="true" data-showbody="true" data-wrap="false" data-editing="false">
 <section class="section spotlight"><div class="container"><div class="grid">
- <div class="gcell spotlight__panel fl-left"><nav class="spotlight__list" id="cw-fl-list"></nav></div>
- <div class="gcell spotlight__panel fl-right"><h2 class="h1 spotlight__title" id="cw-fl-title"></h2><p class="spotlight__body" id="cw-fl-body"></p><div class="spotlight__frame" data-imgbox><img class="img img--16-9" id="cw-fl-img" alt=""></div></div>
+ <div class="gcell spotlight__panel fl-tabs"><nav class="spotlight__list" id="cw-fl-list"></nav></div>
+ <div class="gcell spotlight__panel fl-content"><h2 class="h1 spotlight__title" id="cw-fl-title"></h2><p class="spotlight__body" id="cw-fl-body"></p><div class="spotlight__frame" id="cw-fl-frame"><img class="img img--16-9" id="cw-fl-img" alt=""></div></div>
 </div></div></section></div>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
@@ -219,19 +269,47 @@ window.CW_CONFIG['cw-fl'] = {
  function T(s){return esc(s).replace(/\n/g,'<br>')}
  function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
 
- var list=document.getElementById('cw-fl-list'),cur=0;
+ /*CW_HINT:// 항목의 img → 이미지 주소(https://…) 또는 업로드한 이미지(data:image/…). 업로드 이미지는 글자 수가 매우 길어요 — 실제 사이트에는 이미지를 호스팅하고 주소를 넣는 걸 권장 */
+ var list=document.getElementById('cw-fl-list'),frame=document.getElementById('cw-fl-frame'),cur=0,POP=null;
  function render(){
   if(cur>=data.length)cur=Math.max(0,data.length-1);root.setAttribute('data-editing',editing);var d=data[cur]||{};
   list.innerHTML=data.map(function(x,i){return '<div class="spotlight__item'+(i===cur?' spotlight__item--active':'')+'" role="button" tabindex="0" data-idx="'+i+'"><span data-i="'+i+'" data-f="title">'+esc(x.title)+'</span></div>'}).join('');
-  var t=document.getElementById('cw-fl-title');t.textContent=d.title||'';t.setAttribute('data-i',cur);
+  var t=document.getElementById('cw-fl-title');t.textContent=d.title||'';t.setAttribute('data-i',cur);t.setAttribute('data-f','title');
   var bd=document.getElementById('cw-fl-body');bd.textContent=d.desc||'';bd.setAttribute('data-i',cur);bd.setAttribute('data-f','desc');
-  var im=document.getElementById('cw-fl-img');im.src=d.img||'';im.alt=d.alt||'';im.setAttribute('data-img-i',cur);
-  t.setAttribute('data-f','title');
-  CWPanel.setEditable(root,editing);
-  /* 탭 라벨과 제목은 같은 필드라 둘 다 편집 가능 */}
+  var im=document.getElementById('cw-fl-img');im.src=d.img||'';im.alt=d.alt||'';
+  if(!editing)closePop();
+  CWPanel.setEditable(root,editing)}
  list.addEventListener('click',function(e){var it=e.target.closest('.spotlight__item');if(!it)return;var i=+it.dataset.idx;if(i!==cur){cur=i;render()}});
  list.addEventListener('keydown',function(e){var it=e.target.closest('.spotlight__item');if(!editing&&it&&(e.key==='Enter'||e.key===' ')){e.preventDefault();it.click()}});
- root.addEventListener('input',function(e){var n=e.target.closest('[data-f="title"]');if(n&&n.id==='cw-fl-title'){var s=list.querySelector('.spotlight__item--active span');if(s)s.textContent=n.textContent}});
+ root.addEventListener('input',function(e){var n=e.target.closest('#cw-fl-title');if(n){var s=list.querySelector('.spotlight__item--active span');if(s)s.textContent=n.textContent}});
+ /* ── 이미지 교체: 파일 업로드(클릭/드래그) 또는 주소 ── */
+ function closePop(){if(POP){POP.remove();POP=null}}
+ function setImg(url){if(data[cur]){data[cur].img=url;document.getElementById('cw-fl-img').src=url}}
+ function fromFile(file,msg){
+  if(!file||!/^image\//.test(file.type)){if(msg)msg.textContent='이미지 파일만 올릴 수 있어요.';return}
+  var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+    var MAX=1600,w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,MAX/w),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
+    var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+    setImg(c.toDataURL('image/jpeg',0.86));closePop()};
+   im.onerror=function(){if(msg)msg.textContent='이미지를 읽지 못했어요.'};im.src=fr.result};
+  fr.readAsDataURL(file)}
+ function openPop(){
+  closePop();POP=document.createElement('div');POP.className='fl-pop';
+  POP.innerHTML='<h4>이미지 교체 · '+esc((data[cur]||{}).title||'')+'</h4><input type="file" accept="image/*" hidden><button type="button" class="p wide" data-a="file">파일 선택해서 업로드</button><div class="row"><input type="text" placeholder="또는 이미지 주소(https://…)"><button type="button" data-a="url">적용</button></div><div class="msg"></div><small>업로드한 이미지는 브라우저에서 1600px 이하로 줄여 이 위젯 안에 포함됩니다(저장 서버 없음). 새로고침하면 사라지니 「설정값 복사」로 보관하세요. 실제 사이트에는 이미지를 호스팅한 주소를 쓰는 걸 권장해요.</small>';
+  document.body.appendChild(POP);
+  var r=frame.getBoundingClientRect(),x=Math.min(Math.max(8,r.left+16),window.innerWidth-336),y=Math.min(Math.max(8,r.top+16),window.innerHeight-POP.offsetHeight-8);
+  POP.style.left=x+'px';POP.style.top=y+'px';
+  var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
+  fi.addEventListener('change',function(){fromFile(fi.files[0],msg)});
+  POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+   if(b.dataset.a==='file')fi.click();
+   if(b.dataset.a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){setImg(v);closePop()}}})}
+ frame.addEventListener('click',function(e){if(!editing)return;e.preventDefault();openPop()});
+ ['dragenter','dragover'].forEach(function(ev){frame.addEventListener(ev,function(e){if(!editing)return;e.preventDefault();frame.classList.add('is-drag')})});
+ ['dragleave','drop'].forEach(function(ev){frame.addEventListener(ev,function(e){frame.classList.remove('is-drag')})});
+ frame.addEventListener('drop',function(e){if(!editing)return;e.preventDefault();var f=e.dataTransfer&&e.dataTransfer.files[0];if(f)fromFile(f,null)});
+ document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!frame.contains(e.target))closePop()});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
 
  var CFG=(window.CW_CONFIG||{})['cw-fl']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
@@ -251,8 +329,21 @@ window.CW_CONFIG['cw-fl'] = {
    {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
    {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:84},
    {key:'bg2',type:'color',label:"섹션 배경 (탭 영역)",css:'--color-primary-050',default:'#f6f7f7'},
-   {type:'group',label:"레이아웃"},
-   {key:'split',type:'select',label:"탭 영역 너비 (12열 중)",attr:'data-split',options:[{"value": "3", "label": "3열"}, {"value": "4", "label": "4열(기본)"}, {"value": "5", "label": "5열"}, {"value": "6", "label": "6열"}],default:'4'},
+   {type:'group',label:"탭 위치·디자인"},
+   {key:'pos',type:'select',label:"탭 위치",attr:'data-pos',options:[{"value": "left", "label": "좌측 (기본)"}, {"value": "right", "label": "우측"}, {"value": "top", "label": "상단"}, {"value": "bottom", "label": "하단"}],default:'left'},
+   {key:'tabstyle',type:'select',label:"탭 스타일",attr:'data-tabstyle',options:[{"value": "underline", "label": "밑줄 (기본)"}, {"value": "pill", "label": "알약"}, {"value": "box", "label": "박스"}, {"value": "text", "label": "텍스트만"}],default:'underline'},
+   {key:'tfs',type:'range',label:"탭 글자 크기",css:'--fl-tab-fs',unit:'px',min:10,max:40,step:1,default:16},
+   {key:'tpy',type:'range',label:"탭 위아래 여백",css:'--fl-tab-py',unit:'px',min:0,max:60,step:1,default:24},
+   {key:'tpx',type:'range',label:"탭 좌우 여백 (알약·박스)",css:'--fl-tab-px',unit:'px',min:0,max:60,step:1,default:20},
+   {key:'tgap',type:'range',label:"탭 간격 (추가)",css:'--fl-tab-gap',unit:'px',min:0,max:60,step:1,default:0},
+   {key:'trad',type:'range',label:"탭 모서리 (박스)",css:'--fl-tab-radius',unit:'px',min:0,max:60,step:1,default:12},
+   {key:'tline',type:'color',label:"탭 테두리·밑줄색",css:'--fl-tab-line',default:'#e1e1e3'},
+   {key:'tacc',type:'color',label:"선택 탭 강조색 (밑줄·텍스트)",css:'--fl-tab-accent',default:'#262628'},
+   {key:'tabg',type:'color',label:"선택 탭 배경 (알약·박스)",css:'--fl-tab-active-bg',default:'#262628'},
+   {key:'tafg',type:'color',label:"선택 탭 글자색 (알약·박스)",css:'--fl-tab-active-fg',default:'#ffffff'},
+   {type:'group',label:"이미지"},
+   {key:'ratio',type:'select',label:"이미지 비율",css:'--fl-ratio',options:[{"value": "16/9", "label": "16:9 (기본)"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "1/1", "label": "1:1"}, {"value": "4/5", "label": "4:5"}],default:'16/9'},
+   {key:'fit',type:'select',label:"이미지 채우기",css:'--fl-fit',options:[{"value": "cover", "label": "꽉 채우기(잘림)"}, {"value": "contain", "label": "전체 보이기(여백)"}],default:'cover'},
    {key:'imgr',type:'range',label:"이미지 모서리",css:'--fl-img-radius',unit:'px',min:0,max:48,step:1,default:0},
    {key:'showimg',type:'toggle',label:"이미지 표시",attr:'data-showimg',default:true},
    {key:'showbody',type:'toggle',label:"설명 표시",attr:'data-showbody',default:true},
