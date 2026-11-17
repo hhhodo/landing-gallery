@@ -40,6 +40,7 @@ window.CW_CONFIG['cw-pw'] = {
     ink: "#262628",           // 글자·강조색 (색상 hex)
     sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
     line: "#e1e1e3",          // 테두리색 (색상 hex)
+    emph: 1,                  // 강조하기 (끄면 마우스 오버 시 강조) (1=켜기, 0=끄기)
     cols: 3,                  // 열 수 (숫자 · 1~4)
     gap: 20,                  // 카드 간격 (px · 0~56)
     radius: 32,               // 카드 모서리 (px · 0~48)
@@ -119,11 +120,14 @@ window.CW_CONFIG['cw-pw'] = {
 
 .amb .plans-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:var(--amb-gap);align-items:stretch}
 .amb .plan-card{border:1px solid var(--amb-line);border-radius:var(--amb-radius);padding:clamp(28px,3vw,36px);display:flex;flex-direction:column}
-.amb .plan-card.featured{background:var(--amb-feat);border-color:var(--amb-feat)}
-.amb .plan-card.featured .heading2,.amb .plan-card.featured .plan-price b,.amb .plan-card.featured .plan-features li,.amb .plan-card.featured .badge-text{color:var(--amb-white)}
-.amb .plan-card.featured .plan-price span,.amb .plan-card.featured .plan-desc{color:var(--amb-dis)}
+.amb .plan-card{transition:background .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1)}
+.amb .plan-card,.amb .plan-card *{transition-property:background,border-color,color;transition-duration:.25s}
+/* 강조 모습: 강조 사용=켜짐이면 featured 카드에, 꺼짐이면 마우스 오버한 카드에 적용 */
+.amb[data-emph=true] .plan-card.featured,.amb[data-emph=false] .plan-card:hover{background:var(--amb-feat);border-color:var(--amb-feat)}
+.amb[data-emph=true] .plan-card.featured .heading2,.amb[data-emph=true] .plan-card.featured .plan-price b,.amb[data-emph=true] .plan-card.featured .plan-features li,.amb[data-emph=true] .plan-card.featured .badge-text,.amb[data-emph=false] .plan-card:hover .heading2,.amb[data-emph=false] .plan-card:hover .plan-price b,.amb[data-emph=false] .plan-card:hover .plan-features li,.amb[data-emph=false] .plan-card:hover .badge-text{color:var(--amb-white)}
+.amb[data-emph=true] .plan-card.featured .plan-price span,.amb[data-emph=true] .plan-card.featured .plan-desc,.amb[data-emph=false] .plan-card:hover .plan-price span,.amb[data-emph=false] .plan-card:hover .plan-desc{color:var(--amb-dis)}
 .amb .plan-badge{display:inline-flex;align-self:flex-start;padding:5px 12px;border-radius:999px;background:var(--amb-line);color:var(--amb-ink);margin-bottom:16px}
-.amb .plan-card.featured .plan-badge{background:var(--amb-hover)}
+.amb[data-emph=true] .plan-card.featured .plan-badge,.amb[data-emph=false] .plan-card:hover .plan-badge{background:var(--amb-hover)}
 .amb .plan-desc{margin-top:10px;color:var(--amb-sub)}
 .amb .plan-price{margin-top:24px;display:flex;align-items:baseline;gap:6px}
 .amb .plan-price b{font-size:32px;font-weight:700}
@@ -132,13 +136,13 @@ window.CW_CONFIG['cw-pw'] = {
 .amb .plan-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--amb-ink)}
 .amb .plan-features li svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
 .amb .plan-card .btn{margin-top:28px;width:100%}
-.amb .plan-card.featured .btn-ghost{border-color:var(--amb-sub);color:var(--amb-white)}
+.amb[data-emph=true] .plan-card.featured .btn-ghost,.amb[data-emph=false] .plan-card:hover .btn-ghost{border-color:var(--amb-sub);color:var(--amb-white)}
 .amb[data-badge=false] .plan-badge{display:none}
 .amb[data-feat=false] .plan-features{display:none}
 .amb{--amb-cols:3;--amb-feat:#262628}
 @media(max-width:1000px){.amb .plans-grid{grid-template-columns:1fr}}
 </style>
-<section class="amb" id="cw-pw" data-head="true" data-note="true" data-badge="true" data-feat="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="plans-grid" id="cw-pw-grid"></div></div></section>
+<section class="amb" id="cw-pw" data-emph="true" data-head="true" data-note="true" data-badge="true" data-feat="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="plans-grid" id="cw-pw-grid"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
@@ -194,6 +198,8 @@ window.CW_CONFIG['cw-pw'] = {
    {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
    {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
    {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"강조"},
+   {key:'emph',type:'toggle',label:"강조하기 (끄면 마우스 오버 시 강조)",attr:'data-emph',default:true},
    {type:'group',label:"레이아웃"},
    {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
    {key:'gap',type:'range',label:"카드 간격",css:'--amb-gap',unit:'px',min:0,max:56,step:1,default:20},
