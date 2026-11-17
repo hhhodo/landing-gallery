@@ -67,10 +67,10 @@ window.CW_CONFIG['cw-faq'] = {
 .faq-w__icon{flex:none;position:relative;width:18px;height:18px;color:var(--fw-accent);transition:transform .25s}
 .faq-w__icon:before,.faq-w__icon:after{content:"";position:absolute;background:currentColor;left:0;right:0;top:50%;height:2px;margin-top:-1px}
 .faq-w__icon:after{transform:rotate(90deg);transition:transform .25s}
-.faq-w[data-icon=chevron] .faq-w__icon:before{left:2px;right:auto;width:11px;transform:rotate(45deg);top:40%}
-.faq-w[data-icon=chevron] .faq-w__icon:after{left:7px;right:auto;width:11px;transform:rotate(-45deg);top:40%}
 .faq-w__item.is-open .faq-w__icon:after{transform:rotate(0)}
-.faq-w[data-icon=chevron] .faq-w__item.is-open .faq-w__icon{transform:rotate(180deg)}
+.faq-w[data-icon=chevron] .faq-w__icon:before{display:none}
+.faq-w[data-icon=chevron] .faq-w__icon:after{left:3px;right:auto;top:2px;width:10px;height:10px;margin:0;background:none;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.faq-w[data-icon=chevron] .faq-w__item.is-open .faq-w__icon:after{top:6px;transform:rotate(-135deg)}
 .faq-w__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}
 .faq-w__item.is-open .faq-w__a{grid-template-rows:1fr}
 .faq-w__a>div{overflow:hidden}
