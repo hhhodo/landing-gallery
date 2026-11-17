@@ -2,7 +2,7 @@
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>FAQ Accordion Widget</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<link rel="stylesheet" href="shared/panel.css">
+
 <style>
 body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
 .faq-w{--fw-bg:#ffffff;--fw-text:#1b1b1b;--fw-sub:#666666;--fw-line:#dcdcdc;--fw-accent:#1b1b1b;--fw-width:760px;--fw-pad:96px;--fw-q-size:22px;--fw-a-size:16px;--fw-gap:24px;--fw-radius:0px;
@@ -28,17 +28,99 @@ body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
 .faq-w__a>div{overflow:hidden}
 .faq-w__a p{margin:0;padding:0 0 24px;font-size:var(--fw-a-size);line-height:1.7;color:var(--fw-sub)}
 .faq-w[data-anim=false] .faq-w__a,.faq-w[data-anim=false] .faq-w__icon,.faq-w[data-anim=false] .faq-w__icon:after{transition:none}
+.cw-panel{position:fixed;top:16px;right:16px;z-index:9999;width:280px;max-height:calc(100vh - 32px);overflow:auto;background:#fff;color:#1a1a1a;border:1px solid #d9d9d9;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.18);font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
+.cw-panel *{box-sizing:border-box}
+.cw-panel__head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;font-weight:700}
+.cw-panel__toggle{border:0;background:#f0f0f0;border-radius:8px;padding:4px 10px;cursor:pointer;font:inherit;font-size:12px}
+.cw-panel.is-closed .cw-panel__body{display:none}
+.cw-panel__body{padding:6px 14px 14px}
+.cw-group{margin:12px 0 4px;font-size:11px;font-weight:700;letter-spacing:.04em;color:#888;text-transform:uppercase}
+.cw-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0}
+.cw-row label{flex:0 0 auto;color:#444}
+.cw-row input[type=color]{width:44px;height:28px;border:1px solid #ccc;border-radius:6px;padding:0;background:none;cursor:pointer}
+.cw-row input[type=range]{flex:1;min-width:0}
+.cw-row .cw-val{width:44px;text-align:right;font-size:12px;color:#777}
+.cw-row select,.cw-row input[type=text]{flex:1;min-width:0;font:inherit;padding:4px 6px;border:1px solid #ccc;border-radius:6px}
+.cw-btns{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.cw-btns button{flex:1;font:inherit;font-size:12px;padding:6px 8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
+.cw-btns button.is-primary{background:#1a1a1a;color:#fff}
+.cw-toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+[contenteditable=true]{outline:1px dashed rgba(120,120,255,.7);outline-offset:2px;cursor:text}
+@media (max-width:640px){.cw-panel{top:auto;bottom:0;right:0;left:0;width:auto;border-radius:14px 14px 0 0;max-height:55vh}}
+
+.cw-row input[type=number]{width:88px;flex:none;font:inherit;padding:4px 6px;border:1px solid #ccc;border-radius:6px;text-align:right}
+.cw-row input[type=number]+.cw-val{width:auto;text-align:left}
+.cw-row label{flex:1}
+
 </style></head><body>
-<section class="faq-w" id="faq" data-style="line" data-icon="plus" data-single="true" data-anim="true" data-hide-head="false">
+<section class="faq-w" id="cw-faq" data-style="line" data-icon="plus" data-single="true" data-anim="true" data-hide-head="false">
   <div class="faq-w__in">
     <div class="faq-w__head"><p class="faq-w__eyebrow" data-g="eyebrow"></p><h2 class="faq-w__title" data-g="title"></h2></div>
-    <div class="faq-w__list" id="list"></div>
+    <div class="faq-w__list" id="cw-faq-list"></div>
   </div>
 </section>
-<script src="shared/panel.js"></script>
+<script>/* Widget control panel. Usage: CWPanel.mount({title, root, controls, defaults, onChange})
+   control types: color | range | select | toggle | text | button | group
+   - {key, type, label, css:'--var', unit:'px'}  -> sets CSS var on root
+   - {key, type:'select'|'toggle', attr:'data-x'} -> sets attribute on root
+   - any control may be read in onChange(state) for re-render. */
+(function(){
+  function mount(cfg){
+    window.__cwSchema={controls:cfg.controls.filter(function(c){return c.key}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});if(o.type==='range')o.type='number';return o}),title:cfg.title};
+    document.documentElement.setAttribute('data-cw-schema',JSON.stringify(window.__cwSchema));
+    var root=cfg.root, state=Object.assign({},cfg.defaults||{}), initial;
+    var panel=document.createElement('aside'); panel.className='cw-panel';
+    panel.innerHTML='<div class="cw-panel__head"><span>'+(cfg.title||'위젯 설정')+'</span><button class="cw-panel__toggle" type="button">접기</button></div><div class="cw-panel__body"></div>';
+    var body=panel.querySelector('.cw-panel__body');
+    panel.querySelector('.cw-panel__toggle').onclick=function(e){panel.classList.toggle('is-closed');e.target.textContent=panel.classList.contains('is-closed')?'펼치기':'접기'};
+    var inputs={};
+    function apply(c){
+      var v=state[c.key];
+      if(c.css) root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);
+      if(c.attr) root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v);
+    }
+    function emit(c){apply(c);cfg.onChange&&cfg.onChange(state,c.key)}
+    cfg.controls.forEach(function(c){
+      if(c.type==='group'){var g=document.createElement('div');g.className='cw-group';g.textContent=c.label;body.appendChild(g);return}
+      if(c.type==='button'){var b=document.createElement('div');b.className='cw-btns';var btn=document.createElement('button');btn.type='button';btn.textContent=c.label;btn.onclick=c.onClick;b.appendChild(btn);body.appendChild(b);return}
+      var row=document.createElement('div');row.className='cw-row';
+      var id='cw_'+c.key, lab=document.createElement('label');lab.htmlFor=id;lab.textContent=c.label;row.appendChild(lab);
+      var el;
+      if(c.type==='select'){el=document.createElement('select');c.options.forEach(function(o){var op=document.createElement('option');op.value=o.value!==undefined?o.value:o;op.textContent=o.label||o;el.appendChild(op)})}
+      else{el=document.createElement('input');el.type=c.type==='toggle'?'checkbox':(c.type==='range'?'number':c.type);if(c.type==='range'){el.min=c.min;el.max=c.max;el.step=c.step||1;el.inputMode='decimal'}}
+      el.id=id;inputs[c.key]=el;
+      if(state[c.key]===undefined) state[c.key]=c.default;
+      var val=null;if(c.type==='range'&&c.unit){val=document.createElement('span');val.className='cw-val';val.textContent=c.unit}
+      function sync(){if(c.type==='toggle')el.checked=!!state[c.key];else el.value=state[c.key];}
+      sync();
+      el.addEventListener(c.type==='range'||c.type==='color'||c.type==='text'?'input':'change',function(){if(c.type==='range'){if(el.value==='')return;var n=Number(el.value);if(isNaN(n))return;n=Math.min(c.max,Math.max(c.min,n));state[c.key]=n}else state[c.key]=c.type==='toggle'?el.checked:el.value;emit(c)});
+      if(c.type==='range')el.addEventListener('blur',function(){sync()});
+      row.appendChild(el);if(val)row.appendChild(val);body.appendChild(row);
+      c._sync=sync;
+    });
+    initial=JSON.stringify(state);
+    var bar=document.createElement('div');bar.className='cw-btns';
+    bar.innerHTML='<button type="button" data-a="reset">초기화</button><button type="button" class="is-primary" data-a="copy">설정 복사(JSON)</button>';
+    body.appendChild(bar);
+    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='reset'){state=JSON.parse(initial);cfg.controls.forEach(function(c){if(c.key&&c._sync){c._sync();apply(c)}});cfg.onReset&&cfg.onReset();cfg.onChange&&cfg.onChange(state,null)}
+      if(a==='copy'){var t=JSON.stringify(cfg.getExport?cfg.getExport(state):state,null,2);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){toast('설정을 복사했습니다')},function(){window.prompt('복사하세요',t)})}};
+    document.body.appendChild(panel);
+    if(/[?&]nopanel/.test(location.search))panel.style.display='none';
+    cfg.controls.forEach(function(c){if(c.key&&(c.css||c.attr))apply(c)});
+    cfg.onChange&&cfg.onChange(state,null);
+    return {state:function(){return state},panel:panel};
+  }
+  function toast(m){var t=document.createElement('div');t.className='cw-toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},1600)}
+  /* inline text editing: elements with data-i (index) + data-f (field) write back into data[i][f]; data-g edits data.meta[g] */
+  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'});}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});
+    container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()});}
+  window.CWPanel={mount:mount,toast:toast,setEditable:setEditable,bindEdit:bindEdit};
+})();
+</script>
 <script>
 (function(){
-  var root=document.getElementById('faq'),list=document.getElementById('list');
+  var root=document.getElementById('cw-faq'),list=document.getElementById('cw-faq-list');
   var meta={eyebrow:'FAQ',title:'자주 묻는 질문'};
   var init=[{q:'언제든 해지할 수 있나요?',a:'네, 위약금 없이 다음 결제일 전까지 마이페이지에서 즉시 해지할 수 있습니다.'},
     {q:'배송은 얼마나 걸리나요?',a:'플랜 확정 후 평균 48시간 이내에 출고되며, 전국 무료 배송입니다.'},
