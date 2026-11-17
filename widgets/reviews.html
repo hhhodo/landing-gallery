@@ -40,7 +40,12 @@ window.CW_CONFIG['cw-rw'] = {
     ink: "#262628",           // 글자·강조색 (색상 hex)
     sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
     line: "#e1e1e3",          // 테두리색 (색상 hex)
-    cols: 3,                  // 열 수 (숫자 · 1~4)
+    layout: "grid",           // 배치 방식 : grid=아래로 펼치기(그리드) | marquee=좌우로 흐르기
+    cols: 3,                  // 열 수 (그리드) (숫자 · 1~4)
+    dir: "left",              // 흐르는 방향 (좌우) : left=← 왼쪽으로 | right=→ 오른쪽으로
+    speed: 40,                // 한 바퀴 시간 (좌우, 클수록 느림) (s · 5~200)
+    cardw: 380,               // 카드 너비 (좌우) (px · 240~600)
+    pause: 1,                 // 마우스 올리면 멈춤 (좌우) (1=켜기, 0=끄기)
     gap: 20,                  // 카드 간격 (px · 0~56)
     radius: 32,               // 카드 모서리 (px · 0~48)
     stars: 1,                 // 별점 표시 (1=켜기, 0=끄기)
@@ -104,7 +109,7 @@ window.CW_CONFIG['cw-rw'] = {
 .amb[data-note=false] .section-note{display:none}
 
 
-.amb{--amb-cols:3}
+.amb{--amb-cols:3;--amb-speed:40s;--amb-cardw:380px}
 .amb .testimonial-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:var(--amb-gap)}
 .amb .testimonial-card{background:var(--amb-card);border-radius:var(--amb-radius);padding:clamp(26px,3vw,32px);display:flex;flex-direction:column}
 .amb .testimonial-card .stars{display:flex;gap:4px;color:var(--amb-ink)}
@@ -114,11 +119,22 @@ window.CW_CONFIG['cw-rw'] = {
 .amb .testimonial-avatar{width:36px;height:36px;border-radius:999px;background:var(--amb-line2);object-fit:cover;flex-shrink:0}
 .amb .testimonial-meta b{display:block}
 .amb .testimonial-meta span{color:var(--amb-sub)}
+.amb .rv-set{display:contents}
+.amb[data-layout=marquee]:not([data-editing=true]) .wrap{max-width:none;padding-inline:0}
+.amb[data-layout=marquee]:not([data-editing=true]) .section-head{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb[data-layout=marquee]:not([data-editing=true]) .rv-view{overflow:hidden}
+.amb[data-layout=marquee]:not([data-editing=true]) .testimonial-grid{display:flex;gap:0;width:max-content;animation:amb-rv var(--amb-speed) linear infinite}
+.amb[data-layout=marquee][data-dir=right]:not([data-editing=true]) .testimonial-grid{animation-direction:reverse}
+.amb[data-layout=marquee][data-pause=true]:not([data-editing=true]) .rv-view:hover .testimonial-grid{animation-play-state:paused}
+.amb[data-layout=marquee]:not([data-editing=true]) .rv-set{display:flex;gap:var(--amb-gap);padding-right:var(--amb-gap)}
+.amb[data-layout=marquee]:not([data-editing=true]) .testimonial-card{width:var(--amb-cardw);flex:none}
+@keyframes amb-rv{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.amb[data-layout=marquee] .testimonial-grid{animation:none!important}}
 .amb[data-stars=false] .stars{display:none}
 .amb[data-avatar=false] .testimonial-avatar{display:none}
-@media(max-width:1000px){.amb .testimonial-grid{grid-template-columns:1fr}}
+@media(max-width:1000px){.amb[data-layout=grid] .testimonial-grid,.amb[data-editing=true] .testimonial-grid{grid-template-columns:1fr}}
 </style>
-<section class="amb" id="cw-rw" data-head="true" data-note="true" data-stars="true" data-avatar="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div></div><div class="testimonial-grid" id="cw-rw-grid"></div></div></section>
+<section class="amb" id="cw-rw" data-layout="grid" data-dir="left" data-pause="true" data-editing="false" data-head="true" data-note="true" data-stars="true" data-avatar="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div></div><div class="rv-view"><div class="testimonial-grid" id="cw-rw-grid"></div></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
@@ -148,7 +164,9 @@ window.CW_CONFIG['cw-rw'] = {
 
  var grid=document.getElementById('cw-rw-grid'),ST='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>'.repeat(5);
  function render(){head();
-  grid.innerHTML=data.map(function(d,i){return '<article class="testimonial-card"><div class="stars">'+ST+'</div><p class="body1" data-i="'+i+'" data-f="quote">'+esc(d.quote)+'</p><div class="testimonial-meta"><img class="testimonial-avatar" src="'+esc(d.avatar||'')+'" width="36" height="36" alt=""><div><b class="body2" data-i="'+i+'" data-f="name">'+esc(d.name)+'</b><span class="detail1" data-i="'+i+'" data-f="role">'+esc(d.role)+'</span></div></div></article>'}).join('');
+  var cards=data.map(function(d,i){return '<article class="testimonial-card"><div class="stars">'+ST+'</div><p class="body1" data-i="'+i+'" data-f="quote">'+esc(d.quote)+'</p><div class="testimonial-meta"><img class="testimonial-avatar" src="'+esc(d.avatar||'')+'" width="36" height="36" alt=""><div><b class="body2" data-i="'+i+'" data-f="name">'+esc(d.name)+'</b><span class="detail1" data-i="'+i+'" data-f="role">'+esc(d.role)+'</span></div></div></article>'}).join('');
+  root.setAttribute('data-editing',editing);
+  if(root.getAttribute('data-layout')==='marquee'&&!editing){var rep=Math.max(1,Math.ceil(8/data.length)),set='';for(var r=0;r<rep;r++)set+=cards;grid.innerHTML='<div class="rv-set">'+set+'</div><div class="rv-set" aria-hidden="true">'+set+'</div>'}else grid.innerHTML='<div class="rv-set">'+cards+'</div>';
   CWPanel.setEditable(root,editing)}
 
  var CFG=(window.CW_CONFIG||{})['cw-rw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
@@ -173,8 +191,14 @@ window.CW_CONFIG['cw-rw'] = {
    {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
    {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
    {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
-   {type:'group',label:"레이아웃"},
-   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
+   {type:'group',label:"배치"},
+   {key:'layout',type:'select',label:"배치 방식",attr:'data-layout',options:[{"value": "grid", "label": "아래로 펼치기(그리드)"}, {"value": "marquee", "label": "좌우로 흐르기"}],default:'grid'},
+   {key:'cols',type:'range',label:"열 수 (그리드)",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
+   {key:'dir',type:'select',label:"흐르는 방향 (좌우)",attr:'data-dir',options:[{"value": "left", "label": "← 왼쪽으로"}, {"value": "right", "label": "→ 오른쪽으로"}],default:'left'},
+   {key:'speed',type:'range',label:"한 바퀴 시간 (좌우, 클수록 느림)",css:'--amb-speed',unit:'s',min:5,max:200,step:1,default:40},
+   {key:'cardw',type:'range',label:"카드 너비 (좌우)",css:'--amb-cardw',unit:'px',min:240,max:600,step:5,default:380},
+   {key:'pause',type:'toggle',label:"마우스 올리면 멈춤 (좌우)",attr:'data-pause',default:true},
+   {type:'group',label:"카드"},
    {key:'gap',type:'range',label:"카드 간격",css:'--amb-gap',unit:'px',min:0,max:56,step:1,default:20},
    {key:'radius',type:'range',label:"카드 모서리",css:'--amb-radius',unit:'px',min:0,max:48,step:1,default:32},
    {key:'stars',type:'toggle',label:"별점 표시",attr:'data-stars',default:true},
