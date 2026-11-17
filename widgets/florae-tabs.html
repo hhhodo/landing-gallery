@@ -217,6 +217,12 @@ window.CW_CONFIG['cw-fl'] = {
 .fl[data-tabstyle=text] .spotlight__item--active{border:none;color:var(--fl-tab-accent)}
 .fl[data-tabstyle=underline] .spotlight__item{border-block-end:1px solid var(--fl-tab-line)}
 .fl[data-tabstyle=underline] .spotlight__item--active{border-block-end:2px solid var(--fl-tab-accent)}
+/* 알약 탭(hug): 탭 영역을 3열 고정 대신 알약 너비만큼만 차지, 내용이 바로 옆에 붙음 */
+.fl[data-tabstyle=pill][data-pos=left] .grid{grid-template-columns:max-content minmax(0,1fr)}
+.fl[data-tabstyle=pill][data-pos=left] .fl-tabs{grid-column:1}.fl[data-tabstyle=pill][data-pos=left] .fl-content{grid-column:2}
+.fl[data-tabstyle=pill][data-pos=right] .grid{grid-template-columns:minmax(0,1fr) max-content}
+.fl[data-tabstyle=pill][data-pos=right] .fl-tabs{grid-column:2}.fl[data-tabstyle=pill][data-pos=right] .fl-content{grid-column:1}
+@media(max-width:768px){.fl[data-tabstyle=pill] .grid{grid-template-columns:minmax(0,1fr)}.fl[data-tabstyle=pill] .fl-tabs,.fl[data-tabstyle=pill] .fl-content{grid-column:1!important}}
 /* ── 콘텐츠 ── */
 .fl .spotlight__frame{border-radius:var(--fl-img-radius)}
 .fl .spotlight__frame img{display:block;object-fit:var(--fl-fit)}
