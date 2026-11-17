@@ -49,6 +49,7 @@ window.CW_CONFIG['cw-sw'] = {
     cardbg: "#ffffff",        // 카드 배경 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  // 항목의 icon → ""=기본 | 프리셋 이름(plus-box, clock, bag, history, heart, star, package, truck, card, chat, user, lock, bolt, calendar, check-circle, search, file, gift) | "<svg …>" 코드(currentColor 권장) | 이미지 URL(https://…) | 이모지/글자 
   meta: {
       "eyebrow": "HOW IT WORKS",
       "title": "4단계면\n충분합니다",
@@ -57,19 +58,23 @@ window.CW_CONFIG['cw-sw'] = {
   items: [
       {
           "name": "취향 진단",
-          "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다."
+          "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다.",
+          "icon": ""
       },
       {
           "name": "플랜 선택",
-          "desc": "월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다."
+          "desc": "월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다.",
+          "icon": ""
       },
       {
           "name": "큐레이션 배송",
-          "desc": "에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다."
+          "desc": "에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다.",
+          "icon": ""
       },
       {
           "name": "언제든 조정",
-          "desc": "다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다."
+          "desc": "다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다.",
+          "icon": ""
       }
   ]
 };
@@ -116,8 +121,24 @@ window.CW_CONFIG['cw-sw'] = {
 .amb[data-num=false] .step-num{display:none}
 @media(max-width:1000px){.amb .process-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:620px){.amb .process-grid{grid-template-columns:1fr}}
+
+.amb .step-icon img{width:100%;height:100%;object-fit:contain}
+.amb .step-glyph{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:calc(var(--amb-icon)*.8);line-height:1}
+.amb[data-editing=true] .step-icon{outline:1px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer}
+.amb-pop{position:fixed;z-index:10001;width:300px;background:#fff;color:#262628;border:1px solid #e1e1e3;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:14px;font:14px/1.4 'Pretendard',sans-serif}
+.amb-pop *{box-sizing:border-box}
+.amb-pop h4{margin:0 0 10px;font-size:13px}
+.amb-pop__grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.amb-pop__grid button{aspect-ratio:1;min-width:0;width:100%;border:1px solid #e1e1e3;background:#fff;border-radius:10px;padding:6px;cursor:pointer;color:#262628}
+.amb-pop__grid button:hover,.amb-pop__grid button.on{border-color:#262628;background:#f6f7f7}
+.amb-pop__grid svg{width:100%;height:100%}
+.amb-pop__row{display:flex;gap:6px;margin-top:10px}
+.amb-pop input{flex:1;min-width:0;font:inherit;padding:7px 8px;border:1px solid #c5c6c8;border-radius:8px}
+.amb-pop button.act{font:inherit;font-size:13px;padding:7px 10px;border:1px solid #262628;background:#262628;color:#fff;border-radius:8px;cursor:pointer;white-space:nowrap}
+.amb-pop button.sub{background:#fff;color:#262628}
+.amb-pop small{display:block;margin-top:8px;color:#838486;font-size:11px;line-height:1.4}
 </style>
-<section class="amb" id="cw-sw" data-head="true" data-note="true" data-icon="true" data-num="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="process-grid" id="cw-sw-list"></div></div></section>
+<section class="amb" id="cw-sw" data-editing="false" data-head="true" data-note="true" data-icon="true" data-num="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="process-grid" id="cw-sw-list"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
@@ -140,14 +161,38 @@ window.CW_CONFIG['cw-sw'] = {
 (function(){
  var root=document.getElementById('cw-sw'),editing=false;
  var initMeta={"eyebrow": "HOW IT WORKS", "title": "4단계면\n충분합니다", "note": "복잡한 절차 없이, 신청부터 배송까지 한 번에 이어집니다."},meta=Object.assign({},initMeta);
- var init=[{"name": "취향 진단", "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다."}, {"name": "플랜 선택", "desc": "월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다."}, {"name": "큐레이션 배송", "desc": "에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다."}, {"name": "언제든 조정", "desc": "다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다."}];
+ var init=[{"name": "취향 진단", "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다.", "icon": ""}, {"name": "플랜 선택", "desc": "월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다.", "icon": ""}, {"name": "큐레이션 배송", "desc": "에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다.", "icon": ""}, {"name": "언제든 조정", "desc": "다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다.", "icon": ""}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
  function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
 
- var list=document.getElementById('cw-sw-list'),ICONS=["<rect x=\"7\" y=\"7\" width=\"26\" height=\"26\" rx=\"4\"/><path d=\"M14 20h12M20 14v12\"/>", "<path d=\"M20 8v9l7 4\"/><circle cx=\"20\" cy=\"20\" r=\"13\"/>", "<path d=\"M8 14h24l-2 18H10L8 14Z\"/><path d=\"M14 14V11a6 6 0 0 1 12 0v3\"/>", "<path d=\"M20 7v9l6 3\"/><path d=\"M8 20a12 12 0 1 0 3.5-8.5\"/><path d=\"M8 8v6h6\"/>"];
- function render(){head();
-  list.innerHTML=data.map(function(d,i){var n=i+1;return '<article class="process-card"><span class="step-num detail1">STEP '+(n<10?'0':'')+n+'</span><div class="step-icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">'+ICONS[i%ICONS.length]+'</svg></div><h3 class="heading3" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="body2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
+ /*CW_HINT:// 항목의 icon → ""=기본 | 프리셋 이름(plus-box, clock, bag, history, heart, star, package, truck, card, chat, user, lock, bolt, calendar, check-circle, search, file, gift) | "<svg …>" 코드(currentColor 권장) | 이미지 URL(https://…) | 이모지/글자 */
+ var list=document.getElementById('cw-sw-list'),ICONS=["<rect x=\"7\" y=\"7\" width=\"26\" height=\"26\" rx=\"4\"/><path d=\"M14 20h12M20 14v12\"/>", "<path d=\"M20 8v9l7 4\"/><circle cx=\"20\" cy=\"20\" r=\"13\"/>", "<path d=\"M8 14h24l-2 18H10L8 14Z\"/><path d=\"M14 14V11a6 6 0 0 1 12 0v3\"/>", "<path d=\"M20 7v9l6 3\"/><path d=\"M8 20a12 12 0 1 0 3.5-8.5\"/><path d=\"M8 8v6h6\"/>"],PRESETS={"plus-box": "<rect x=\"7\" y=\"7\" width=\"26\" height=\"26\" rx=\"4\"/><path d=\"M14 20h12M20 14v12\"/>", "clock": "<path d=\"M20 8v9l7 4\"/><circle cx=\"20\" cy=\"20\" r=\"13\"/>", "bag": "<path d=\"M8 14h24l-2 18H10L8 14Z\"/><path d=\"M14 14V11a6 6 0 0 1 12 0v3\"/>", "history": "<path d=\"M20 7v9l6 3\"/><path d=\"M8 20a12 12 0 1 0 3.5-8.5\"/><path d=\"M8 8v6h6\"/>", "heart": "<path d=\"M20 33S6 25 6 15a7 7 0 0 1 14-2 7 7 0 0 1 14 2c0 10-14 18-14 18Z\"/>", "star": "<path d=\"M20 6l4.2 9 9.8 1.2-7.2 6.7 1.9 9.7L20 27.7 11.3 32.6l1.9-9.7L6 16.2 15.8 15z\"/>", "package": "<path d=\"M20 6l13 6v16l-13 6-13-6V12z\"/><path d=\"M7 12l13 6 13-6M20 18v16\"/>", "truck": "<path d=\"M5 11h18v16H5zM23 17h8l4 5v5H23\"/><circle cx=\"12\" cy=\"29\" r=\"3\"/><circle cx=\"28\" cy=\"29\" r=\"3\"/>", "card": "<rect x=\"5\" y=\"9\" width=\"30\" height=\"22\" rx=\"4\"/><path d=\"M5 16h30M10 25h8\"/>", "chat": "<path d=\"M7 9h26a2 2 0 0 1 2 2v15a2 2 0 0 1-2 2H18l-7 6v-6H7a2 2 0 0 1-2-2V11a2 2 0 0 1 2-2Z\"/>", "user": "<circle cx=\"20\" cy=\"14\" r=\"6\"/><path d=\"M8 33c1-7 6-10 12-10s11 3 12 10\"/>", "lock": "<rect x=\"8\" y=\"18\" width=\"24\" height=\"16\" rx=\"3\"/><path d=\"M13 18v-5a7 7 0 0 1 14 0v5\"/>", "bolt": "<path d=\"M22 5L9 23h10l-2 12 14-19H21z\"/>", "calendar": "<rect x=\"6\" y=\"9\" width=\"28\" height=\"25\" rx=\"4\"/><path d=\"M6 17h28M13 5v7M27 5v7\"/>", "check-circle": "<circle cx=\"20\" cy=\"20\" r=\"14\"/><path d=\"M13 20.5l5 5L27 15\"/>", "search": "<circle cx=\"18\" cy=\"18\" r=\"10\"/><path d=\"M26 26l8 8\"/>", "file": "<path d=\"M10 5h14l8 8v22H10z\"/><path d=\"M24 5v8h8M15 22h12M15 28h12\"/>", "gift": "<rect x=\"6\" y=\"15\" width=\"28\" height=\"7\" rx=\"2\"/><path d=\"M8 22v12h24V22M20 15v19\"/><path d=\"M20 15c-4 0-7-2-6-5s5-3 6 5c1-8 6-8 6-5s-2 5-6 5\"/>"},POP=null;
+ function iconHtml(d,i){
+  var v=(d.icon||'').trim();
+  if(!v)return '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">'+ICONS[i%ICONS.length]+'</svg>';
+  if(PRESETS[v])return '<svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">'+PRESETS[v]+'</svg>';
+  if(/^<svg/i.test(v))return v.replace(/<script[\s\S]*?<\/script>/gi,'').replace(/\son\w+\s*=\s*("[^"]*"|'[^']*')/gi,'');
+  if(/^(https?:|data:image\/|\/|\.\/)/i.test(v))return '<img src="'+esc(v)+'" alt="">';
+  return '<span class="step-glyph">'+esc(v)+'</span>'}
+ function closePop(){if(POP){POP.remove();POP=null}}
+ function openPop(i,anchor){
+  closePop();var cur=(data[i].icon||'').trim();
+  POP=document.createElement('div');POP.className='amb-pop';
+  var g='';Object.keys(PRESETS).forEach(function(k){g+='<button type="button" data-k="'+k+'" title="'+k+'"'+(cur===k?' class="on"':'')+'><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.8">'+PRESETS[k]+'</svg></button>'});
+  POP.innerHTML='<h4>아이콘 선택 · STEP '+(i+1)+'</h4><div class="amb-pop__grid">'+g+'</div><div class="amb-pop__row"><button type="button" class="act sub" data-k="">기본 아이콘</button></div><div class="amb-pop__row"><input type="text" placeholder="SVG 코드 · 이미지 URL · 이모지" value="'+(PRESETS[cur]||!cur?'':esc(cur).replace(/"/g,'&quot;'))+'"><button type="button" class="act" data-apply="1">적용</button></div><small>SVG는 stroke="currentColor"로 두면 아이콘 색을 따라갑니다. 이미지는 https:// 주소를 넣으세요.</small>';
+  document.body.appendChild(POP);
+  var r=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,r.left),window.innerWidth-308),y=r.bottom+10;if(y+POP.offsetHeight>window.innerHeight)y=Math.max(8,r.top-POP.offsetHeight-10);
+  POP.style.left=x+'px';POP.style.top=y+'px';
+  POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+   if(b.dataset.apply){data[i].icon=POP.querySelector('input').value.trim();closePop();render();return}
+   if(b.dataset.k!==undefined){data[i].icon=b.dataset.k;closePop();render()}});
+  POP.querySelector('input').addEventListener('keydown',function(e){if(e.key==='Enter'){data[i].icon=this.value.trim();closePop();render()}})}
+ document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('.step-icon'))closePop()});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
+ list.addEventListener('click',function(e){var ic=e.target.closest('.step-icon');if(!ic||!editing)return;openPop([].indexOf.call(list.children,ic.parentNode),ic)});
+ function render(){head();closePop();root.setAttribute('data-editing',editing);
+  list.innerHTML=data.map(function(d,i){var n=i+1;return '<article class="process-card"><span class="step-num detail1">STEP '+(n<10?'0':'')+n+'</span><div class="step-icon" title="'+(editing?'클릭해서 아이콘 변경':'')+'">'+iconHtml(d,i)+'</div><h3 class="heading3" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="body2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
   CWPanel.setEditable(root,editing)}
 
  var CFG=(window.CW_CONFIG||{})['cw-sw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
@@ -159,7 +204,7 @@ window.CW_CONFIG['cw-sw'] = {
   controls:[
    {type:'group',label:'콘텐츠'},
    {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({name:'새 단계',desc:'설명을 입력하세요.'});render()}},
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({name:'새 단계',desc:'설명을 입력하세요.',icon:''});render()}},
    {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"섹션"},
    {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
