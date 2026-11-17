@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FAQ (formax) 위젯</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
+.cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
+.cw-sb *{box-sizing:border-box}
+.cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
+.cw-sb__head small{display:block;font-weight:400;color:#888;font-size:12px;margin-top:2px}
+.cw-sb__body{padding:4px 16px 24px}
+.cw-sb__g{margin:18px 0 4px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#888}
+.cw-sb__r{display:flex;align-items:center;gap:8px;margin:8px 0}
+.cw-sb__r>label{flex:1;color:#333}
+.cw-sb__r input[type=number]{width:92px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;text-align:right}
+.cw-sb__r .u{width:24px;color:#888;font-size:12px}
+.cw-sb__r input[type=color]{width:36px;height:30px;padding:0;border:1px solid #ccc;border-radius:6px;background:none}
+.cw-sb__r input[type=text]{width:84px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px}
+.cw-sb__r select{font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;max-width:150px}
+.cw-sb__r input[type=checkbox]{width:18px;height:18px}
+.cw-sb__b{display:flex;gap:6px;margin:8px 0}
+.cw-sb__b button{flex:1;font:inherit;font-size:13px;padding:8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
+.cw-sb__b button.p{background:#1a1a1a;color:#fff}
+.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
+@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:45vh}.cw-sb{top:auto;width:auto;left:0;height:42vh;border-left:0;border-top:1px solid #e3e3e3}}
+</style></head><body>
+<!-- FAQ (formax) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
+<script>
+/* ============================================================
+   FAQ (formax) 위젯 설정값 — 아래 숫자/값만 고치면 위젯에 반영됩니다.
+   ============================================================ */
+window.CW_CONFIG = window.CW_CONFIG || {};
+window.CW_CONFIG['cw-fm'] = {
+  settings: {
+    bg: "#f7f7f5",            // 섹션 배경 (색상 hex)
+    ink: "#000000",           // 글자·아이콘색 (색상 hex)
+    acc: "#ff6d0e",           // 강조 점 색 (색상 hex)
+    pad: 200,                 // 상하 여백 (px · 0~400)
+    split: "4",               // 제목 영역 너비 (12열 중) : 3=3열 | 4=4열(기본) | 5=5열 | 6=6열
+    rowgap: 4,                // 행 간격 (px · 0~40)
+    chip: 1,                  // 번호 칩 표시 (1=켜기, 0=끄기)
+    single: 0,                // 한 번에 하나만 열기 (1=켜기, 0=끄기)
+  },
+  // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  meta: {
+      "title": "FAQ"
+  },
+  items: [
+      {
+          "q": "FORMAX는 어떤 회사인가요?",
+          "a": "제조 현장의 설비·품질·생산 데이터를 실시간으로 통합해 운영 의사결정을 돕는 산업 데이터 플랫폼입니다."
+      },
+      {
+          "q": "어떤 설비와 연동되나요?",
+          "a": "PLC, MES, ERP, IoT 센서 등 대부분의 표준 산업 프로토콜(OPC-UA, Modbus 등)을 지원합니다."
+      },
+      {
+          "q": "기존 MES와 무엇이 다른가요?",
+          "a": "MES가 공정을 기록한다면 FORMAX는 그 기록을 실시간 판단으로 바꿉니다. 교체가 아니라 위에 얹는 레이어입니다."
+      },
+      {
+          "q": "도입까지 얼마나 걸리나요?",
+          "a": "표준 연동 기준 평균 4~6주 내 파일럿 라인 적용이 가능합니다."
+      },
+      {
+          "q": "수율 개선 효과는 어떻게 측정하나요?",
+          "a": "도입 전 3개월 실적을 기준선으로 잡고, 라인·품목·교대조 단위로 개선 폭을 분리해 리포트합니다."
+      },
+      {
+          "q": "보안은 어떻게 관리되나요?",
+          "a": "망분리 환경을 지원하며 온프레미스·프라이빗 클라우드 배포를 모두 제공합니다."
+      },
+      {
+          "q": "계약은 어떤 방식인가요?",
+          "a": "라인 수 기준 구독형 과금이며, 파일럿 이후 단계적 확장 계약을 지원합니다."
+      }
+  ]
+};
+</script>
+<style>
+.fm{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.fm{--color-primary-050:#f6f7f7; --color-primary-100:#e1e1e3; --color-primary-200:#c5c6c8;
+  --color-primary-300:#a2a3a5; --color-primary-400:#949597; --color-primary-500:#838486;
+  --color-primary-600:#5d5e5f; --color-primary-700:#4c4c4e; --color-primary-800:#393a3b;
+  --color-primary-900:#262628; --color-canvas:#fff; --color-placeholder:#d9d9d9;
+
+  --text-default:var(--color-primary-900); --text-subtle:var(--color-primary-600);
+  --text-disabled:var(--color-primary-400);
+  --text-default-inverse:#fff; --text-subtle-inverse:var(--color-primary-200);
+
+  
+  --fs-display-lg:102px; --fs-display-md:96px; --fs-display-sm:80px;
+  --fs-h0:64px; --fs-h1:56px; --fs-h2:40px; --fs-h3:32px;
+  --fs-body-1:20px; --fs-body-2:18px;
+  --fs-badge:14px;
+  --fw-strong:700; --fw-base:400;
+  --tracking-kr:-0.025em; --display-tracking:-0.02em;
+  --lh-display:1.25; --lh-h0:1.25; --lh-h1:1.3; --lh-h2:1.35; --lh-h3:1.4; --lh-body:1.5;
+  --measure:38ch;
+
+  
+  --radius-0:0px; --radius-sm:12px; --radius-md:24px; --radius-lg:32px; --radius-circle:999px;
+  --border-0:none; --border-1:1px solid var(--color-primary-100); --border-2:2px solid var(--color-primary-900);
+
+  
+  --container-narrow:1280px; --container-default:1440px; --container-wide:1600px;
+  --gutter:80px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --space-7:48px; --space-8:64px; --space-9:96px; --space-10:120px; --space-11:160px; --space-12:200px; --space-13:240px;
+  --space-section:var(--space-11);
+  --grid-gutter-0:0px; --grid-gutter-sm:8px; --grid-gutter-md:16px; --grid-gutter-lg:24px;}
+.fm *{box-sizing:border-box;margin:0;padding:0;}
+.fm{font-family:'Pretendard',sans-serif;font-weight:var(--fw-base);
+  font-size:var(--fs-body-1);line-height:var(--lh-body);letter-spacing:var(--tracking-kr);
+  color:var(--text-default);background:var(--color-canvas);}
+.fm h1,.fm .h0{font-size:var(--fs-h0);font-weight:var(--fw-strong);line-height:var(--lh-h0);letter-spacing:var(--display-tracking);}
+.fm h2,.fm .h1{font-size:var(--fs-h1);font-weight:var(--fw-strong);line-height:var(--lh-h1);}
+.fm .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--gutter);}
+.fm .container--wide{max-width:var(--container-wide);}
+.fm .container--narrow{max-width:var(--container-narrow);}
+.fm .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--grid-gutter-lg);}
+.fm .grid--flush{gap:var(--grid-gutter-0);}
+.fm .grid--tight{gap:var(--grid-gutter-sm);}
+.fm .grid--snug{gap:var(--grid-gutter-md);}
+@media (max-width:1024px){.fm{--gutter:40px;}.fm .grid{gap:var(--grid-gutter-md);}}
+@media (max-width:768px){.fm{--gutter:20px;
+    --fs-display-lg:48px; --fs-display-md:44px; --fs-display-sm:40px;
+    --fs-h0:32px; --fs-h1:28px; --fs-h2:24px; --fs-h3:20px;
+    --fs-body-1:18px; --fs-body-2:16px;
+    --space-section:var(--space-9);}}
+.fm{--accent:#ff6d0e;
+  --on-dark:#f3f3f3;
+  --ink:#000;
+
+  
+  --gutter: clamp(16px, 1.46vw, 28px);
+  --container-default:100%;
+  --container-wide:100%;
+  --container-narrow:100%;
+  --grid-gutter-lg: clamp(12px, 1.46vw, 28px);
+
+  
+  --t-hero:   clamp(46px, 5.2vw, 100px);
+  --t-h2:     clamp(34px, 4.06vw, 78px);
+  --t-cta:    clamp(28px, 2.7vw, 52px);
+  --t-quote:  clamp(24px, 2.5vw, 48px);
+  --t-card:   28px;
+  --t-body:   20px;
+  --t-small:  16px;
+  --t-label:  16px;
+
+  
+  
+  --h-hero:   calc(100svh - (var(--u) * 2.8 + 16px));
+  --h-plat:   clamp(560px, 52.1vw, 1001px);
+  --h-stack:  clamp(760px, 80.2vw, 1540px);
+  --h-cta:    clamp(460px, 42.5vw, 817px);
+  --h-quote:  clamp(760px, 112.4vw, 2158px);
+  --h-news:   clamp(520px, 44.0vw, 846px);
+  --h-faq:    clamp(460px, 36.2vw, 694px);
+
+  --u: clamp(14px, 1.46vw, 28px);}
+@media (max-width:1024px){.fm{--gutter: clamp(16px, 1.46vw, 28px);}}
+@media (max-width:768px){.fm{--gutter: clamp(16px, 1.46vw, 28px);}}
+.fm{background:#f7f7f5;color:var(--ink);font-size:var(--t-body);font-weight:400;}
+.fm .mark{position:absolute;width:6px;height:6px;background:var(--accent);}
+.fm .chip{display:inline-flex;align-items:center;justify-content:center;gap:4px;
+  width:calc(var(--u) * 1.07);height:calc(var(--u) * .79);background:rgba(0,0,0,.1);
+  font-size:var(--t-label);font-weight:400;color:rgba(0,0,0,.6);flex:none;}
+.fm{--product-w:760px;}
+.fm .faq{min-height:var(--h-faq);display:flex;flex-direction:column;justify-content:center;
+  gap:var(--space-7);padding-block:var(--fm-pad,var(--space-12));background:var(--fm-bg,#f7f7f5);}
+.fm .faq__head{align-items:center;}
+.fm .faq__head > .gcell:first-child{position:relative;}
+.fm .faq__head .mark{top:0;left:0;}
+.fm .faq__title{font-size:var(--t-h2);font-weight:400;padding-top:calc(var(--u) * 1);}
+.fm .faq__list{display:flex;flex-direction:column;gap:var(--fm-rowgap,4px);}
+.fm .frow{background:rgba(0,0,0,.03);}
+.fm .frow .chip{width:40px;height:32px;font-size:14px;}
+.fm .frow summary{list-style:none;display:flex;align-items:center;gap:var(--u);cursor:pointer;
+  height:calc(var(--u) * 2.64);padding-inline:calc(var(--u) * .71);}
+.fm .frow summary::-webkit-details-marker{display:none;}
+.fm .frow__q{flex:1;font-size:var(--t-body);font-weight:400;}
+.fm .frow__ico{position:relative;width:20px;height:20px;
+  background:var(--ink);flex:none;}
+.fm .frow__ico::before,.fm .frow__ico::after{content:"";position:absolute;inset:0;margin:auto;
+  background:var(--on-dark);}
+.fm .frow__ico::before{width:12px;height:1.5px;}
+.fm .frow__ico::after{width:1.5px;height:12px;transition:transform .2s ease;}
+.fm .frow[open] .frow__ico::after{transform:scaleY(0);}
+.fm .frow p{padding:0 calc(var(--u) * .71) calc(var(--u) * .71) calc(var(--u) * 2.5);
+  font-size:var(--t-small);opacity:.6;max-width:70ch;}
+@media (max-width:768px){.fm{--t-hero: clamp(34px, 9vw, 46px);
+    --t-h2:   clamp(26px, 7vw, 34px);
+    --t-cta:  clamp(22px, 6vw, 28px);
+    --t-quote:clamp(20px, 5.5vw, 24px);
+    --t-card: clamp(20px, 5vw, 28px);}.fm .frow summary{height:auto;padding-block:calc(var(--u) * .71);}.fm .frow p{padding-left:calc(var(--u) * .71);}}
+.fm .fm-left{grid-column:1/5}.fm .fm-right{grid-column:5/13}
+.fm[data-split="3"] .fm-left{grid-column:1/4}.fm[data-split="3"] .fm-right{grid-column:4/13}
+.fm[data-split="5"] .fm-left{grid-column:1/6}.fm[data-split="5"] .fm-right{grid-column:6/13}
+.fm[data-split="6"] .fm-left{grid-column:1/7}.fm[data-split="6"] .fm-right{grid-column:7/13}
+.fm[data-chip=false] .frow .chip{display:none}
+.fm[data-chip=false] .frow p{padding-left:calc(var(--u) * .71)}
+.fm .frow summary{cursor:pointer}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
+</style>
+<div class="fm" id="cw-fm" data-chip="true" data-single="false" data-split="4" data-editing="false"><section class="faq"><div class="container grid faq__head"><div class="gcell fm-left"><span class="mark" aria-hidden="true"></span><h2 class="faq__title" data-g="title"></h2></div></div><div class="container grid"><div class="gcell faq__list fm-right" id="cw-fm-list"></div></div></section></div>
+<script>
+/* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
+(function(){
+  var R=window.CWWidgets=window.CWWidgets||{};
+  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
+  mount:function(cfg){
+    var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
+    function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
+    function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
+    cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
+    cfg.onChange&&cfg.onChange(state,null);
+    var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
+    return api}};
+})();
+
+(function(){
+ var root=document.getElementById('cw-fm'),editing=false;
+ var initMeta={"title": "FAQ"},meta=Object.assign({},initMeta);
+ var init=[{"q": "FORMAX는 어떤 회사인가요?", "a": "제조 현장의 설비·품질·생산 데이터를 실시간으로 통합해 운영 의사결정을 돕는 산업 데이터 플랫폼입니다."}, {"q": "어떤 설비와 연동되나요?", "a": "PLC, MES, ERP, IoT 센서 등 대부분의 표준 산업 프로토콜(OPC-UA, Modbus 등)을 지원합니다."}, {"q": "기존 MES와 무엇이 다른가요?", "a": "MES가 공정을 기록한다면 FORMAX는 그 기록을 실시간 판단으로 바꿉니다. 교체가 아니라 위에 얹는 레이어입니다."}, {"q": "도입까지 얼마나 걸리나요?", "a": "표준 연동 기준 평균 4~6주 내 파일럿 라인 적용이 가능합니다."}, {"q": "수율 개선 효과는 어떻게 측정하나요?", "a": "도입 전 3개월 실적을 기준선으로 잡고, 라인·품목·교대조 단위로 개선 폭을 분리해 리포트합니다."}, {"q": "보안은 어떻게 관리되나요?", "a": "망분리 환경을 지원하며 온프레미스·프라이빗 클라우드 배포를 모두 제공합니다."}, {"q": "계약은 어떤 방식인가요?", "a": "라인 수 기준 구독형 과금이며, 파일럿 이후 단계적 확장 계약을 지원합니다."}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function T(s){return esc(s).replace(/\n/g,'<br>')}
+ function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
+
+ var list=document.getElementById('cw-fm-list'),openIdx={0:true};
+ function render(){metaFill();root.setAttribute('data-editing',editing);
+  list.innerHTML=data.map(function(d,i){var n=i+1;return '<details class="frow"'+((openIdx[i]||editing)?' open':'')+'><summary><span class="chip">'+(n<10?'0':'')+n+'</span><span class="frow__q" data-i="'+i+'" data-f="q">'+esc(d.q)+'</span><span class="frow__ico"></span></summary><p data-i="'+i+'" data-f="a">'+esc(d.a)+'</p></details>'}).join('');
+  CWPanel.setEditable(root,editing)}
+ list.addEventListener('click',function(e){var s=e.target.closest('summary');if(!s)return;e.preventDefault();if(editing)return;
+  var rows=[].slice.call(list.children),row=s.parentNode,i=rows.indexOf(row),was=row.hasAttribute('open');
+  if(root.getAttribute('data-single')==='true')rows.forEach(function(r){r.removeAttribute('open')});
+  if(was)row.removeAttribute('open');else row.setAttribute('open','')});
+
+ var CFG=(window.CW_CONFIG||{})['cw-fm']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ CWPanel.bindEdit(root,data,meta);
+ CWPanel.mount({title:'FAQ 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;openIdx={0:true};render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'텍스트 직접 편집 (이미지는 클릭해서 주소 변경)',default:false},
+   {type:'button',label:"+ 질문 추가",onClick:function(){data.push({q:'새 질문',a:'답변을 입력하세요.'});render()}},
+   {type:'button',label:"− 마지막 질문 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"색상·여백"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--fm-bg',default:'#f7f7f5'},
+   {key:'ink',type:'color',label:"글자·아이콘색",css:'--ink',default:'#000000'},
+   {key:'acc',type:'color',label:"강조 점 색",css:'--accent',default:'#ff6d0e'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--fm-pad',unit:'px',min:0,max:400,step:4,default:200},
+   {type:'group',label:"레이아웃"},
+   {key:'split',type:'select',label:"제목 영역 너비 (12열 중)",attr:'data-split',options:[{"value": "3", "label": "3열"}, {"value": "4", "label": "4열(기본)"}, {"value": "5", "label": "5열"}, {"value": "6", "label": "6열"}],default:'4'},
+   {key:'rowgap',type:'range',label:"행 간격",css:'--fm-rowgap',unit:'px',min:0,max:40,step:1,default:4},
+   {key:'chip',type:'toggle',label:"번호 칩 표시",attr:'data-chip',default:true},
+   {key:'single',type:'toggle',label:"한 번에 하나만 열기",attr:'data-single',default:false}
+  ]});
+})();
+</script>
+<script>/* 커스텀 사이드바 (미리보기 전용): CWWidgets[id]에 붙어 숫자/색상/선택/토글 입력으로 실시간 조작 */
+(function(){
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+  function mount(id){
+    var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body');
+    sb.appendChild(el('div','cw-sb__head','커스텀<small>숫자·색상을 입력하면 바로 반영됩니다</small>'));sb.appendChild(body);
+    var sync=[];
+    w.controls.forEach(function(c){
+      if(c.type==='group'){body.appendChild(el('div','cw-sb__g',c.label));return}
+      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
+      var row=el('div','cw-sb__r'),lab=el('label','',c.label);row.appendChild(lab);var inp,hex;
+      if(c.type==='select'){inp=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;inp.appendChild(op)})}
+      else if(c.type==='toggle'){inp=el('input');inp.type='checkbox'}
+      else if(c.type==='color'){inp=el('input');inp.type='color';hex=el('input');hex.type='text';hex.maxLength=7}
+      else{inp=el('input');inp.type='number';inp.min=c.min;inp.max=c.max;inp.step=c.step||1;inp.inputMode='decimal'}
+      function show(){var v=w.state[c.key];if(c.type==='toggle')inp.checked=!!v;else inp.value=v;if(hex)hex.value=v}
+      function put(v){
+        if(c.type==='range'){if(v===''||isNaN(Number(v)))return;v=Math.min(c.max,Math.max(c.min,Number(v)))}
+        w.set(c.key,v)}
+      inp.addEventListener(c.type==='select'||c.type==='toggle'?'change':'input',function(){put(c.type==='toggle'?inp.checked:inp.value);if(hex)hex.value=inp.value});
+      if(c.type==='range')inp.addEventListener('blur',show);
+      if(hex)hex.addEventListener('change',function(){if(/^#[0-9a-f]{6}$/i.test(hex.value)){put(hex.value);inp.value=hex.value}else show()});
+      row.appendChild(inp);if(hex)row.appendChild(hex);if(c.type==='range'&&c.unit)row.appendChild(el('span','u',c.unit));
+      body.appendChild(row);sync.push(show);show();
+    });
+    var bar=el('div','cw-sb__b');bar.innerHTML='<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>';
+    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();sync.forEach(function(f){f()})}
+      if(a==='c'){var ex=w.export(),st={};Object.keys(w.state).forEach(function(k){if(k==='edit')return;var v=w.state[k];st[k]=v===true?1:v===false?0:v});
+        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify({settings:st,meta:ex.meta,[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]:ex[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]},null,2)+';';
+        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 — widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
+    body.appendChild(bar);document.body.appendChild(sb);
+    if(!/[?&]nosidebar/.test(location.search))document.body.classList.add('cw-has-sidebar');else sb.style.display='none';
+  }
+  function toast(m){var t=el('div','cw-sb__t',m);document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}
+  window.CWSidebar={mount:mount};
+})();
+
+CWSidebar.mount('cw-fm');</script></body></html>

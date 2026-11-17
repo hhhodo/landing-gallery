@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>탭 (florae) 위젯</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
+.cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
+.cw-sb *{box-sizing:border-box}
+.cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
+.cw-sb__head small{display:block;font-weight:400;color:#888;font-size:12px;margin-top:2px}
+.cw-sb__body{padding:4px 16px 24px}
+.cw-sb__g{margin:18px 0 4px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#888}
+.cw-sb__r{display:flex;align-items:center;gap:8px;margin:8px 0}
+.cw-sb__r>label{flex:1;color:#333}
+.cw-sb__r input[type=number]{width:92px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;text-align:right}
+.cw-sb__r .u{width:24px;color:#888;font-size:12px}
+.cw-sb__r input[type=color]{width:36px;height:30px;padding:0;border:1px solid #ccc;border-radius:6px;background:none}
+.cw-sb__r input[type=text]{width:84px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px}
+.cw-sb__r select{font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;max-width:150px}
+.cw-sb__r input[type=checkbox]{width:18px;height:18px}
+.cw-sb__b{display:flex;gap:6px;margin:8px 0}
+.cw-sb__b button{flex:1;font:inherit;font-size:13px;padding:8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
+.cw-sb__b button.p{background:#1a1a1a;color:#fff}
+.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
+@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:45vh}.cw-sb{top:auto;width:auto;left:0;height:42vh;border-left:0;border-top:1px solid #e3e3e3}}
+</style></head><body>
+<!-- 탭 (florae) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
+<script>
+/* ============================================================
+   탭 (florae) 위젯 설정값 — 아래 숫자/값만 고치면 위젯에 반영됩니다.
+   ============================================================ */
+window.CW_CONFIG = window.CW_CONFIG || {};
+window.CW_CONFIG['cw-fl'] = {
+  settings: {
+    bg: "#fbfbfa",            // 배경색 (색상 hex)
+    ink: "#262628",           // 글자색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    pad: 84,                  // 상하 여백 (px · 0~400)
+    bg2: "#f6f7f7",           // 섹션 배경 (탭 영역) (색상 hex)
+    split: "4",               // 탭 영역 너비 (12열 중) : 3=3열 | 4=4열(기본) | 5=5열 | 6=6열
+    imgr: 0,                  // 이미지 모서리 (px · 0~48)
+    showimg: 1,               // 이미지 표시 (1=켜기, 0=끄기)
+    showbody: 1,              // 설명 표시 (1=켜기, 0=끄기)
+    wrap: 0,                  // 설명 줄바꿈 허용 (1=켜기, 0=끄기)
+  },
+  // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  meta: {},
+  items: [
+      {
+          "title": "관엽식물",
+          "desc": "공간에 깊이를 더하는 잎 넓은 식물들. 채광과 습도에 맞춰 고른 품종을 큐레이션합니다.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/kaylee-garrett-n5z2myf2Ee0-unsplash.jpg",
+          "alt": "관엽식물이 놓인 공간 스타일링"
+      },
+      {
+          "title": "다육식물",
+          "desc": "물을 자주 주지 않아도 괜찮은, 관리가 쉬운 다육식물 컬렉션.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/jonas-allert-O0PYL5LgNxs-unsplash.jpg",
+          "alt": "다육식물 컬렉션"
+      },
+      {
+          "title": "허브",
+          "desc": "주방과 발코니에 어울리는 허브 가든. 향과 실용을 더합니다.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-PW9q4QmTOCA-unsplash.jpg",
+          "alt": "허브가든 컬렉션"
+      },
+      {
+          "title": "화분 & 소품",
+          "desc": "공간의 톤을 완성하는 화분과 소품 컬렉션.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/linh-le-FYgnwFMZBM0-unsplash.jpg",
+          "alt": "화분과 소품 스타일링"
+      },
+      {
+          "title": "식물 영양제",
+          "desc": "생육 단계에 맞춘 영양 공급으로 식물을 더 건강하게.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-4uOkLlr2LpM-unsplash.jpg",
+          "alt": "식물 영양제"
+      },
+      {
+          "title": "원예 도구",
+          "desc": "가지치기부터 분갈이까지, 손에 맞는 원예 도구.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-7GkGopeAuKM-unsplash.jpg",
+          "alt": "원예 도구"
+      },
+      {
+          "title": "조명",
+          "desc": "빛이 부족한 공간을 위한 식물 생장 조명.",
+          "img": "https://hhhodo.github.io/florae-landing/assets/photos/engin-akyurt-6djmntSYfoE-unsplash.jpg",
+          "alt": "식물 생장 조명"
+      }
+  ]
+};
+</script>
+<style>
+.fl{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.fl{--color-primary-050:#f6f7f7; --color-primary-100:#e1e1e3; --color-primary-200:#c5c6c8;
+  --color-primary-300:#a2a3a5; --color-primary-400:#949597; --color-primary-500:#838486;
+  --color-primary-600:#5d5e5f; --color-primary-700:#4c4c4e; --color-primary-800:#393a3b;
+  --color-primary-900:#262628; --color-canvas:#fff; --color-placeholder:#d9d9d9;
+
+  --text-default:var(--color-primary-900); --text-subtle:var(--color-primary-600);
+  --text-disabled:var(--color-primary-400);
+  --text-default-inverse:#fff; --text-subtle-inverse:var(--color-primary-200);
+
+  
+  --fs-display-lg:102px; --fs-display-md:96px; --fs-display-sm:80px;
+  --fs-h0:64px; --fs-h1:56px; --fs-h2:40px; --fs-h3:32px;
+  --fs-body-1:20px; --fs-body-2:18px;
+  --fs-badge:14px;
+  --fw-strong:700; --fw-base:400;
+  --tracking-kr:-0.025em; --display-tracking:-0.02em;
+  --lh-display:1.25; --lh-h0:1.25; --lh-h1:1.3; --lh-h2:1.35; --lh-h3:1.4; --lh-body:1.5;
+  --measure:38ch;
+
+  
+  --radius-0:0px; --radius-sm:12px; --radius-md:24px; --radius-lg:32px; --radius-circle:999px;
+  --border-0:none; --border-1:1px solid var(--color-primary-100); --border-2:2px solid var(--color-primary-900);
+
+  
+  --container-narrow:1280px; --container-default:1440px; --container-wide:1600px;
+  --gutter:80px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --space-7:48px; --space-8:64px; --space-9:96px; --space-10:120px; --space-11:160px; --space-12:200px; --space-13:240px;
+  --space-section:var(--space-11);
+  --grid-gutter-0:0px; --grid-gutter-sm:8px; --grid-gutter-md:16px; --grid-gutter-lg:24px;}
+.fl *{box-sizing:border-box;margin:0;padding:0;}
+.fl{font-family:'Pretendard',sans-serif;font-weight:var(--fw-base);
+  font-size:var(--fs-body-1);line-height:var(--lh-body);letter-spacing:var(--tracking-kr);
+  color:var(--text-default);background:var(--color-canvas);}
+.fl h1,.fl .h0{font-size:var(--fs-h0);font-weight:var(--fw-strong);line-height:var(--lh-h0);letter-spacing:var(--display-tracking);}
+.fl h2,.fl .h1{font-size:var(--fs-h1);font-weight:var(--fw-strong);line-height:var(--lh-h1);}
+.fl .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--gutter);}
+.fl .container--wide{max-width:var(--container-wide);}
+.fl .container--narrow{max-width:var(--container-narrow);}
+.fl .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--grid-gutter-lg);}
+.fl .grid--flush{gap:var(--grid-gutter-0);}
+.fl .grid--tight{gap:var(--grid-gutter-sm);}
+.fl .grid--snug{gap:var(--grid-gutter-md);}
+.fl .section{padding-block:var(--space-section);}
+.fl .img{background:var(--color-placeholder);display:block;width:100%;}
+.fl .img--16-9{aspect-ratio:16/9;}
+.fl .img--4-3{aspect-ratio:4/3;}
+.fl .img--1-1{aspect-ratio:1/1;}
+@media (max-width:1024px){.fl{--gutter:40px;}.fl .grid{gap:var(--grid-gutter-md);}}
+@media (max-width:768px){.fl{--gutter:20px;
+    --fs-display-lg:48px; --fs-display-md:44px; --fs-display-sm:40px;
+    --fs-h0:32px; --fs-h1:28px; --fs-h2:24px; --fs-h3:20px;
+    --fs-body-1:18px; --fs-body-2:16px;
+    --space-section:var(--space-9);}}
+.fl{--color-canvas:#fbfbfa;
+
+  --fw-strong:600; --fw-base:400;
+  --space-section:var(--space-12);
+  --nav-h:76px;}
+.fl{background:var(--color-canvas);}
+.fl .container,.fl .container--wide,.fl .container--narrow{max-width:none;}
+.fl .img{object-fit:cover;height:100%;}
+.fl h2,.fl .h1{font-size:var(--fs-h2);line-height:var(--lh-h2);}
+.fl .gcell{min-width:0;}
+.fl .spotlight{background:var(--color-primary-050);}
+.fl .spotlight__panel{padding-block-start:var(--space-5);}
+.fl .spotlight__list{display:flex;flex-direction:column;}
+.fl .spotlight__item{display:flex;align-items:center;width:100%;background:none;border:none;
+  border-block-end:var(--border-1);text-align:left;font:inherit;color:inherit;cursor:pointer;
+  padding-block:var(--space-5);font-size:var(--fs-body-2);transition:opacity .2s ease;}
+.fl .spotlight__item:hover{opacity:.55;}
+.fl .spotlight__item--active{font-weight:var(--fw-strong);border-bottom:var(--border-2);}
+.fl .spotlight__title{margin-block:0 var(--space-2);}
+.fl .spotlight__body{color:var(--text-subtle);margin-block-end:var(--space-5);white-space:nowrap;}
+.fl .spotlight__frame{border-radius:var(--radius-0);overflow:hidden;border:var(--border-1);}
+@media (max-width:1024px){.fl .spotlight__body{white-space:normal;}}
+@media (max-width:768px){.fl{--space-section:84px;}.fl .grid:not(.grid--snug):not(.grid--tight):not(.grid--flush){gap:var(--space-7) var(--grid-gutter-md);}.fl .grid--snug{gap:var(--space-8) var(--grid-gutter-md);}.fl .gcell{grid-column:1/13!important;order:initial!important;}.fl .gcell--2up{grid-column:span 6!important;}.fl .spotlight__panel{padding-block-start:0;}.fl .spotlight__list{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+    gap:var(--space-6);border-block-end:var(--border-1);scrollbar-width:none;}.fl .spotlight__list::-webkit-scrollbar{display:none;}.fl .spotlight__item{width:auto;flex:none;border-block-end:none;white-space:nowrap;
+    padding-block:var(--space-3);padding-inline:0;}.fl .spotlight__item--active{border-bottom:var(--border-2);}}
+@media (max-width:600px){.fl .gcell--2up{grid-column:1/13!important;}}
+.fl{--fl-img-radius:0px}
+.fl .fl-left{grid-column:1/5}.fl .fl-right{grid-column:5/13}
+.fl[data-split="3"] .fl-left{grid-column:1/4}.fl[data-split="3"] .fl-right{grid-column:4/13}
+.fl[data-split="5"] .fl-left{grid-column:1/6}.fl[data-split="5"] .fl-right{grid-column:6/13}
+.fl[data-split="6"] .fl-left{grid-column:1/7}.fl[data-split="6"] .fl-right{grid-column:7/13}
+.fl .spotlight__frame{border-radius:var(--fl-img-radius)}
+.fl[data-showimg=false] .spotlight__frame{display:none}
+.fl[data-showbody=false] .spotlight__body{display:none}
+.fl[data-wrap=true] .spotlight__body{white-space:normal}
+.fl .spotlight__item{cursor:pointer}
+.fl[data-editing=true] .spotlight__frame{outline:1px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer}
+.fl .spotlight__frame img{display:block}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
+</style>
+<div class="fl" id="cw-fl" data-split="4" data-showimg="true" data-showbody="true" data-wrap="false" data-editing="false">
+<section class="section spotlight"><div class="container"><div class="grid">
+ <div class="gcell spotlight__panel fl-left"><nav class="spotlight__list" id="cw-fl-list"></nav></div>
+ <div class="gcell spotlight__panel fl-right"><h2 class="h1 spotlight__title" id="cw-fl-title"></h2><p class="spotlight__body" id="cw-fl-body"></p><div class="spotlight__frame" data-imgbox><img class="img img--16-9" id="cw-fl-img" alt=""></div></div>
+</div></div></section></div>
+<script>
+/* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
+(function(){
+  var R=window.CWWidgets=window.CWWidgets||{};
+  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
+  mount:function(cfg){
+    var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
+    function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
+    function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
+    cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
+    cfg.onChange&&cfg.onChange(state,null);
+    var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
+    return api}};
+})();
+
+(function(){
+ var root=document.getElementById('cw-fl'),editing=false;
+ var initMeta={},meta=Object.assign({},initMeta);
+ var init=[{"title": "관엽식물", "desc": "공간에 깊이를 더하는 잎 넓은 식물들. 채광과 습도에 맞춰 고른 품종을 큐레이션합니다.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/kaylee-garrett-n5z2myf2Ee0-unsplash.jpg", "alt": "관엽식물이 놓인 공간 스타일링"}, {"title": "다육식물", "desc": "물을 자주 주지 않아도 괜찮은, 관리가 쉬운 다육식물 컬렉션.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/jonas-allert-O0PYL5LgNxs-unsplash.jpg", "alt": "다육식물 컬렉션"}, {"title": "허브", "desc": "주방과 발코니에 어울리는 허브 가든. 향과 실용을 더합니다.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-PW9q4QmTOCA-unsplash.jpg", "alt": "허브가든 컬렉션"}, {"title": "화분 & 소품", "desc": "공간의 톤을 완성하는 화분과 소품 컬렉션.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/linh-le-FYgnwFMZBM0-unsplash.jpg", "alt": "화분과 소품 스타일링"}, {"title": "식물 영양제", "desc": "생육 단계에 맞춘 영양 공급으로 식물을 더 건강하게.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-4uOkLlr2LpM-unsplash.jpg", "alt": "식물 영양제"}, {"title": "원예 도구", "desc": "가지치기부터 분갈이까지, 손에 맞는 원예 도구.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-7GkGopeAuKM-unsplash.jpg", "alt": "원예 도구"}, {"title": "조명", "desc": "빛이 부족한 공간을 위한 식물 생장 조명.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/engin-akyurt-6djmntSYfoE-unsplash.jpg", "alt": "식물 생장 조명"}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function T(s){return esc(s).replace(/\n/g,'<br>')}
+ function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
+
+ var list=document.getElementById('cw-fl-list'),cur=0;
+ function render(){
+  if(cur>=data.length)cur=Math.max(0,data.length-1);root.setAttribute('data-editing',editing);var d=data[cur]||{};
+  list.innerHTML=data.map(function(x,i){return '<div class="spotlight__item'+(i===cur?' spotlight__item--active':'')+'" role="button" tabindex="0" data-idx="'+i+'"><span data-i="'+i+'" data-f="title">'+esc(x.title)+'</span></div>'}).join('');
+  var t=document.getElementById('cw-fl-title');t.textContent=d.title||'';t.setAttribute('data-i',cur);
+  var bd=document.getElementById('cw-fl-body');bd.textContent=d.desc||'';bd.setAttribute('data-i',cur);bd.setAttribute('data-f','desc');
+  var im=document.getElementById('cw-fl-img');im.src=d.img||'';im.alt=d.alt||'';im.setAttribute('data-img-i',cur);
+  t.setAttribute('data-f','title');
+  CWPanel.setEditable(root,editing);
+  /* 탭 라벨과 제목은 같은 필드라 둘 다 편집 가능 */}
+ list.addEventListener('click',function(e){var it=e.target.closest('.spotlight__item');if(!it)return;var i=+it.dataset.idx;if(i!==cur){cur=i;render()}});
+ list.addEventListener('keydown',function(e){var it=e.target.closest('.spotlight__item');if(!editing&&it&&(e.key==='Enter'||e.key===' ')){e.preventDefault();it.click()}});
+ root.addEventListener('input',function(e){var n=e.target.closest('[data-f="title"]');if(n&&n.id==='cw-fl-title'){var s=list.querySelector('.spotlight__item--active span');if(s)s.textContent=n.textContent}});
+
+ var CFG=(window.CW_CONFIG||{})['cw-fl']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ CWPanel.bindEdit(root,data,meta);
+ CWPanel.mount({title:'탭 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;cur=0;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'텍스트 직접 편집 (이미지는 클릭해서 주소 변경)',default:false},
+   {type:'button',label:"+ 탭 추가",onClick:function(){data.push({title:'새 탭',desc:'설명을 입력하세요.',img:data[0]?data[0].img:'',alt:''});cur=data.length-1;render()}},
+   {type:'button',label:"− 마지막 탭 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"색상·여백"},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#fbfbfa'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:84},
+   {key:'bg2',type:'color',label:"섹션 배경 (탭 영역)",css:'--color-primary-050',default:'#f6f7f7'},
+   {type:'group',label:"레이아웃"},
+   {key:'split',type:'select',label:"탭 영역 너비 (12열 중)",attr:'data-split',options:[{"value": "3", "label": "3열"}, {"value": "4", "label": "4열(기본)"}, {"value": "5", "label": "5열"}, {"value": "6", "label": "6열"}],default:'4'},
+   {key:'imgr',type:'range',label:"이미지 모서리",css:'--fl-img-radius',unit:'px',min:0,max:48,step:1,default:0},
+   {key:'showimg',type:'toggle',label:"이미지 표시",attr:'data-showimg',default:true},
+   {key:'showbody',type:'toggle',label:"설명 표시",attr:'data-showbody',default:true},
+   {key:'wrap',type:'toggle',label:"설명 줄바꿈 허용",attr:'data-wrap',default:false}
+  ]});
+})();
+</script>
+<script>/* 커스텀 사이드바 (미리보기 전용): CWWidgets[id]에 붙어 숫자/색상/선택/토글 입력으로 실시간 조작 */
+(function(){
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+  function mount(id){
+    var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body');
+    sb.appendChild(el('div','cw-sb__head','커스텀<small>숫자·색상을 입력하면 바로 반영됩니다</small>'));sb.appendChild(body);
+    var sync=[];
+    w.controls.forEach(function(c){
+      if(c.type==='group'){body.appendChild(el('div','cw-sb__g',c.label));return}
+      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
+      var row=el('div','cw-sb__r'),lab=el('label','',c.label);row.appendChild(lab);var inp,hex;
+      if(c.type==='select'){inp=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;inp.appendChild(op)})}
+      else if(c.type==='toggle'){inp=el('input');inp.type='checkbox'}
+      else if(c.type==='color'){inp=el('input');inp.type='color';hex=el('input');hex.type='text';hex.maxLength=7}
+      else{inp=el('input');inp.type='number';inp.min=c.min;inp.max=c.max;inp.step=c.step||1;inp.inputMode='decimal'}
+      function show(){var v=w.state[c.key];if(c.type==='toggle')inp.checked=!!v;else inp.value=v;if(hex)hex.value=v}
+      function put(v){
+        if(c.type==='range'){if(v===''||isNaN(Number(v)))return;v=Math.min(c.max,Math.max(c.min,Number(v)))}
+        w.set(c.key,v)}
+      inp.addEventListener(c.type==='select'||c.type==='toggle'?'change':'input',function(){put(c.type==='toggle'?inp.checked:inp.value);if(hex)hex.value=inp.value});
+      if(c.type==='range')inp.addEventListener('blur',show);
+      if(hex)hex.addEventListener('change',function(){if(/^#[0-9a-f]{6}$/i.test(hex.value)){put(hex.value);inp.value=hex.value}else show()});
+      row.appendChild(inp);if(hex)row.appendChild(hex);if(c.type==='range'&&c.unit)row.appendChild(el('span','u',c.unit));
+      body.appendChild(row);sync.push(show);show();
+    });
+    var bar=el('div','cw-sb__b');bar.innerHTML='<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>';
+    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();sync.forEach(function(f){f()})}
+      if(a==='c'){var ex=w.export(),st={};Object.keys(w.state).forEach(function(k){if(k==='edit')return;var v=w.state[k];st[k]=v===true?1:v===false?0:v});
+        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify({settings:st,meta:ex.meta,[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]:ex[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]},null,2)+';';
+        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 — widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
+    body.appendChild(bar);document.body.appendChild(sb);
+    if(!/[?&]nosidebar/.test(location.search))document.body.classList.add('cw-has-sidebar');else sb.style.display='none';
+  }
+  function toast(m){var t=el('div','cw-sb__t',m);document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}
+  window.CWSidebar={mount:mount};
+})();
+
+CWSidebar.mount('cw-fl');</script></body></html>

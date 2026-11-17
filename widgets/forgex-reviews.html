@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>리뷰 마키 (forgex) 위젯</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
+.cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
+.cw-sb *{box-sizing:border-box}
+.cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
+.cw-sb__head small{display:block;font-weight:400;color:#888;font-size:12px;margin-top:2px}
+.cw-sb__body{padding:4px 16px 24px}
+.cw-sb__g{margin:18px 0 4px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#888}
+.cw-sb__r{display:flex;align-items:center;gap:8px;margin:8px 0}
+.cw-sb__r>label{flex:1;color:#333}
+.cw-sb__r input[type=number]{width:92px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;text-align:right}
+.cw-sb__r .u{width:24px;color:#888;font-size:12px}
+.cw-sb__r input[type=color]{width:36px;height:30px;padding:0;border:1px solid #ccc;border-radius:6px;background:none}
+.cw-sb__r input[type=text]{width:84px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px}
+.cw-sb__r select{font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;max-width:150px}
+.cw-sb__r input[type=checkbox]{width:18px;height:18px}
+.cw-sb__b{display:flex;gap:6px;margin:8px 0}
+.cw-sb__b button{flex:1;font:inherit;font-size:13px;padding:8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
+.cw-sb__b button.p{background:#1a1a1a;color:#fff}
+.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
+@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:45vh}.cw-sb{top:auto;width:auto;left:0;height:42vh;border-left:0;border-top:1px solid #e3e3e3}}
+</style></head><body>
+<!-- 리뷰 마키 (forgex) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
+<script>
+/* ============================================================
+   리뷰 마키 (forgex) 위젯 설정값 — 아래 숫자/값만 고치면 위젯에 반영됩니다.
+   ============================================================ */
+window.CW_CONFIG = window.CW_CONFIG || {};
+window.CW_CONFIG['cw-fx'] = {
+  settings: {
+    bg: "#ffffff",            // 배경색 (색상 hex)
+    ink: "#262628",           // 글자색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    pad: 96,                  // 상하 여백 (px · 0~400)
+    dir: "left",              // 흐르는 방향 : left=← 왼쪽으로 | right=→ 오른쪽으로
+    speed: 44,                // 한 바퀴 시간 (클수록 느림) (s · 5~200)
+    pause: 1,                 // 마우스 올리면 멈춤 (1=켜기, 0=끄기)
+    w: 300,                   // 카드 너비 (px · 160~600)
+    h: 430,                   // 카드 높이 (px · 200~700)
+    radius: 999,              // 카드 모서리 (px · 0~999)
+    gap: 32,                  // 카드 간격 (px · 0~80)
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+  },
+  // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  meta: {
+      "eyebrow": "CUSTOMER STORY",
+      "title": "도입 기업들의\n생생한 후기",
+      "desc": "FORGEX 솔루션을 도입한 기업들의 실제 변화를 확인하세요."
+  },
+  items: [
+      {
+          "type": "photo",
+          "img": "https://hhhodo.github.io/forgex-landing/assets/images/luke-jones-tBvF46kmwBw-unsplash.jpg",
+          "alt": "A커머스 인프라 운영"
+      },
+      {
+          "type": "quote",
+          "cat": "클라우드 인프라",
+          "quote": "장애 대응 시간이 절반으로 줄었습니다. 실시간 알림 덕분에 미리 대응할 수 있었어요.",
+          "meta": "A커머스 인프라팀"
+      },
+      {
+          "type": "photo",
+          "img": "https://hhhodo.github.io/forgex-landing/assets/images/conny-schneider-xuTJZ7uD7PI-unsplash.jpg",
+          "alt": "B핀테크 보안 관제"
+      },
+      {
+          "type": "quote",
+          "cat": "보안",
+          "quote": "보안 관제 자동화 이후 침해 시도 대응 속도가 눈에 띄게 빨라졌습니다.",
+          "meta": "B핀테크 보안팀"
+      },
+      {
+          "type": "photo",
+          "img": "https://hhhodo.github.io/forgex-landing/assets/images/ales-nesetril-Im7lZjxeLhg-unsplash.jpg",
+          "alt": "C스타트업 데이터 파이프라인"
+      },
+      {
+          "type": "quote",
+          "cat": "데이터 플랫폼",
+          "quote": "데이터 파이프라인 오류가 사실상 사라졌고, 분석 리드타임도 크게 단축됐습니다.",
+          "meta": "C스타트업 데이터팀"
+      },
+      {
+          "type": "photo",
+          "img": "https://hhhodo.github.io/forgex-landing/assets/images/vackground-com-agUC-v_D1iI-unsplash.jpg",
+          "alt": "D SaaS 서비스 운영"
+      },
+      {
+          "type": "quote",
+          "cat": "모니터링",
+          "quote": "트래픽이 몰리는 시즌에도 서비스를 안정적으로 운영할 수 있게 됐습니다.",
+          "meta": "D SaaS 대표"
+      }
+  ]
+};
+</script>
+<style>
+.fx{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.fx{--color-primary-050:#f6f7f7; --color-primary-100:#e1e1e3; --color-primary-200:#c5c6c8;
+  --color-primary-300:#a2a3a5; --color-primary-400:#949597; --color-primary-500:#838486;
+  --color-primary-600:#5d5e5f; --color-primary-700:#4c4c4e; --color-primary-800:#393a3b;
+  --color-primary-900:#262628; --color-canvas:#fff; --color-placeholder:#d9d9d9;
+
+  --text-default:var(--color-primary-900); --text-subtle:var(--color-primary-600);
+  --text-disabled:var(--color-primary-400);
+  --text-default-inverse:#fff; --text-subtle-inverse:var(--color-primary-200);
+
+  
+  --fs-display-lg:102px; --fs-display-md:96px; --fs-display-sm:80px;
+  --fs-h0:64px; --fs-h1:56px; --fs-h2:40px; --fs-h3:32px;
+  --fs-body-1:20px; --fs-body-2:18px;
+  --fs-badge:14px;
+  --fw-strong:700; --fw-base:400;
+  --tracking-kr:-0.025em; --display-tracking:-0.02em;
+  --lh-display:1.25; --lh-h0:1.25; --lh-h1:1.3; --lh-h2:1.35; --lh-h3:1.4; --lh-body:1.5;
+  --measure:38ch;
+
+  
+  --radius-0:0px; --radius-sm:12px; --radius-md:24px; --radius-lg:32px; --radius-circle:999px;
+  --border-0:none; --border-1:1px solid var(--color-primary-100); --border-2:2px solid var(--color-primary-900);
+
+  
+  --container-narrow:1280px; --container-default:1440px; --container-wide:1600px;
+  --gutter:80px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --space-7:48px; --space-8:64px; --space-9:96px; --space-10:120px; --space-11:160px; --space-12:200px; --space-13:240px;
+  --space-section:var(--space-11);
+  --grid-gutter-0:0px; --grid-gutter-sm:8px; --grid-gutter-md:16px; --grid-gutter-lg:24px;}
+.fx *{box-sizing:border-box;margin:0;padding:0;}
+.fx{font-family:'Pretendard',sans-serif;font-weight:var(--fw-base);
+  font-size:var(--fs-body-1);line-height:var(--lh-body);letter-spacing:var(--tracking-kr);
+  color:var(--text-default);background:var(--color-canvas);}
+.fx img{display:block;max-width:100%;}
+.fx h1,.fx .h0{font-size:var(--fs-h0);font-weight:var(--fw-strong);line-height:var(--lh-h0);letter-spacing:var(--display-tracking);}
+.fx h2,.fx .h1{font-size:var(--fs-h1);font-weight:var(--fw-strong);line-height:var(--lh-h1);}
+.fx .body-2,.fx .sub{font-size:var(--fs-body-2);}
+.fx .subtle{color:var(--text-subtle);}
+.fx .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--gutter);}
+.fx .container--wide{max-width:var(--container-wide);}
+.fx .container--narrow{max-width:var(--container-narrow);}
+.fx .section{padding-block:var(--space-section);}
+@media (max-width:1024px){.fx{--gutter:40px;}}
+@media (max-width:768px){.fx{--gutter:20px;
+    --fs-display-lg:48px; --fs-display-md:44px; --fs-display-sm:40px;
+    --fs-h0:32px; --fs-h1:28px; --fs-h2:24px; --fs-h3:20px;
+    --fs-body-1:18px; --fs-body-2:16px;
+    --space-section:var(--space-9);}}
+.fx{--color-accent-lime:#C6FA2D;
+  
+  --space-section:var(--space-9);}
+.fx .eyebrow{font-size:var(--fs-body-1);font-weight:var(--fw-strong);
+  text-transform:uppercase;color:var(--text-subtle);
+  margin-block-end:var(--space-4);}
+.fx img.img{height:100%;object-fit:cover;}
+.fx .reviews__head{max-width:640px;margin-inline:auto;margin-block-end:var(--space-8);}
+.fx .reviews-marquee{overflow:hidden;}
+.fx .reviews-track{overflow:hidden;}
+.fx .reviews-track__inner{display:flex;align-items:stretch;gap:var(--fx-gap,var(--space-6));width:max-content;
+  animation:reviews-marquee var(--fx-speed,44s) linear infinite;}
+.fx[data-pause=true] .reviews-track:hover .reviews-track__inner{animation-play-state:paused;}
+@keyframes reviews-marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.fx .review-pill{flex:0 0 auto;width:var(--fx-w,300px);height:var(--fx-h,430px);border-radius:var(--fx-radius,var(--radius-circle));
+  overflow:hidden;background:var(--color-canvas);border:var(--border-1);}
+.fx .review-pill--photo img{width:100%;height:100%;object-fit:cover;display:block;}
+.fx .review-pill--quote{display:flex;flex-direction:column;justify-content:center;
+  padding:var(--space-9) var(--space-6);text-align:left;}
+.fx .review-pill__cat{font-size:var(--fs-body-1);font-weight:var(--fw-strong);color:var(--text-subtle);
+  margin-block-end:var(--space-6);}
+.fx .review-pill__quote{font-size:var(--fs-body-2);color:var(--text-default);margin-block-end:var(--space-5);}
+.fx .review-pill__meta{font-size:var(--fs-body-2);font-weight:var(--fw-strong);color:var(--text-subtle);}
+@media (max-width:768px){.fx .review-pill{width:220px;height:320px;}.fx .review-pill--quote{padding:var(--space-6) var(--space-5);}}
+.fx[data-dir=right] .reviews-track__inner{animation-direction:reverse}
+.fx[data-head=false] .reviews__head{display:none}
+.fx[data-editing=true] .reviews-track__inner{animation:none;flex-wrap:wrap;width:auto;padding-inline:var(--gutter)}
+.fx[data-editing=true] [data-imgbox]{outline:1px dashed rgba(90,90,255,.8);outline-offset:-4px;cursor:pointer}
+@media(prefers-reduced-motion:reduce){.fx .reviews-track__inner{animation:none!important}}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
+</style>
+<div class="fx" id="cw-fx" data-dir="left" data-pause="true" data-head="true" data-editing="false">
+<section class="section reviews-marquee"><div class="container container--wide"><div class="reviews__head">
+<p class="eyebrow" style="text-align:center;" data-g="eyebrow"></p><h2 class="h1" style="text-align:center;" data-g="title"></h2><p class="body-2 subtle" style="text-align:center;" data-g="desc"></p>
+</div></div><div class="reviews-track"><div class="reviews-track__inner" id="cw-fx-track"></div></div></section></div>
+<script>
+/* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
+(function(){
+  var R=window.CWWidgets=window.CWWidgets||{};
+  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
+  mount:function(cfg){
+    var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
+    function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
+    function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
+    cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
+    cfg.onChange&&cfg.onChange(state,null);
+    var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
+    return api}};
+})();
+
+(function(){
+ var root=document.getElementById('cw-fx'),editing=false;
+ var initMeta={"eyebrow": "CUSTOMER STORY", "title": "도입 기업들의\n생생한 후기", "desc": "FORGEX 솔루션을 도입한 기업들의 실제 변화를 확인하세요."},meta=Object.assign({},initMeta);
+ var init=[{"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/luke-jones-tBvF46kmwBw-unsplash.jpg", "alt": "A커머스 인프라 운영"}, {"type": "quote", "cat": "클라우드 인프라", "quote": "장애 대응 시간이 절반으로 줄었습니다. 실시간 알림 덕분에 미리 대응할 수 있었어요.", "meta": "A커머스 인프라팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/conny-schneider-xuTJZ7uD7PI-unsplash.jpg", "alt": "B핀테크 보안 관제"}, {"type": "quote", "cat": "보안", "quote": "보안 관제 자동화 이후 침해 시도 대응 속도가 눈에 띄게 빨라졌습니다.", "meta": "B핀테크 보안팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/ales-nesetril-Im7lZjxeLhg-unsplash.jpg", "alt": "C스타트업 데이터 파이프라인"}, {"type": "quote", "cat": "데이터 플랫폼", "quote": "데이터 파이프라인 오류가 사실상 사라졌고, 분석 리드타임도 크게 단축됐습니다.", "meta": "C스타트업 데이터팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/vackground-com-agUC-v_D1iI-unsplash.jpg", "alt": "D SaaS 서비스 운영"}, {"type": "quote", "cat": "모니터링", "quote": "트래픽이 몰리는 시즌에도 서비스를 안정적으로 운영할 수 있게 됐습니다.", "meta": "D SaaS 대표"}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function T(s){return esc(s).replace(/\n/g,'<br>')}
+ function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
+
+ var track=document.getElementById('cw-fx-track');
+ function pill(d,i,hid){var h=hid?' aria-hidden="true"':'';
+  if(d.type==='photo')return '<div class="review-pill review-pill--photo"'+h+' data-imgbox data-img-i="'+i+'"><img src="'+esc(d.img)+'" alt="'+(hid?'':esc(d.alt))+'"></div>';
+  return '<div class="review-pill review-pill--quote"'+h+'><p class="review-pill__cat" data-i="'+i+'" data-f="cat">'+esc(d.cat)+'</p><p class="review-pill__quote" data-i="'+i+'" data-f="quote">&ldquo;'+esc(d.quote)+'&rdquo;</p><p class="review-pill__meta" data-i="'+i+'" data-f="meta">'+esc(d.meta)+'</p></div>'}
+ function render(){metaFill();root.setAttribute('data-editing',editing);
+  var one=data.map(function(d,i){return pill(d,i,false)}).join('');
+  if(editing){track.innerHTML=one}else{var rep=Math.max(1,Math.ceil(8/Math.max(1,data.length))),set='',dup='';for(var r=0;r<rep;r++){set+=one;dup+=data.map(function(d,i){return pill(d,i,true)}).join('')}track.innerHTML=set+dup}
+  CWPanel.setEditable(root,editing)}
+
+ var CFG=(window.CW_CONFIG||{})['cw-fx']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ CWPanel.bindEdit(root,data,meta);
+ CWPanel.mount({title:'리뷰 마키 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'텍스트 직접 편집 (이미지는 클릭해서 주소 변경)',default:false},
+   {type:'button',label:"+ 후기 카드 추가",onClick:function(){data.push({type:'quote',cat:'분류',quote:'후기를 입력하세요.',meta:'회사명'});render()}},
+   {type:'button',label:"+ 사진 카드 추가",onClick:function(){data.push({type:'photo',img:'',alt:''});render()}},
+   {type:'button',label:"− 마지막 카드 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"색상·여백"},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96},
+   {type:'group',label:"흐름"},
+   {key:'dir',type:'select',label:"흐르는 방향",attr:'data-dir',options:[{"value": "left", "label": "← 왼쪽으로"}, {"value": "right", "label": "→ 오른쪽으로"}],default:'left'},
+   {key:'speed',type:'range',label:"한 바퀴 시간 (클수록 느림)",css:'--fx-speed',unit:'s',min:5,max:200,step:1,default:44},
+   {key:'pause',type:'toggle',label:"마우스 올리면 멈춤",attr:'data-pause',default:true},
+   {type:'group',label:"카드"},
+   {key:'w',type:'range',label:"카드 너비",css:'--fx-w',unit:'px',min:160,max:600,step:5,default:300},
+   {key:'h',type:'range',label:"카드 높이",css:'--fx-h',unit:'px',min:200,max:700,step:5,default:430},
+   {key:'radius',type:'range',label:"카드 모서리",css:'--fx-radius',unit:'px',min:0,max:999,step:1,default:999},
+   {key:'gap',type:'range',label:"카드 간격",css:'--fx-gap',unit:'px',min:0,max:80,step:1,default:32},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true}
+  ]});
+})();
+</script>
+<script>/* 커스텀 사이드바 (미리보기 전용): CWWidgets[id]에 붙어 숫자/색상/선택/토글 입력으로 실시간 조작 */
+(function(){
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+  function mount(id){
+    var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body');
+    sb.appendChild(el('div','cw-sb__head','커스텀<small>숫자·색상을 입력하면 바로 반영됩니다</small>'));sb.appendChild(body);
+    var sync=[];
+    w.controls.forEach(function(c){
+      if(c.type==='group'){body.appendChild(el('div','cw-sb__g',c.label));return}
+      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
+      var row=el('div','cw-sb__r'),lab=el('label','',c.label);row.appendChild(lab);var inp,hex;
+      if(c.type==='select'){inp=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;inp.appendChild(op)})}
+      else if(c.type==='toggle'){inp=el('input');inp.type='checkbox'}
+      else if(c.type==='color'){inp=el('input');inp.type='color';hex=el('input');hex.type='text';hex.maxLength=7}
+      else{inp=el('input');inp.type='number';inp.min=c.min;inp.max=c.max;inp.step=c.step||1;inp.inputMode='decimal'}
+      function show(){var v=w.state[c.key];if(c.type==='toggle')inp.checked=!!v;else inp.value=v;if(hex)hex.value=v}
+      function put(v){
+        if(c.type==='range'){if(v===''||isNaN(Number(v)))return;v=Math.min(c.max,Math.max(c.min,Number(v)))}
+        w.set(c.key,v)}
+      inp.addEventListener(c.type==='select'||c.type==='toggle'?'change':'input',function(){put(c.type==='toggle'?inp.checked:inp.value);if(hex)hex.value=inp.value});
+      if(c.type==='range')inp.addEventListener('blur',show);
+      if(hex)hex.addEventListener('change',function(){if(/^#[0-9a-f]{6}$/i.test(hex.value)){put(hex.value);inp.value=hex.value}else show()});
+      row.appendChild(inp);if(hex)row.appendChild(hex);if(c.type==='range'&&c.unit)row.appendChild(el('span','u',c.unit));
+      body.appendChild(row);sync.push(show);show();
+    });
+    var bar=el('div','cw-sb__b');bar.innerHTML='<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>';
+    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();sync.forEach(function(f){f()})}
+      if(a==='c'){var ex=w.export(),st={};Object.keys(w.state).forEach(function(k){if(k==='edit')return;var v=w.state[k];st[k]=v===true?1:v===false?0:v});
+        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify({settings:st,meta:ex.meta,[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]:ex[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]},null,2)+';';
+        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 — widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
+    body.appendChild(bar);document.body.appendChild(sb);
+    if(!/[?&]nosidebar/.test(location.search))document.body.classList.add('cw-has-sidebar');else sb.style.display='none';
+  }
+  function toast(m){var t=el('div','cw-sb__t',m);document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}
+  window.CWSidebar={mount:mount};
+})();
+
+CWSidebar.mount('cw-fx');</script></body></html>
