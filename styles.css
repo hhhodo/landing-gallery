@@ -89,3 +89,7 @@ main{padding-top:28px;padding-bottom:80px}
 .detail-desc{margin:16px 0 0;color:var(--ink-2)}
 .detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
 .name a{color:inherit;text-decoration:none}.name a:hover{text-decoration:underline}
+
+.widgets{margin-top:56px;padding-top:32px;border-top:1px solid var(--line)}
+.widgets-h{margin:0 0 4px;font-size:24px}
+.widgets .sub{margin:0 0 20px}

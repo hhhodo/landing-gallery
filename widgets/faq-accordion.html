@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FAQ Accordion Widget</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="shared/panel.css">
+<style>
+body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
+.faq-w{--fw-bg:#ffffff;--fw-text:#1b1b1b;--fw-sub:#666666;--fw-line:#dcdcdc;--fw-accent:#1b1b1b;--fw-width:760px;--fw-pad:96px;--fw-q-size:22px;--fw-a-size:16px;--fw-gap:24px;--fw-radius:0px;
+ background:var(--fw-bg);color:var(--fw-text);padding:var(--fw-pad) 20px}
+.faq-w__in{max-width:var(--fw-width);margin:0 auto}
+.faq-w__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--fw-sub);margin:0 0 12px}
+.faq-w__title{font-size:44px;line-height:1.2;margin:0 0 40px;font-weight:700}
+.faq-w[data-hide-head=true] .faq-w__head{display:none}
+.faq-w__item{border-top:1px solid var(--fw-line)}
+.faq-w__item:last-child{border-bottom:1px solid var(--fw-line)}
+.faq-w[data-style=card] .faq-w__item{border:1px solid var(--fw-line);border-radius:var(--fw-radius);margin-bottom:12px;padding:0 20px}
+.faq-w__q{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;gap:var(--fw-gap);padding:24px 0;cursor:pointer;font-size:var(--fw-q-size);font-weight:600}
+.faq-w[data-style=card] .faq-w__q{padding:20px 0}
+.faq-w__icon{flex:none;position:relative;width:18px;height:18px;color:var(--fw-accent);transition:transform .25s}
+.faq-w__icon:before,.faq-w__icon:after{content:"";position:absolute;background:currentColor;left:0;right:0;top:50%;height:2px;margin-top:-1px}
+.faq-w__icon:after{transform:rotate(90deg);transition:transform .25s}
+.faq-w[data-icon=chevron] .faq-w__icon:before{left:2px;right:auto;width:11px;transform:rotate(45deg);top:40%}
+.faq-w[data-icon=chevron] .faq-w__icon:after{left:7px;right:auto;width:11px;transform:rotate(-45deg);top:40%}
+.faq-w__item.is-open .faq-w__icon:after{transform:rotate(0)}
+.faq-w[data-icon=chevron] .faq-w__item.is-open .faq-w__icon{transform:rotate(180deg)}
+.faq-w__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}
+.faq-w__item.is-open .faq-w__a{grid-template-rows:1fr}
+.faq-w__a>div{overflow:hidden}
+.faq-w__a p{margin:0;padding:0 0 24px;font-size:var(--fw-a-size);line-height:1.7;color:var(--fw-sub)}
+.faq-w[data-anim=false] .faq-w__a,.faq-w[data-anim=false] .faq-w__icon,.faq-w[data-anim=false] .faq-w__icon:after{transition:none}
+</style></head><body>
+<section class="faq-w" id="faq" data-style="line" data-icon="plus" data-single="true" data-anim="true" data-hide-head="false">
+  <div class="faq-w__in">
+    <div class="faq-w__head"><p class="faq-w__eyebrow" data-g="eyebrow"></p><h2 class="faq-w__title" data-g="title"></h2></div>
+    <div class="faq-w__list" id="list"></div>
+  </div>
+</section>
+<script src="shared/panel.js"></script>
+<script>
+(function(){
+  var root=document.getElementById('faq'),list=document.getElementById('list');
+  var meta={eyebrow:'FAQ',title:'자주 묻는 질문'};
+  var init=[{q:'언제든 해지할 수 있나요?',a:'네, 위약금 없이 다음 결제일 전까지 마이페이지에서 즉시 해지할 수 있습니다.'},
+    {q:'배송은 얼마나 걸리나요?',a:'플랜 확정 후 평균 48시간 이내에 출고되며, 전국 무료 배송입니다.'},
+    {q:'마음에 들지 않으면 반품이 되나요?',a:'수령 후 7일 이내 미사용 상품에 한해 무료 반품 및 전액 환불이 가능합니다.'},
+    {q:'플랜은 중간에 변경할 수 있나요?',a:'다음 결제 주기 전까지 마이페이지에서 자유롭게 플랜을 변경할 수 있습니다.'}];
+  var data=JSON.parse(JSON.stringify(init)),openSet={0:true},editing=false;
+  var ICON='<span class="faq-w__icon" aria-hidden="true"></span>';
+  function render(){
+    root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
+    list.innerHTML=data.map(function(d,i){return '<div class="faq-w__item'+(openSet[i]?' is-open':'')+'"><div class="faq-w__q" role="button" tabindex="0" aria-expanded="'+!!openSet[i]+'"><span data-i="'+i+'" data-f="q">'+esc(d.q)+'</span>'+ICON+'</div><div class="faq-w__a"><div><p data-i="'+i+'" data-f="a">'+esc(d.a)+'</p></div></div></div>'}).join('');
+    CWPanel.setEditable(root,editing);
+  }
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+  list.addEventListener('click',function(e){
+    if(editing)return;var b=e.target.closest('.faq-w__q');if(!b)return;
+    var items=[].slice.call(list.children),i=items.indexOf(b.parentNode),was=!!openSet[i];
+    if(root.dataset.single==='true')openSet={};
+    openSet[i]=!was;
+    items.forEach(function(it,k){it.classList.toggle('is-open',!!openSet[k]);it.querySelector('.faq-w__q').setAttribute('aria-expanded',!!openSet[k])});
+  });
+  list.addEventListener('keydown',function(e){if(!editing&&(e.key==='Enter'||e.key===' ')&&e.target.classList.contains('faq-w__q')){e.preventDefault();e.target.click()}});
+  CWPanel.bindEdit(root,data,meta);
+  CWPanel.mount({title:'FAQ 위젯 설정',root:root,
+    defaults:{edit:false},
+    getExport:function(s){return{settings:s,meta:meta,items:data}},
+    onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});meta.eyebrow='FAQ';meta.title='자주 묻는 질문';openSet={0:true};editing=false;render()},
+    onChange:function(s,k){if(k==='edit')editing=s.edit;render()},
+    controls:[
+      {type:'group',label:'콘텐츠'},
+      {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
+      {type:'button',label:'+ 질문 추가',onClick:function(){data.push({q:'새 질문',a:'답변을 입력하세요.'});render()}},
+      {type:'button',label:'− 마지막 질문 삭제',onClick:function(){data.pop();render()}},
+      {key:'hide',type:'toggle',label:'제목 영역 숨김',attr:'data-hide-head',default:false},
+      {type:'group',label:'동작'},
+      {key:'single',type:'toggle',label:'한 번에 하나만 열기',attr:'data-single',default:true},
+      {key:'anim',type:'toggle',label:'펼침 애니메이션',attr:'data-anim',default:true},
+      {type:'group',label:'스타일'},
+      {key:'style',type:'select',label:'형태',attr:'data-style',options:[{value:'line',label:'라인'},{value:'card',label:'카드'}],default:'line'},
+      {key:'icon',type:'select',label:'아이콘',attr:'data-icon',options:[{value:'plus',label:'+ / −'},{value:'chevron',label:'화살표'}],default:'plus'},
+      {key:'bg',type:'color',label:'배경색',css:'--fw-bg',default:'#ffffff'},
+      {key:'text',type:'color',label:'글자색',css:'--fw-text',default:'#1b1b1b'},
+      {key:'sub',type:'color',label:'답변색',css:'--fw-sub',default:'#666666'},
+      {key:'line',type:'color',label:'선 색',css:'--fw-line',default:'#dcdcdc'},
+      {key:'accent',type:'color',label:'아이콘색',css:'--fw-accent',default:'#1b1b1b'},
+      {key:'radius',type:'range',label:'모서리',css:'--fw-radius',unit:'px',min:0,max:32,default:0},
+      {key:'width',type:'range',label:'최대 너비',css:'--fw-width',unit:'px',min:480,max:1100,step:10,default:760},
+      {key:'qs',type:'range',label:'질문 크기',css:'--fw-q-size',unit:'px',min:14,max:36,default:22},
+      {key:'as',type:'range',label:'답변 크기',css:'--fw-a-size',unit:'px',min:12,max:24,default:16},
+      {key:'pad',type:'range',label:'상하 여백',css:'--fw-pad',unit:'px',min:16,max:200,step:4,default:96}
+    ]});
+})();
+</script></body></html>

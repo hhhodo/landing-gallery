@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Benefits Grid Widget</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<link rel="stylesheet" href="shared/panel.css">
+<style>
+body{margin:0;font-family:'Pretendard',sans-serif;background:#f4f4f2}
+.bw{--bw-bg:#1b1b1b;--bw-card:#262626;--bw-text:#ffffff;--bw-sub:#a8a8a8;--bw-accent:#f6f3ee;--bw-radius:20px;--bw-cols:3;--bw-gap:20px;--bw-pad:96px;--bw-width:1160px;--bw-icon:28px;
+ background:var(--bw-bg);color:var(--bw-text);padding:var(--bw-pad) 20px}
+.bw__in{max-width:var(--bw-width);margin:0 auto}
+.bw__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--bw-sub);margin:0 0 12px}
+.bw__title{font-size:44px;line-height:1.2;margin:0 0 12px;font-weight:700}
+.bw__note{color:var(--bw-sub);margin:0 0 48px}
+.bw__grid{display:grid;grid-template-columns:repeat(var(--bw-cols),1fr);gap:var(--bw-gap)}
+.bw__card{background:var(--bw-card);border-radius:var(--bw-radius);padding:28px;display:flex;flex-direction:column;gap:12px;border:1px solid transparent}
+.bw[data-border=true] .bw__card{border-color:color-mix(in srgb,var(--bw-text) 15%,transparent)}
+.bw[data-hover=true] .bw__card{transition:transform .2s,border-color .2s}
+.bw[data-hover=true] .bw__card:hover{transform:translateY(-4px);border-color:var(--bw-accent)}
+.bw__icon{font-size:var(--bw-icon);line-height:1;color:var(--bw-accent);margin-bottom:8px}
+.bw[data-icon=false] .bw__icon{display:none}
+.bw__name{margin:0;font-size:20px;font-weight:700}
+.bw__desc{margin:0;font-size:15px;line-height:1.65;color:var(--bw-sub)}
+@media(max-width:900px){.bw__grid{grid-template-columns:1fr}}
+</style></head><body>
+<section class="bw" id="bw" data-icon="true" data-border="true" data-hover="true">
+ <div class="bw__in">
+  <p class="bw__eyebrow" data-g="eyebrow"></p><h2 class="bw__title" data-g="title"></h2><p class="bw__note" data-g="note"></p>
+  <div class="bw__grid" id="grid"></div>
+ </div>
+</section>
+<script src="shared/panel.js"></script>
+<script>
+(function(){
+ var root=document.getElementById('bw'),grid=document.getElementById('grid'),editing=false;
+ var initMeta={eyebrow:'WHY AMBLE',title:'오래 곁에 둘 것만 골라 담습니다',note:'유행이 아니라 태도로 고른 사물만 소개합니다.'},meta=Object.assign({},initMeta);
+ var init=[
+  {icon:'◆',name:'에디터 큐레이션',desc:'120개 이상의 국내외 브랜드 중, 매달 소수의 아이템만 선별합니다.'},
+  {icon:'◷',name:'부담 없는 주기',desc:'월간·격월·분기 중 선택하고, 언제든 건너뛰거나 멈출 수 있습니다.'},
+  {icon:'◎',name:'투명한 소재 정보',desc:'모든 오브제는 원산지, 소재, 생산 방식을 상세히 표기해 전달합니다.'},
+  {icon:'▣',name:'무료 배송·반품',desc:'배송비, 반품비 모두 무료. 마음에 들지 않으면 100% 환불해 드립니다.'},
+  {icon:'❦',name:'지속가능한 소재',desc:'재생 소재, 국내 소규모 공방과의 협업 비중을 매년 늘려가고 있습니다.'},
+  {icon:'✉',name:'1:1 상담',desc:'취향이 바뀌면 언제든 스타일리스트에게 문의할 수 있습니다.'}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+ function render(){
+  root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
+  grid.innerHTML=data.map(function(d,i){return '<article class="bw__card"><div class="bw__icon" data-i="'+i+'" data-f="icon">'+esc(d.icon)+'</div><h3 class="bw__name" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="bw__desc" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
+  CWPanel.setEditable(root,editing);
+ }
+ CWPanel.bindEdit(root,data,meta);
+ CWPanel.mount({title:'혜택 위젯 설정',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
+  onChange:function(s){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
+   {type:'button',label:'+ 카드 추가',onClick:function(){data.push({icon:'★',name:'새 혜택',desc:'설명을 입력하세요.'});render()}},
+   {type:'button',label:'− 마지막 카드 삭제',onClick:function(){data.pop();render()}},
+   {type:'group',label:'레이아웃'},
+   {key:'cols',type:'range',label:'열 수',css:'--bw-cols',min:1,max:4,default:3},
+   {key:'gap',type:'range',label:'카드 간격',css:'--bw-gap',unit:'px',min:8,max:56,default:20},
+   {key:'icon',type:'toggle',label:'아이콘 표시',attr:'data-icon',default:true},
+   {key:'border',type:'toggle',label:'테두리',attr:'data-border',default:true},
+   {key:'hover',type:'toggle',label:'호버 효과',attr:'data-hover',default:true},
+   {key:'isize',type:'range',label:'아이콘 크기',css:'--bw-icon',unit:'px',min:16,max:64,default:28},
+   {type:'group',label:'스타일'},
+   {key:'bg',type:'color',label:'섹션 배경',css:'--bw-bg',default:'#1b1b1b'},
+   {key:'card',type:'color',label:'카드 배경',css:'--bw-card',default:'#262626'},
+   {key:'text',type:'color',label:'글자색',css:'--bw-text',default:'#ffffff'},
+   {key:'sub',type:'color',label:'보조 글자색',css:'--bw-sub',default:'#a8a8a8'},
+   {key:'accent',type:'color',label:'강조색',css:'--bw-accent',default:'#f6f3ee'},
+   {key:'radius',type:'range',label:'모서리',css:'--bw-radius',unit:'px',min:0,max:40,default:20},
+   {key:'pad',type:'range',label:'상하 여백',css:'--bw-pad',unit:'px',min:16,max:200,step:4,default:96}
+  ]});
+})();
+</script></body></html>
