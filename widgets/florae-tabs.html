@@ -1,27 +1,50 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>탭 (florae) 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
-.cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:304px!important}
+.cw-sb{position:fixed;top:0;right:0;bottom:0;width:304px;z-index:9999;background:#fff;color:#1d1d1f;border-left:1px solid #ececef;display:flex;flex-direction:column;font:13px/1.35 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .cw-sb *{box-sizing:border-box}
-.cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
-.cw-sb__head small{display:block;font-weight:400;color:#888;font-size:12px;margin-top:2px}
-.cw-sb__body{padding:4px 16px 24px}
-.cw-sb__g{margin:18px 0 4px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#888}
-.cw-sb__r{display:flex;align-items:center;gap:8px;margin:8px 0}
-.cw-sb__r>label{flex:1;color:#333}
-.cw-sb__r input[type=number]{width:92px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;text-align:right}
-.cw-sb__r .u{width:24px;color:#888;font-size:12px}
-.cw-sb__r input[type=color]{width:36px;height:30px;padding:0;border:1px solid #ccc;border-radius:6px;background:none}
-.cw-sb__r input[type=text]{width:84px;font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px}
-.cw-sb__r select{font:inherit;padding:6px 8px;border:1px solid #ccc;border-radius:6px;max-width:150px}
-.cw-sb__r input[type=checkbox]{width:18px;height:18px}
-.cw-sb__b{display:flex;gap:6px;margin:8px 0}
-.cw-sb__b button{flex:1;font:inherit;font-size:13px;padding:8px;border:1px solid #1a1a1a;background:#fff;border-radius:8px;cursor:pointer}
-.cw-sb__b button.p{background:#1a1a1a;color:#fff}
-.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+.cw-sb__head{flex:none;padding:18px 20px 14px;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.cw-sb__body{flex:1;overflow:auto;padding:0 20px 16px}
+.cw-sb__body::-webkit-scrollbar{width:6px}.cw-sb__body::-webkit-scrollbar-thumb{background:#dcdce0;border-radius:3px}
+.cw-sb__g{margin:22px 0 6px;padding-top:16px;border-top:1px solid #f0f0f2;font-size:11px;font-weight:700;letter-spacing:.06em;color:#9a9aa2}
+.cw-sb__g:first-child{margin-top:4px;padding-top:0;border-top:0}
+.cw-sb__r{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:34px}
+.cw-sb__r>label{color:#4a4a52;white-space:nowrap}
+.cw-sb__r.col{flex-direction:column;align-items:stretch;gap:6px;padding:6px 0}
+.cw-sb__r.hide,.cw-sb__g.hide{display:none}
+/* 숫자 입력 */
+.cw-sb__n{position:relative;width:96px}
+.cw-sb__n input{width:100%;height:32px;padding:0 28px 0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb;font:inherit;font-size:13px;text-align:right;color:#1d1d1f;transition:border-color .15s,background .15s}
+.cw-sb__n input:focus{outline:0;border-color:#1d1d1f;background:#fff}
+.cw-sb__n i{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-style:normal;font-size:11px;color:#9a9aa2;pointer-events:none}
+.cw-sb__n input::-webkit-outer-spin-button,.cw-sb__n input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.cw-sb__n input[type=number]{-moz-appearance:textfield}
+/* 색상 */
+.cw-sb__c{display:flex;align-items:center;gap:8px;height:32px;padding:0 6px 0 4px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}
+.cw-sb__c input[type=color]{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.cw-sb__c input[type=color]::-webkit-color-swatch-wrapper{padding:0}.cw-sb__c input[type=color]::-webkit-color-swatch{border:1px solid rgba(0,0,0,.12);border-radius:50%}
+.cw-sb__c input[type=text]{width:66px;border:0;background:none;font:inherit;font-size:12px;color:#4a4a52;text-transform:uppercase;padding:0}.cw-sb__c input[type=text]:focus{outline:0;color:#1d1d1f}
+/* 선택 버튼 (드롭다운 대신) */
+.cw-sb__seg{display:flex;flex-wrap:wrap;gap:4px;padding:3px;background:#f1f1f4;border-radius:10px}
+.cw-sb__seg button{flex:1 1 auto;min-width:0;height:28px;padding:0 10px;border:0;border-radius:7px;background:transparent;font:inherit;font-size:12.5px;color:#6a6a72;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
+.cw-sb__seg button:hover{color:#1d1d1f}
+.cw-sb__seg button.on{background:#fff;color:#1d1d1f;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* 스위치 */
+.cw-sb__sw{position:relative;width:38px;height:22px;flex:none}
+.cw-sb__sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
+.cw-sb__sw span{position:absolute;inset:0;border-radius:11px;background:#d8d8de;transition:background .2s}
+.cw-sb__sw span::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s}
+.cw-sb__sw input:checked+span{background:#1d1d1f}.cw-sb__sw input:checked+span::after{transform:translateX(16px)}
+/* 버튼 */
+.cw-sb__b{display:flex;gap:6px;margin:8px 0 2px}
+.cw-sb__b button{flex:1;height:32px;border:1px solid #e3e3e8;background:#fff;border-radius:8px;font:inherit;font-size:12.5px;color:#1d1d1f;cursor:pointer;transition:background .15s}
+.cw-sb__b button:hover{background:#f6f6f8}
+.cw-sb__foot{flex:none;display:flex;gap:8px;padding:12px 20px 16px;border-top:1px solid #ececef;background:#fff}
+.cw-sb__foot button{flex:1;height:38px;border-radius:10px;border:1px solid #e3e3e8;background:#fff;font:inherit;font-size:13px;cursor:pointer}
+.cw-sb__foot button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}
+.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
-@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:45vh}.cw-sb{top:auto;width:auto;left:0;height:42vh;border-left:0;border-top:1px solid #e3e3e3}}
+@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:50vh}.cw-sb{top:auto;width:auto;left:0;height:48vh;border-left:0;border-top:1px solid #ececef}}
 </style></head><body>
 <!-- 탭 (florae) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
 <script>
@@ -31,30 +54,29 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-fl'] = {
   settings: {
-    bg: "#fbfbfa",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
-    pad: 84,                  // 상하 여백 (px · 0~400)
-    bg2: "#f6f7f7",           // 섹션 배경 (탭 영역) (색상 hex)
-    pos: "left",              // 탭 위치 : left=좌측 (기본) | right=우측 | top=상단
-    tabstyle: "underline",    // 탭 스타일 : underline=밑줄 (기본) | pill=알약 | box=박스 | text=텍스트만
-    tfs: 16,                  // 탭 글자 크기 (px · 10~40)
-    tpy: 24,                  // 탭 위아래 여백 (px · 0~60)
-    tpx: 20,                  // 탭 좌우 여백 (박스) (px · 0~60)
-    ppy: 8,                   // 알약 위아래 여백 (px · 0~30)
-    ppx: 16,                  // 알약 좌우 여백 (px · 4~60)
-    tgap: 0,                  // 탭 간격 (추가) (px · 0~60)
-    trad: 12,                 // 탭 모서리 (박스) (px · 0~60)
-    tline: "#e1e1e3",         // 탭 테두리·밑줄색 (색상 hex)
-    tacc: "#262628",          // 선택 탭 강조색 (밑줄·텍스트) (색상 hex)
-    tabg: "#262628",          // 선택 탭 배경 (알약·박스) (색상 hex)
-    tafg: "#ffffff",          // 선택 탭 글자색 (알약·박스) (색상 hex)
-    ratio: "16/9",            // 이미지 비율 : 16/9=16:9 (기본) | 4/3=4:3 | 3/2=3:2 | 1/1=1:1 | 4/5=4:5
-    fit: "cover",             // 이미지 채우기 : cover=꽉 채우기(잘림) | contain=전체 보이기(여백)
-    imgr: 0,                  // 이미지 모서리 (px · 0~48)
+    pos: "left",              // 위치 : left=좌측 | right=우측 | top=상단
+    tabstyle: "underline",    // 스타일 : underline=밑줄 | pill=알약 | box=박스 | text=텍스트
+    tfs: 18,                  // 글자 크기 (px · 10~40)
+    tpy: 24,                  // 위아래 여백 (px · 0~60)
+    ppy: 8,                   // 위아래 여백 (px · 0~30)
+    ppx: 16,                  // 좌우 여백 (px · 4~60)
+    tpx: 20,                  // 좌우 여백 (px · 0~60)
+    trad: 12,                 // 모서리 (px · 0~60)
+    tgap: 0,                  // 탭 간격 (px · 0~60)
+    tacc: "#262628",          // 강조 색 (색상 hex)
+    tline: "#e1e1e3",         // 선 색 (색상 hex)
+    tabg: "#262628",          // 선택 배경 (색상 hex)
+    tafg: "#ffffff",          // 선택 글자 (색상 hex)
+    ratio: "16/9",            // 비율 : 16/9=16:9 | 4/3=4:3 | 3/2=3:2 | 1/1=1:1 | 4/5=4:5
+    fit: "cover",             // 채우기 : cover=꽉 채움 | contain=전체 보기
+    imgr: 0,                  // 모서리 (px · 0~48)
     showimg: 1,               // 이미지 표시 (1=켜기, 0=끄기)
     showbody: 1,              // 설명 표시 (1=켜기, 0=끄기)
-    wrap: 0,                  // 설명 줄바꿈 허용 (1=켜기, 0=끄기)
+    bg2: "#f6f7f7",           // 배경색 (색상 hex)
+    ink: "#262628",           // 글자색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    pad: 200,                 // 상하 여백 (px · 0~400)
+    gutter: 80,               // 좌우 여백 (px · 0~300)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   // 항목의 img → 이미지 주소(https://…) 또는 업로드한 이미지(data:image/…). 업로드 이미지는 글자 수가 매우 길어요 — 실제 사이트에는 이미지를 호스팅하고 주소를 넣는 걸 권장 
@@ -143,7 +165,7 @@ window.CW_CONFIG['cw-fl'] = {
   color:var(--text-default);background:var(--color-canvas);}
 .fl h1,.fl .h0{font-size:var(--fs-h0);font-weight:var(--fw-strong);line-height:var(--lh-h0);letter-spacing:var(--display-tracking);}
 .fl h2,.fl .h1{font-size:var(--fs-h1);font-weight:var(--fw-strong);line-height:var(--lh-h1);}
-.fl .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--gutter);}
+.fl .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--fl-gutter,var(--gutter));}
 .fl .container--wide{max-width:var(--container-wide);}
 .fl .container--narrow{max-width:var(--container-narrow);}
 .fl .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--grid-gutter-lg);}
@@ -188,6 +210,7 @@ window.CW_CONFIG['cw-fl'] = {
     padding-block:var(--space-3);padding-inline:0;}.fl .spotlight__item--active{border-bottom:var(--border-2);}}
 @media (max-width:600px){.fl .gcell--2up{grid-column:1/13!important;}}
 .fl{--fl-img-radius:0px;--fl-fit:cover;--fl-gap-base:0px}
+@media(max-width:1024px){.fl .container{padding-inline:var(--gutter)}}
 /* ── 탭 위치 (탭 영역 너비는 3열 고정) ── */
 .fl .fl-tabs{grid-row:1}.fl .fl-content{grid-row:1}
 .fl[data-pos=left] .fl-tabs{grid-column:1/4}.fl[data-pos=left] .fl-content{grid-column:4/13}
@@ -231,7 +254,7 @@ window.CW_CONFIG['cw-fl'] = {
 .fl[data-wrap=true] .spotlight__body{white-space:normal}
 .fl .spotlight__item{cursor:pointer}
 .fl[data-editing=true] .spotlight__frame{outline:2px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer;position:relative}
-.fl[data-editing=true] .spotlight__frame::after{content:'클릭 또는 파일을 끌어다 놓아 이미지 교체';position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.7);color:#fff;font-size:13px;padding:6px 10px;border-radius:999px;pointer-events:none}
+.fl[data-editing=true] .spotlight__frame::after{content:'클릭하거나 파일을 끌어다 놓기';position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.7);color:#fff;font-size:13px;padding:6px 10px;border-radius:999px;pointer-events:none}
 .fl .spotlight__frame.is-drag{outline-color:#ff6d0e}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
 .fl-pop{position:fixed;z-index:10001;width:320px;background:#fff;color:#262628;border:1px solid #e1e1e3;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:16px;font:14px/1.4 'Pretendard',sans-serif}
@@ -260,7 +283,7 @@ window.CW_CONFIG['cw-fl'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -302,7 +325,7 @@ window.CW_CONFIG['cw-fl'] = {
   fr.readAsDataURL(file)}
  function openPop(){
   closePop();POP=document.createElement('div');POP.className='fl-pop';
-  POP.innerHTML='<h4>이미지 교체 · '+esc((data[cur]||{}).title||'')+'</h4><input type="file" accept="image/*" hidden><button type="button" class="p wide" data-a="file">파일 선택해서 업로드</button><div class="row"><input type="text" placeholder="또는 이미지 주소(https://…)"><button type="button" data-a="url">적용</button></div><div class="msg"></div><small>업로드한 이미지는 브라우저에서 1600px 이하로 줄여 이 위젯 안에 포함됩니다(저장 서버 없음). 새로고침하면 사라지니 「설정값 복사」로 보관하세요. 실제 사이트에는 이미지를 호스팅한 주소를 쓰는 걸 권장해요.</small>';
+  POP.innerHTML='<h4>이미지 교체</h4><input type="file" accept="image/*" hidden><button type="button" class="p wide" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소(https://…)"><button type="button" data-a="url">적용</button></div><div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
   document.body.appendChild(POP);
   var r=frame.getBoundingClientRect(),x=Math.min(Math.max(8,r.left+16),window.innerWidth-336),y=Math.min(Math.max(8,r.top+16),window.innerHeight-POP.offsetHeight-8);
   POP.style.left=x+'px';POP.style.top=y+'px';
@@ -327,71 +350,88 @@ window.CW_CONFIG['cw-fl'] = {
   onChange:function(s,k){editing=!!s.edit;render()},
   controls:[
    {type:'group',label:'콘텐츠'},
-   {key:'edit',type:'toggle',label:'텍스트 직접 편집 (이미지는 클릭해서 주소 변경)',default:false},
+   {key:'edit',type:'toggle',label:'글자·이미지 편집',default:false},
    {type:'button',label:"+ 탭 추가",onClick:function(){data.push({title:'새 탭',desc:'설명을 입력하세요.',img:data[0]?data[0].img:'',alt:''});cur=data.length-1;render()}},
    {type:'button',label:"− 마지막 탭 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
-   {type:'group',label:"색상·여백"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#fbfbfa'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:84},
-   {key:'bg2',type:'color',label:"섹션 배경 (탭 영역)",css:'--color-primary-050',default:'#f6f7f7'},
-   {type:'group',label:"탭 위치·디자인"},
-   {key:'pos',type:'select',label:"탭 위치",attr:'data-pos',options:[{"value": "left", "label": "좌측 (기본)"}, {"value": "right", "label": "우측"}, {"value": "top", "label": "상단"}],default:'left'},
-   {key:'tabstyle',type:'select',label:"탭 스타일",attr:'data-tabstyle',options:[{"value": "underline", "label": "밑줄 (기본)"}, {"value": "pill", "label": "알약"}, {"value": "box", "label": "박스"}, {"value": "text", "label": "텍스트만"}],default:'underline'},
-   {key:'tfs',type:'range',label:"탭 글자 크기",css:'--fl-tab-fs',unit:'px',min:10,max:40,step:1,default:16},
-   {key:'tpy',type:'range',label:"탭 위아래 여백",css:'--fl-tab-py',unit:'px',min:0,max:60,step:1,default:24},
-   {key:'tpx',type:'range',label:"탭 좌우 여백 (박스)",css:'--fl-tab-px',unit:'px',min:0,max:60,step:1,default:20},
-   {key:'ppy',type:'range',label:"알약 위아래 여백",css:'--fl-pill-py',unit:'px',min:0,max:30,step:1,default:8},
-   {key:'ppx',type:'range',label:"알약 좌우 여백",css:'--fl-pill-px',unit:'px',min:4,max:60,step:1,default:16},
-   {key:'tgap',type:'range',label:"탭 간격 (추가)",css:'--fl-tab-gap',unit:'px',min:0,max:60,step:1,default:0},
-   {key:'trad',type:'range',label:"탭 모서리 (박스)",css:'--fl-tab-radius',unit:'px',min:0,max:60,step:1,default:12},
-   {key:'tline',type:'color',label:"탭 테두리·밑줄색",css:'--fl-tab-line',default:'#e1e1e3'},
-   {key:'tacc',type:'color',label:"선택 탭 강조색 (밑줄·텍스트)",css:'--fl-tab-accent',default:'#262628'},
-   {key:'tabg',type:'color',label:"선택 탭 배경 (알약·박스)",css:'--fl-tab-active-bg',default:'#262628'},
-   {key:'tafg',type:'color',label:"선택 탭 글자색 (알약·박스)",css:'--fl-tab-active-fg',default:'#ffffff'},
+   {type:'group',label:"탭"},
+   {key:'pos',type:'select',label:"위치",attr:'data-pos',options:[{"value": "left", "label": "좌측"}, {"value": "right", "label": "우측"}, {"value": "top", "label": "상단"}],default:'left'},
+   {key:'tabstyle',type:'select',label:"스타일",attr:'data-tabstyle',options:[{"value": "underline", "label": "밑줄"}, {"value": "pill", "label": "알약"}, {"value": "box", "label": "박스"}, {"value": "text", "label": "텍스트"}],default:'underline'},
+   {key:'tfs',type:'range',label:"글자 크기",css:'--fl-tab-fs',unit:'px',min:10,max:40,step:1,default:18},
+   {key:'tpy',type:'range',label:"위아래 여백",css:'--fl-tab-py',unit:'px',min:0,max:60,step:1,default:24,when:{"key": "tabstyle", "is": ["underline", "box", "text"]}},
+   {key:'ppy',type:'range',label:"위아래 여백",css:'--fl-pill-py',unit:'px',min:0,max:30,step:1,default:8,when:{"key": "tabstyle", "is": ["pill"]}},
+   {key:'ppx',type:'range',label:"좌우 여백",css:'--fl-pill-px',unit:'px',min:4,max:60,step:1,default:16,when:{"key": "tabstyle", "is": ["pill"]}},
+   {key:'tpx',type:'range',label:"좌우 여백",css:'--fl-tab-px',unit:'px',min:0,max:60,step:1,default:20,when:{"key": "tabstyle", "is": ["box"]}},
+   {key:'trad',type:'range',label:"모서리",css:'--fl-tab-radius',unit:'px',min:0,max:60,step:1,default:12,when:{"key": "tabstyle", "is": ["box"]}},
+   {key:'tgap',type:'range',label:"탭 간격",css:'--fl-tab-gap',unit:'px',min:0,max:60,step:1,default:0},
+   {key:'tacc',type:'color',label:"강조 색",css:'--fl-tab-accent',default:'#262628',when:{"key": "tabstyle", "is": ["underline", "text"]}},
+   {key:'tline',type:'color',label:"선 색",css:'--fl-tab-line',default:'#e1e1e3',when:{"key": "tabstyle", "is": ["underline", "box"]}},
+   {key:'tabg',type:'color',label:"선택 배경",css:'--fl-tab-active-bg',default:'#262628',when:{"key": "tabstyle", "is": ["pill", "box"]}},
+   {key:'tafg',type:'color',label:"선택 글자",css:'--fl-tab-active-fg',default:'#ffffff',when:{"key": "tabstyle", "is": ["pill", "box"]}},
    {type:'group',label:"이미지"},
-   {key:'ratio',type:'select',label:"이미지 비율",css:'--fl-ratio',options:[{"value": "16/9", "label": "16:9 (기본)"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "1/1", "label": "1:1"}, {"value": "4/5", "label": "4:5"}],default:'16/9'},
-   {key:'fit',type:'select',label:"이미지 채우기",css:'--fl-fit',options:[{"value": "cover", "label": "꽉 채우기(잘림)"}, {"value": "contain", "label": "전체 보이기(여백)"}],default:'cover'},
-   {key:'imgr',type:'range',label:"이미지 모서리",css:'--fl-img-radius',unit:'px',min:0,max:48,step:1,default:0},
+   {key:'ratio',type:'select',label:"비율",css:'--fl-ratio',options:[{"value": "16/9", "label": "16:9"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "1/1", "label": "1:1"}, {"value": "4/5", "label": "4:5"}],default:'16/9'},
+   {key:'fit',type:'select',label:"채우기",css:'--fl-fit',options:[{"value": "cover", "label": "꽉 채움"}, {"value": "contain", "label": "전체 보기"}],default:'cover'},
+   {key:'imgr',type:'range',label:"모서리",css:'--fl-img-radius',unit:'px',min:0,max:48,step:1,default:0},
    {key:'showimg',type:'toggle',label:"이미지 표시",attr:'data-showimg',default:true},
    {key:'showbody',type:'toggle',label:"설명 표시",attr:'data-showbody',default:true},
-   {key:'wrap',type:'toggle',label:"설명 줄바꿈 허용",attr:'data-wrap',default:false}
+   {type:'group',label:"섹션"},
+   {key:'bg2',type:'color',label:"배경색",css:'--color-primary-050',default:'#f6f7f7'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:200},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--fl-gutter',unit:'px',min:0,max:300,step:2,default:80}
   ]});
 })();
 </script>
-<script>/* 커스텀 사이드바 (미리보기 전용): CWWidgets[id]에 붙어 숫자/색상/선택/토글 입력으로 실시간 조작 */
+<script>/* 커스텀 사이드바 (미리보기 전용) */
 (function(){
   function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
   function mount(id){
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
-    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body');
-    sb.appendChild(el('div','cw-sb__head','커스텀<small>숫자·색상을 입력하면 바로 반영됩니다</small>'));sb.appendChild(body);
-    var sync=[];
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
+    sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
+    function refresh(){
+      var g=null,any=false;
+      rows.forEach(function(r){
+        if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
+        var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
+      if(g)g.el.classList.toggle('hide',!any)}
+    var syncs=[];
     w.controls.forEach(function(c){
-      if(c.type==='group'){body.appendChild(el('div','cw-sb__g',c.label));return}
+      if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
-      var row=el('div','cw-sb__r'),lab=el('label','',c.label);row.appendChild(lab);var inp,hex;
-      if(c.type==='select'){inp=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;inp.appendChild(op)})}
-      else if(c.type==='toggle'){inp=el('input');inp.type='checkbox'}
-      else if(c.type==='color'){inp=el('input');inp.type='color';hex=el('input');hex.type='text';hex.maxLength=7}
-      else{inp=el('input');inp.type='number';inp.min=c.min;inp.max=c.max;inp.step=c.step||1;inp.inputMode='decimal'}
-      function show(){var v=w.state[c.key];if(c.type==='toggle')inp.checked=!!v;else inp.value=v;if(hex)hex.value=v}
-      function put(v){
-        if(c.type==='range'){if(v===''||isNaN(Number(v)))return;v=Math.min(c.max,Math.max(c.min,Number(v)))}
-        w.set(c.key,v)}
-      inp.addEventListener(c.type==='select'||c.type==='toggle'?'change':'input',function(){put(c.type==='toggle'?inp.checked:inp.value);if(hex)hex.value=inp.value});
-      if(c.type==='range')inp.addEventListener('blur',show);
-      if(hex)hex.addEventListener('change',function(){if(/^#[0-9a-f]{6}$/i.test(hex.value)){put(hex.value);inp.value=hex.value}else show()});
-      row.appendChild(inp);if(hex)row.appendChild(hex);if(c.type==='range'&&c.unit)row.appendChild(el('span','u',c.unit));
-      body.appendChild(row);sync.push(show);show();
+      var seg=c.type==='select'&&c.options.length<=6;
+      var row=el('div','cw-sb__r'+(seg?' col':''));row.appendChild(el('label','',c.label));
+      var ctl;
+      if(seg){
+        ctl=el('div','cw-sb__seg');
+        var btns=c.options.map(function(o){var v=o.value!==undefined?o.value:o,bt=el('button','',o.label||o);bt.type='button';bt.dataset.v=v;bt.onclick=function(){w.set(c.key,v);show();refresh()};ctl.appendChild(bt);return bt});
+        var show=function(){btns.forEach(function(b){b.classList.toggle('on',b.dataset.v===String(w.state[c.key]))})};
+      }else if(c.type==='select'){
+        ctl=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;ctl.appendChild(op)});
+        ctl.onchange=function(){w.set(c.key,ctl.value);refresh()};var show=function(){ctl.value=w.state[c.key]};
+      }else if(c.type==='toggle'){
+        ctl=el('label','cw-sb__sw','<input type="checkbox"><span></span>');var cb=ctl.querySelector('input');
+        cb.onchange=function(){w.set(c.key,cb.checked);refresh()};var show=function(){cb.checked=!!w.state[c.key]};
+      }else if(c.type==='color'){
+        ctl=el('div','cw-sb__c','<input type="color"><input type="text" maxlength="7">');var ci=ctl.children[0],ht=ctl.children[1];
+        ci.oninput=function(){ht.value=ci.value;w.set(c.key,ci.value)};
+        ht.onchange=function(){if(/^#[0-9a-f]{6}$/i.test(ht.value)){ci.value=ht.value;w.set(c.key,ht.value)}else show()};
+        var show=function(){ci.value=w.state[c.key];ht.value=w.state[c.key]};
+      }else{
+        ctl=el('div','cw-sb__n','<input type="number" min="'+c.min+'" max="'+c.max+'" step="'+(c.step||1)+'" inputmode="decimal">'+(c.unit?'<i>'+c.unit+'</i>':''));var ni=ctl.querySelector('input');
+        ni.oninput=function(){if(ni.value===''||isNaN(Number(ni.value)))return;w.set(c.key,Math.min(c.max,Math.max(c.min,Number(ni.value))))};
+        ni.onblur=function(){show()};var show=function(){ni.value=w.state[c.key]};
+      }
+      row.appendChild(ctl);body.appendChild(row);rows.push({c:c,el:row});syncs.push(show);show();
     });
-    var bar=el('div','cw-sb__b');bar.innerHTML='<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>';
-    bar.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();sync.forEach(function(f){f()})}
+    var foot=el('div','cw-sb__foot','<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>');
+    foot.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();syncs.forEach(function(f){f()});refresh()}
       if(a==='c'){var ex=w.export(),st={};Object.keys(w.state).forEach(function(k){if(k==='edit')return;var v=w.state[k];st[k]=v===true?1:v===false?0:v});
-        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify({settings:st,meta:ex.meta,[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]:ex[Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0]]},null,2)+';';
-        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 — widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
-    body.appendChild(bar);document.body.appendChild(sb);
+        var lk=Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0],o={settings:st,meta:ex.meta};o[lk]=ex[lk];
+        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify(o,null,2)+';';
+        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 · widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
+    sb.appendChild(foot);document.body.appendChild(sb);refresh();
     if(!/[?&]nosidebar/.test(location.search))document.body.classList.add('cw-has-sidebar');else sb.style.display='none';
   }
   function toast(m){var t=el('div','cw-sb__t',m);document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}
