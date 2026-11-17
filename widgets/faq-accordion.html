@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FAQ 아코디언 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#f4f4f2}body.cw-has-sidebar{margin-right:320px!important}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
 .cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
 .cw-sb *{box-sizing:border-box}
 .cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
@@ -31,26 +31,25 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-faq'] = {
   settings: {
-    hide: 0,                  // 제목 영역 숨김 (1=켜기, 0=끄기)
-    single: 1,                // 한 번에 하나만 열기 (1=켜기, 0=끄기)
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    note: 1,                  // 설명 문구 표시 (1=켜기, 0=끄기)
+    h0: 32,                   // 제목 크기 (px · 18~64)
+    pad: 140,                 // 상하 여백 (최대) (px · 40~240)
+    container: 1200,          // 콘텐츠 최대 너비 (px · 600~1600)
+    bg: "#ffffff",            // 섹션 배경 (색상 hex)
+    ink: "#262628",           // 글자·강조색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    line: "#e1e1e3",          // 테두리색 (색상 hex)
+    single: 0,                // 한 번에 하나만 열기 (1=켜기, 0=끄기)
     anim: 1,                  // 펼침 애니메이션 (1=켜기, 0=끄기)
-    style: "line",            // 형태 : line=라인 | card=카드
-    icon: "plus",             // 아이콘 : plus=+ / − | chevron=화살표
-    bg: "#ffffff",            // 배경색 (색상 hex)
-    text: "#1b1b1b",          // 글자색 (색상 hex)
-    sub: "#666666",           // 답변색 (색상 hex)
-    line: "#dcdcdc",          // 선 색 (색상 hex)
-    accent: "#1b1b1b",        // 아이콘색 (색상 hex)
-    radius: 0,                // 모서리 (px · 0~32)
-    width: 760,               // 최대 너비 (px · 480~1100)
-    qs: 22,                   // 질문 크기 (px · 14~36)
-    as: 16,                   // 답변 크기 (px · 12~24)
-    pad: 96,                  // 상하 여백 (px · 16~200)
+    amax: 240,                // 답변 최대 높이 (px · 100~600)
+    cols: 2,                  // 열 수 (숫자 · 1~3)
+    colgap: 56,               // 열 간격 (px · 0~120)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
       "eyebrow": "FAQ",
-      "title": "자주 묻는 질문"
+      "title": "자주 묻는\n질문"
   },
   items: [
       {
@@ -73,43 +72,58 @@ window.CW_CONFIG['cw-faq'] = {
 };
 </script>
 <style>
-.faq-w{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
-.faq-w{--fw-bg:#ffffff;--fw-text:#1b1b1b;--fw-sub:#666666;--fw-line:#dcdcdc;--fw-accent:#1b1b1b;--fw-width:760px;--fw-pad:96px;--fw-q-size:22px;--fw-a-size:16px;--fw-gap:24px;--fw-radius:0px;
- background:var(--fw-bg);color:var(--fw-text);padding:var(--fw-pad) 20px}
-.faq-w__in{max-width:var(--fw-width);margin:0 auto}
-.faq-w__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--fw-sub);margin:0 0 12px}
-.faq-w__title{font-size:44px;line-height:1.2;margin:0 0 40px;font-weight:700}
-.faq-w[data-hide-head=true] .faq-w__head{display:none}
-.faq-w__item{border-top:1px solid var(--fw-line)}
-.faq-w__item:last-child{border-bottom:1px solid var(--fw-line)}
-.faq-w[data-style=card] .faq-w__item{border:1px solid var(--fw-line);border-radius:var(--fw-radius);margin-bottom:12px;padding:0 20px}
-.faq-w__q{all:unset;box-sizing:border-box;display:flex;width:100%;justify-content:space-between;align-items:center;gap:var(--fw-gap);padding:24px 0;cursor:pointer;font-size:var(--fw-q-size);font-weight:600}
-.faq-w[data-style=card] .faq-w__q{padding:20px 0}
-.faq-w__icon{flex:none;position:relative;width:18px;height:18px;color:var(--fw-accent);transition:transform .25s}
-.faq-w__icon:before,.faq-w__icon:after{content:"";position:absolute;background:currentColor;left:0;right:0;top:50%;height:2px;margin-top:-1px}
-.faq-w__icon:after{transform:rotate(90deg);transition:transform .25s}
-.faq-w__item.is-open .faq-w__icon:after{transform:rotate(0)}
-.faq-w[data-icon=chevron] .faq-w__icon:before{display:none}
-.faq-w[data-icon=chevron] .faq-w__icon:after{left:3px;right:auto;top:2px;width:10px;height:10px;margin:0;background:none;border:solid currentColor;border-width:0 2px 2px 0;transform:rotate(45deg)}
-.faq-w[data-icon=chevron] .faq-w__item.is-open .faq-w__icon:after{top:6px;transform:rotate(-135deg)}
-.faq-w__a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}
-.faq-w__item.is-open .faq-w__a{grid-template-rows:1fr}
-.faq-w__a>div{overflow:hidden}
-.faq-w__a p{margin:0;padding:0 0 24px;font-size:var(--fw-a-size);line-height:1.7;color:var(--fw-sub)}
-.faq-w[data-anim=false] .faq-w__a,.faq-w[data-anim=false] .faq-w__icon,.faq-w[data-anim=false] .faq-w__icon:after{transition:none}
+.amb{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.amb{--amb-ink:#262628;--amb-sub:#5d5e5f;--amb-dis:#949597;--amb-card:#f6f7f7;--amb-line:#e1e1e3;--amb-line2:#c5c6c8;--amb-hover:#4c4c4e;--amb-bg:#ffffff;--amb-white:#ffffff;--amb-radius:32px;--amb-gap:20px;--amb-pad:140px;--amb-container:1200px;--amb-h0:32px;
+ position:relative;padding:clamp(72px,10vw,var(--amb-pad)) 0;background:var(--amb-bg);color:var(--amb-ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400;font-size:16px;line-height:1.4;letter-spacing:-0.025em;-webkit-font-smoothing:antialiased}
+.amb *,.amb *::before,.amb *::after{box-sizing:border-box}
+.amb img,.amb svg{max-width:100%;display:block}
+.amb a{color:inherit;text-decoration:none}
+.amb ul{list-style:none;margin:0;padding:0}
+.amb button{font-family:inherit;cursor:pointer}
+.amb h1,.amb h2,.amb h3,.amb h4,.amb p{margin:0}
+.amb .wrap{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb .eyebrow{display:inline-flex;align-items:center;gap:.5em;font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-sub)}
+.amb .eyebrow::before{content:'';width:16px;height:1px;background:var(--amb-dis)}
+.amb .heading0{font-size:var(--amb-h0);line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading2{font-size:20px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading3{font-size:18px;line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .body1{font-size:16px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-ink)}
+.amb .body2{font-size:14px;line-height:145%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .detail1{font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .badge-text{font-size:11px;line-height:110%;letter-spacing:0;font-weight:700}
+.amb .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-size:16px;font-weight:700;letter-spacing:-0.025em;transition:background .25s cubic-bezier(.22,.61,.36,1),color .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1);border:1px solid transparent;white-space:nowrap}
+.amb .btn-ghost{background:transparent;color:var(--amb-ink);border-color:var(--amb-line2)}
+.amb .btn-ghost:hover{border-color:var(--amb-ink)}
+.amb .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.amb .section-head .eyebrow{margin-bottom:14px}
+.amb .section-note{max-width:36ch;color:var(--amb-sub)}
+.amb[data-head=false] .section-head{display:none}
+.amb[data-note=false] .section-note{display:none}
+
+
+.amb{--amb-cols:2;--amb-colgap:56px}
+.amb .faq-list{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);column-gap:var(--amb-colgap);align-items:start}
+.amb .faq-item{border-bottom:1px solid var(--amb-line)}
+.amb .faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:24px 0;background:none;border:0;text-align:left;cursor:pointer}
+.amb .faq-q .plus{width:20px;height:20px;flex-shrink:0;position:relative}
+.amb .faq-q .plus::before,.amb .faq-q .plus::after{content:'';position:absolute;background:var(--amb-ink);transition:transform .3s cubic-bezier(.22,.61,.36,1)}
+.amb .faq-q .plus::before{left:0;top:50%;width:100%;height:2px;transform:translateY(-50%)}
+.amb .faq-q .plus::after{top:0;left:50%;width:2px;height:100%;transform:translateX(-50%)}
+.amb .faq-item.is-open .plus::after{transform:translateX(-50%) rotate(90deg);opacity:0}
+.amb .faq-a{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.22,.61,.36,1)}
+.amb .faq-a p{padding-bottom:24px;max-width:60ch;color:var(--amb-sub)}
+.amb .faq-item.is-open .faq-a{max-height:var(--amb-amax)}
+.amb{--amb-amax:240px}
+.amb[data-anim=false] .faq-a,.amb[data-anim=false] .plus::before,.amb[data-anim=false] .plus::after{transition:none}
+@media(max-width:1000px){.amb .faq-list{grid-template-columns:1fr}}
 </style>
-<section class="faq-w" id="cw-faq" data-style="line" data-icon="plus" data-single="true" data-anim="true" data-hide-head="false">
-  <div class="faq-w__in">
-    <div class="faq-w__head"><p class="faq-w__eyebrow" data-g="eyebrow"></p><h2 class="faq-w__title" data-g="title"></h2></div>
-    <div class="faq-w__list" id="cw-faq-list"></div>
-  </div>
-</section>
+<section class="amb" id="cw-faq" data-head="true" data-note="true" data-single="false" data-anim="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div></div><div class="faq-list" id="cw-faq-list"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
   var R=window.CWWidgets=window.CWWidgets||{};
   function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
   window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
   mount:function(cfg){
     var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
@@ -124,58 +138,55 @@ window.CW_CONFIG['cw-faq'] = {
 })();
 
 (function(){
-  var root=document.getElementById('cw-faq'),list=document.getElementById('cw-faq-list');
-  var meta={eyebrow:'FAQ',title:'자주 묻는 질문'};
-  var init=[{q:'언제든 해지할 수 있나요?',a:'네, 위약금 없이 다음 결제일 전까지 마이페이지에서 즉시 해지할 수 있습니다.'},
-    {q:'배송은 얼마나 걸리나요?',a:'플랜 확정 후 평균 48시간 이내에 출고되며, 전국 무료 배송입니다.'},
-    {q:'마음에 들지 않으면 반품이 되나요?',a:'수령 후 7일 이내 미사용 상품에 한해 무료 반품 및 전액 환불이 가능합니다.'},
-    {q:'플랜은 중간에 변경할 수 있나요?',a:'다음 결제 주기 전까지 마이페이지에서 자유롭게 플랜을 변경할 수 있습니다.'}];
-  var data=JSON.parse(JSON.stringify(init)),openSet={0:true},editing=false;
-  var ICON='<span class="faq-w__icon" aria-hidden="true"></span>';
-  function render(){
-    root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
-    list.innerHTML=data.map(function(d,i){return '<div class="faq-w__item'+(openSet[i]?' is-open':'')+'"><div class="faq-w__q" role="button" tabindex="0" aria-expanded="'+!!openSet[i]+'"><span data-i="'+i+'" data-f="q">'+esc(d.q)+'</span>'+ICON+'</div><div class="faq-w__a"><div><p data-i="'+i+'" data-f="a">'+esc(d.a)+'</p></div></div></div>'}).join('');
-    CWPanel.setEditable(root,editing);
-  }
-  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
-  list.addEventListener('click',function(e){
-    if(editing)return;var b=e.target.closest('.faq-w__q');if(!b)return;
-    var items=[].slice.call(list.children),i=items.indexOf(b.parentNode),was=!!openSet[i];
-    if(root.dataset.single==='true')openSet={};
-    openSet[i]=!was;
-    items.forEach(function(it,k){it.classList.toggle('is-open',!!openSet[k]);it.querySelector('.faq-w__q').setAttribute('aria-expanded',!!openSet[k])});
-  });
-  list.addEventListener('keydown',function(e){if(!editing&&(e.key==='Enter'||e.key===' ')&&e.target.classList.contains('faq-w__q')){e.preventDefault();e.target.click()}});
-  var CFG=(window.CW_CONFIG||{})['cw-faq']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
+ var root=document.getElementById('cw-faq'),editing=false;
+ var initMeta={"eyebrow": "FAQ", "title": "자주 묻는\n질문"},meta=Object.assign({},initMeta);
+ var init=[{"q": "언제든 해지할 수 있나요?", "a": "네, 위약금 없이 다음 결제일 전까지 마이페이지에서 즉시 해지할 수 있습니다."}, {"q": "배송은 얼마나 걸리나요?", "a": "플랜 확정 후 평균 48시간 이내에 출고되며, 전국 무료 배송입니다."}, {"q": "마음에 들지 않으면 반품이 되나요?", "a": "수령 후 7일 이내 미사용 상품에 한해 무료 반품 및 전액 환불이 가능합니다."}, {"q": "플랜은 중간에 변경할 수 있나요?", "a": "다음 결제 주기 전까지 마이페이지에서 자유롭게 플랜을 변경할 수 있습니다."}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+ function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
+
+ var list=document.getElementById('cw-faq-list'),openSet={};
+ function render(){head();
+  list.innerHTML=data.map(function(d,i){return '<div class="faq-item'+(openSet[i]?' is-open':'')+'"><div class="faq-q" role="button" tabindex="0" aria-expanded="'+!!openSet[i]+'"><span class="heading3" data-i="'+i+'" data-f="q">'+esc(d.q)+'</span><span class="plus"></span></div><div class="faq-a"><p class="body1" data-i="'+i+'" data-f="a">'+esc(d.a)+'</p></div></div>'}).join('');
+  CWPanel.setEditable(root,editing);if(editing)list.querySelectorAll('.faq-item').forEach(function(n){n.classList.add('is-open')})}
+ list.addEventListener('click',function(e){
+  if(editing)return;var b=e.target.closest('.faq-q');if(!b)return;
+  var items=[].slice.call(list.children),i=items.indexOf(b.parentNode),was=!!openSet[i];
+  if(root.getAttribute('data-single')==='true')openSet={};
+  openSet[i]=!was;
+  items.forEach(function(it,k){it.classList.toggle('is-open',!!openSet[k]);it.querySelector('.faq-q').setAttribute('aria-expanded',!!openSet[k])})});
+ list.addEventListener('keydown',function(e){if(!editing&&(e.key==='Enter'||e.key===' ')&&e.target.classList.contains('faq-q')){e.preventDefault();e.target.click()}});
+
+ var CFG=(window.CW_CONFIG||{})['cw-faq']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
-  CWPanel.mount({title:'FAQ 위젯 설정',root:root,
-    defaults:{edit:false},
-    getExport:function(s){return{settings:s,meta:meta,items:data}},
-    onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});meta.eyebrow='FAQ';meta.title='자주 묻는 질문';openSet={0:true};editing=false;render()},
-    onChange:function(s,k){if(k==='edit')editing=s.edit;render()},
-    controls:[
-      {type:'group',label:'콘텐츠'},
-      {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-      {type:'button',label:'+ 질문 추가',onClick:function(){data.push({q:'새 질문',a:'답변을 입력하세요.'});render()}},
-      {type:'button',label:'− 마지막 질문 삭제',onClick:function(){data.pop();render()}},
-      {key:'hide',type:'toggle',label:'제목 영역 숨김',attr:'data-hide-head',default:false},
-      {type:'group',label:'동작'},
-      {key:'single',type:'toggle',label:'한 번에 하나만 열기',attr:'data-single',default:true},
-      {key:'anim',type:'toggle',label:'펼침 애니메이션',attr:'data-anim',default:true},
-      {type:'group',label:'스타일'},
-      {key:'style',type:'select',label:'형태',attr:'data-style',options:[{value:'line',label:'라인'},{value:'card',label:'카드'}],default:'line'},
-      {key:'icon',type:'select',label:'아이콘',attr:'data-icon',options:[{value:'plus',label:'+ / −'},{value:'chevron',label:'화살표'}],default:'plus'},
-      {key:'bg',type:'color',label:'배경색',css:'--fw-bg',default:'#ffffff'},
-      {key:'text',type:'color',label:'글자색',css:'--fw-text',default:'#1b1b1b'},
-      {key:'sub',type:'color',label:'답변색',css:'--fw-sub',default:'#666666'},
-      {key:'line',type:'color',label:'선 색',css:'--fw-line',default:'#dcdcdc'},
-      {key:'accent',type:'color',label:'아이콘색',css:'--fw-accent',default:'#1b1b1b'},
-      {key:'radius',type:'range',label:'모서리',css:'--fw-radius',unit:'px',min:0,max:32,default:0},
-      {key:'width',type:'range',label:'최대 너비',css:'--fw-width',unit:'px',min:480,max:1100,step:10,default:760},
-      {key:'qs',type:'range',label:'질문 크기',css:'--fw-q-size',unit:'px',min:14,max:36,default:22},
-      {key:'as',type:'range',label:'답변 크기',css:'--fw-a-size',unit:'px',min:12,max:24,default:16},
-      {key:'pad',type:'range',label:'상하 여백',css:'--fw-pad',unit:'px',min:16,max:200,step:4,default:96}
-    ]});
+ CWPanel.mount({title:'FAQ 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;openSet={};render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({q:'새 질문',a:'답변을 입력하세요.'});render()}},
+   {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"섹션"},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {key:'note',type:'toggle',label:"설명 문구 표시",attr:'data-note',default:true},
+   {key:'h0',type:'range',label:"제목 크기",css:'--amb-h0',unit:'px',min:18,max:64,step:1,default:32},
+   {key:'pad',type:'range',label:"상하 여백 (최대)",css:'--amb-pad',unit:'px',min:40,max:240,step:4,default:140},
+   {key:'container',type:'range',label:"콘텐츠 최대 너비",css:'--amb-container',unit:'px',min:600,max:1600,step:10,default:1200},
+   {type:'group',label:"색상"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--amb-bg',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
+   {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"동작"},
+   {key:'single',type:'toggle',label:"한 번에 하나만 열기",attr:'data-single',default:false},
+   {key:'anim',type:'toggle',label:"펼침 애니메이션",attr:'data-anim',default:true},
+   {key:'amax',type:'range',label:"답변 최대 높이",css:'--amb-amax',unit:'px',min:100,max:600,step:10,default:240},
+   {type:'group',label:"레이아웃"},
+   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:3,step:1,default:2},
+   {key:'colgap',type:'range',label:"열 간격",css:'--amb-colgap',unit:'px',min:0,max:120,step:1,default:56}
+  ]});
 })();
 </script>
 <script>/* 커스텀 사이드바 (미리보기 전용): CWWidgets[id]에 붙어 숫자/색상/선택/토글 입력으로 실시간 조작 */

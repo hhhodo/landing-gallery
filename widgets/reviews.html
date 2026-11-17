@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>리뷰 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#f4f4f2}body.cw-has-sidebar{margin-right:320px!important}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
 .cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
 .cw-sb *{box-sizing:border-box}
 .cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
@@ -31,79 +31,100 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-rw'] = {
   settings: {
-    layout: "grid",           // 형태 : grid=그리드 | slider=슬라이더(1개씩)
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    note: 1,                  // 설명 문구 표시 (1=켜기, 0=끄기)
+    h0: 32,                   // 제목 크기 (px · 18~64)
+    pad: 140,                 // 상하 여백 (최대) (px · 40~240)
+    container: 1200,          // 콘텐츠 최대 너비 (px · 600~1600)
+    bg: "#ffffff",            // 섹션 배경 (색상 hex)
+    ink: "#262628",           // 글자·강조색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    line: "#e1e1e3",          // 테두리색 (색상 hex)
     cols: 3,                  // 열 수 (숫자 · 1~4)
-    gap: 20,                  // 카드 간격 (px · 8~56)
+    gap: 20,                  // 카드 간격 (px · 0~56)
+    radius: 32,               // 카드 모서리 (px · 0~48)
     stars: 1,                 // 별점 표시 (1=켜기, 0=끄기)
     avatar: 1,                // 아바타 표시 (1=켜기, 0=끄기)
-    bg: "#ffffff",            // 섹션 배경 (색상 hex)
-    card: "#f6f3ee",          // 카드 배경 (색상 hex)
-    text: "#1b1b1b",          // 글자색 (색상 hex)
-    star: "#f5a623",          // 별 색 (색상 hex)
-    radius: 16,               // 모서리 (px · 0~40)
-    qs: 18,                   // 후기 글자 크기 (px · 13~30)
-    pad: 96,                  // 상하 여백 (px · 16~200)
+    card: "#f6f7f7",          // 카드 배경 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
       "eyebrow": "REVIEWS",
-      "title": "구독자들의 이야기"
+      "title": "구독자들의\n이야기"
   },
-  reviews: [
+  items: [
       {
           "quote": "매달 뭘 살지 고민하는 시간이 줄었어요. 큐레이터가 고른 물건들이라 실패한 적이 거의 없습니다.",
           "name": "김서연",
-          "role": "스탠다드 · 14개월째 구독"
+          "role": "스탠다드 · 14개월째 구독",
+          "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-loa.jpg"
       },
       {
           "quote": "해지가 어려운 구독 서비스에 지쳤었는데, AMBLE은 정말 클릭 한 번으로 끝나서 오히려 계속 쓰게 돼요.",
           "name": "박도현",
-          "role": "프리미엄 · 6개월째 구독"
+          "role": "프리미엄 · 6개월째 구독",
+          "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-roberto.jpg"
       },
       {
-          "quote": "소재와 원산지가 꼼꼼히 적혀 있어서 선물용으로도 믿고 고릅니다.",
-          "name": "이하린",
-          "role": "라이트 · 3개월째 구독"
+          "quote": "선물용으로 시작했다가 제가 더 좋아하게 됐어요. 소재 설명이 자세해서 믿고 쓸 수 있습니다.",
+          "name": "이하은",
+          "role": "라이트 · 3개월째 구독",
+          "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-brittney.jpg"
       }
   ]
 };
 </script>
 <style>
-.rw{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
-.rw{--rw-bg:#ffffff;--rw-card:#f6f3ee;--rw-text:#1b1b1b;--rw-sub:#6b6b6b;--rw-star:#f5a623;--rw-radius:16px;--rw-cols:3;--rw-gap:20px;--rw-pad:96px;--rw-quote:18px;--rw-width:1160px;
- background:var(--rw-bg);color:var(--rw-text);padding:var(--rw-pad) 20px}
-.rw__in{max-width:var(--rw-width);margin:0 auto}
-.rw__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--rw-sub);margin:0 0 12px}
-.rw__title{font-size:44px;line-height:1.2;margin:0 0 48px;font-weight:700}
-.rw__grid{display:grid;grid-template-columns:repeat(var(--rw-cols),1fr);gap:var(--rw-gap)}
-.rw[data-layout=slider] .rw__grid{grid-template-columns:1fr}
-.rw[data-layout=slider] .rw__card:not(.is-current){display:none}
-.rw__card{background:var(--rw-card);border-radius:var(--rw-radius);padding:28px;display:flex;flex-direction:column;gap:16px}
-.rw__stars{color:var(--rw-star);letter-spacing:2px;font-size:18px}
-.rw[data-stars=false] .rw__stars{display:none}
-.rw__quote{margin:0;font-size:var(--rw-quote);line-height:1.65;flex:1}
-.rw__meta{display:flex;align-items:center;gap:12px}
-.rw[data-avatar=false] .rw__avatar{display:none}
-.rw__avatar{width:40px;height:40px;border-radius:50%;background:var(--rw-text);color:var(--rw-bg);display:grid;place-items:center;font-weight:700;flex:none}
-.rw__meta b{display:block;font-size:15px}.rw__meta span{font-size:13px;color:var(--rw-sub)}
-.rw__nav{display:none;justify-content:center;align-items:center;gap:16px;margin-top:24px}
-.rw[data-layout=slider] .rw__nav{display:flex}
-.rw__nav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--rw-text);background:transparent;color:var(--rw-text);cursor:pointer;font-size:16px}
-@media(max-width:900px){.rw__grid{grid-template-columns:1fr}}
+.amb{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.amb{--amb-ink:#262628;--amb-sub:#5d5e5f;--amb-dis:#949597;--amb-card:#f6f7f7;--amb-line:#e1e1e3;--amb-line2:#c5c6c8;--amb-hover:#4c4c4e;--amb-bg:#ffffff;--amb-white:#ffffff;--amb-radius:32px;--amb-gap:20px;--amb-pad:140px;--amb-container:1200px;--amb-h0:32px;
+ position:relative;padding:clamp(72px,10vw,var(--amb-pad)) 0;background:var(--amb-bg);color:var(--amb-ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400;font-size:16px;line-height:1.4;letter-spacing:-0.025em;-webkit-font-smoothing:antialiased}
+.amb *,.amb *::before,.amb *::after{box-sizing:border-box}
+.amb img,.amb svg{max-width:100%;display:block}
+.amb a{color:inherit;text-decoration:none}
+.amb ul{list-style:none;margin:0;padding:0}
+.amb button{font-family:inherit;cursor:pointer}
+.amb h1,.amb h2,.amb h3,.amb h4,.amb p{margin:0}
+.amb .wrap{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb .eyebrow{display:inline-flex;align-items:center;gap:.5em;font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-sub)}
+.amb .eyebrow::before{content:'';width:16px;height:1px;background:var(--amb-dis)}
+.amb .heading0{font-size:var(--amb-h0);line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading2{font-size:20px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading3{font-size:18px;line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .body1{font-size:16px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-ink)}
+.amb .body2{font-size:14px;line-height:145%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .detail1{font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .badge-text{font-size:11px;line-height:110%;letter-spacing:0;font-weight:700}
+.amb .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-size:16px;font-weight:700;letter-spacing:-0.025em;transition:background .25s cubic-bezier(.22,.61,.36,1),color .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1);border:1px solid transparent;white-space:nowrap}
+.amb .btn-ghost{background:transparent;color:var(--amb-ink);border-color:var(--amb-line2)}
+.amb .btn-ghost:hover{border-color:var(--amb-ink)}
+.amb .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.amb .section-head .eyebrow{margin-bottom:14px}
+.amb .section-note{max-width:36ch;color:var(--amb-sub)}
+.amb[data-head=false] .section-head{display:none}
+.amb[data-note=false] .section-note{display:none}
+
+
+.amb{--amb-cols:3}
+.amb .testimonial-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:var(--amb-gap)}
+.amb .testimonial-card{background:var(--amb-card);border-radius:var(--amb-radius);padding:clamp(26px,3vw,32px);display:flex;flex-direction:column}
+.amb .testimonial-card .stars{display:flex;gap:4px;color:var(--amb-ink)}
+.amb .testimonial-card .stars svg{width:14px;height:14px}
+.amb .testimonial-card p.body1{margin-top:18px;flex:1}
+.amb .testimonial-meta{margin-top:22px;display:flex;align-items:center;gap:12px}
+.amb .testimonial-avatar{width:36px;height:36px;border-radius:999px;background:var(--amb-line2);object-fit:cover;flex-shrink:0}
+.amb .testimonial-meta b{display:block}
+.amb .testimonial-meta span{color:var(--amb-sub)}
+.amb[data-stars=false] .stars{display:none}
+.amb[data-avatar=false] .testimonial-avatar{display:none}
+@media(max-width:1000px){.amb .testimonial-grid{grid-template-columns:1fr}}
 </style>
-<section class="rw" id="cw-rw" data-layout="grid" data-stars="true" data-avatar="true">
- <div class="rw__in">
-  <p class="rw__eyebrow" data-g="eyebrow"></p><h2 class="rw__title" data-g="title"></h2>
-  <div class="rw__grid" id="cw-rw-grid"></div>
-  <div class="rw__nav"><button type="button" id="cw-rw-prev" aria-label="이전">←</button><span id="cw-rw-count"></span><button type="button" id="cw-rw-next" aria-label="다음">→</button></div>
- </div>
-</section>
+<section class="amb" id="cw-rw" data-head="true" data-note="true" data-stars="true" data-avatar="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div></div><div class="testimonial-grid" id="cw-rw-grid"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
   var R=window.CWWidgets=window.CWWidgets||{};
   function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
   window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
   mount:function(cfg){
     var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
@@ -118,48 +139,47 @@ window.CW_CONFIG['cw-rw'] = {
 })();
 
 (function(){
- var root=document.getElementById('cw-rw'),grid=document.getElementById('cw-rw-grid'),cur=0,editing=false;
- var initMeta={eyebrow:'REVIEWS',title:'구독자들의 이야기'},meta=Object.assign({},initMeta);
- var init=[
-  {quote:'매달 뭘 살지 고민하는 시간이 줄었어요. 큐레이터가 고른 물건들이라 실패한 적이 거의 없습니다.',name:'김서연',role:'스탠다드 · 14개월째 구독'},
-  {quote:'해지가 어려운 구독 서비스에 지쳤었는데, AMBLE은 정말 클릭 한 번으로 끝나서 오히려 계속 쓰게 돼요.',name:'박도현',role:'프리미엄 · 6개월째 구독'},
-  {quote:'소재와 원산지가 꼼꼼히 적혀 있어서 선물용으로도 믿고 고릅니다.',name:'이하린',role:'라이트 · 3개월째 구독'}];
+ var root=document.getElementById('cw-rw'),editing=false;
+ var initMeta={"eyebrow": "REVIEWS", "title": "구독자들의\n이야기"},meta=Object.assign({},initMeta);
+ var init=[{"quote": "매달 뭘 살지 고민하는 시간이 줄었어요. 큐레이터가 고른 물건들이라 실패한 적이 거의 없습니다.", "name": "김서연", "role": "스탠다드 · 14개월째 구독", "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-loa.jpg"}, {"quote": "해지가 어려운 구독 서비스에 지쳤었는데, AMBLE은 정말 클릭 한 번으로 끝나서 오히려 계속 쓰게 돼요.", "name": "박도현", "role": "프리미엄 · 6개월째 구독", "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-roberto.jpg"}, {"quote": "선물용으로 시작했다가 제가 더 좋아하게 됐어요. 소재 설명이 자세해서 믿고 쓸 수 있습니다.", "name": "이하은", "role": "라이트 · 3개월째 구독", "avatar": "https://hhhodo.github.io/amble-landing/assets/images/web/avatar-brittney.jpg"}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
- function render(){
-  if(cur>=data.length)cur=Math.max(0,data.length-1);
-  root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
-  grid.innerHTML=data.map(function(d,i){return '<article class="rw__card'+(i===cur?' is-current':'')+'"><div class="rw__stars" aria-label="별 5개">★★★★★</div><p class="rw__quote" data-i="'+i+'" data-f="quote">'+esc(d.quote)+'</p><div class="rw__meta"><div class="rw__avatar">'+esc((d.name||'?').charAt(0))+'</div><div><b data-i="'+i+'" data-f="name">'+esc(d.name)+'</b><span data-i="'+i+'" data-f="role">'+esc(d.role)+'</span></div></div></article>'}).join('');
-  document.getElementById('cw-rw-count').textContent=(cur+1)+' / '+data.length;
-  CWPanel.setEditable(root,editing);
- }
- function go(d){cur=(cur+d+data.length)%data.length;render()}
- document.getElementById('cw-rw-prev').onclick=function(){go(-1)};document.getElementById('cw-rw-next').onclick=function(){go(1)};
- var CFG=(window.CW_CONFIG||{})['cw-rw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.reviews){data.length=0;CFG.reviews.forEach(function(d){data.push(d)})}
+ function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
+
+ var grid=document.getElementById('cw-rw-grid'),ST='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>'.repeat(5);
+ function render(){head();
+  grid.innerHTML=data.map(function(d,i){return '<article class="testimonial-card"><div class="stars">'+ST+'</div><p class="body1" data-i="'+i+'" data-f="quote">'+esc(d.quote)+'</p><div class="testimonial-meta"><img class="testimonial-avatar" src="'+esc(d.avatar||'')+'" width="36" height="36" alt=""><div><b class="body2" data-i="'+i+'" data-f="name">'+esc(d.name)+'</b><span class="detail1" data-i="'+i+'" data-f="role">'+esc(d.role)+'</span></div></div></article>'}).join('');
+  CWPanel.setEditable(root,editing)}
+
+ var CFG=(window.CW_CONFIG||{})['cw-rw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
- CWPanel.mount({title:'리뷰 위젯 설정',root:root,defaults:{edit:false},
-  getExport:function(s){return{settings:s,meta:meta,reviews:data}},
-  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;cur=0;render()},
+ CWPanel.mount({title:'리뷰 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
   onChange:function(s,k){editing=!!s.edit;render()},
   controls:[
    {type:'group',label:'콘텐츠'},
    {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-   {type:'button',label:'+ 리뷰 추가',onClick:function(){data.push({quote:'후기를 입력하세요.',name:'이름',role:'구독 정보'});cur=data.length-1;render()}},
-   {type:'button',label:'− 마지막 리뷰 삭제',onClick:function(){data.pop();render()}},
-   {type:'group',label:'레이아웃'},
-   {key:'layout',type:'select',label:'형태',attr:'data-layout',options:[{value:'grid',label:'그리드'},{value:'slider',label:'슬라이더(1개씩)'}],default:'grid'},
-   {key:'cols',type:'range',label:'열 수',css:'--rw-cols',min:1,max:4,default:3},
-   {key:'gap',type:'range',label:'카드 간격',css:'--rw-gap',unit:'px',min:8,max:56,default:20},
-   {key:'stars',type:'toggle',label:'별점 표시',attr:'data-stars',default:true},
-   {key:'avatar',type:'toggle',label:'아바타 표시',attr:'data-avatar',default:true},
-   {type:'group',label:'스타일'},
-   {key:'bg',type:'color',label:'섹션 배경',css:'--rw-bg',default:'#ffffff'},
-   {key:'card',type:'color',label:'카드 배경',css:'--rw-card',default:'#f6f3ee'},
-   {key:'text',type:'color',label:'글자색',css:'--rw-text',default:'#1b1b1b'},
-   {key:'star',type:'color',label:'별 색',css:'--rw-star',default:'#f5a623'},
-   {key:'radius',type:'range',label:'모서리',css:'--rw-radius',unit:'px',min:0,max:40,default:16},
-   {key:'qs',type:'range',label:'후기 글자 크기',css:'--rw-quote',unit:'px',min:13,max:30,default:18},
-   {key:'pad',type:'range',label:'상하 여백',css:'--rw-pad',unit:'px',min:16,max:200,step:4,default:96}
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({quote:'후기를 입력하세요.',name:'이름',role:'구독 정보',avatar:''});render()}},
+   {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"섹션"},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {key:'note',type:'toggle',label:"설명 문구 표시",attr:'data-note',default:true},
+   {key:'h0',type:'range',label:"제목 크기",css:'--amb-h0',unit:'px',min:18,max:64,step:1,default:32},
+   {key:'pad',type:'range',label:"상하 여백 (최대)",css:'--amb-pad',unit:'px',min:40,max:240,step:4,default:140},
+   {key:'container',type:'range',label:"콘텐츠 최대 너비",css:'--amb-container',unit:'px',min:600,max:1600,step:10,default:1200},
+   {type:'group',label:"색상"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--amb-bg',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
+   {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"레이아웃"},
+   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
+   {key:'gap',type:'range',label:"카드 간격",css:'--amb-gap',unit:'px',min:0,max:56,step:1,default:20},
+   {key:'radius',type:'range',label:"카드 모서리",css:'--amb-radius',unit:'px',min:0,max:48,step:1,default:32},
+   {key:'stars',type:'toggle',label:"별점 표시",attr:'data-stars',default:true},
+   {key:'avatar',type:'toggle',label:"아바타 표시",attr:'data-avatar',default:true},
+   {key:'card',type:'color',label:"카드 배경",css:'--amb-card',default:'#f6f7f7'}
   ]});
 })();
 </script>

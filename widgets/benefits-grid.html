@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>혜택 그리드 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#f4f4f2}body.cw-has-sidebar{margin-right:320px!important}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
 .cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
 .cw-sb *{box-sizing:border-box}
 .cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
@@ -31,91 +31,105 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-bw'] = {
   settings: {
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    note: 1,                  // 설명 문구 표시 (1=켜기, 0=끄기)
+    h0: 32,                   // 제목 크기 (px · 18~64)
+    pad: 140,                 // 상하 여백 (최대) (px · 40~240)
+    container: 1200,          // 콘텐츠 최대 너비 (px · 600~1600)
+    bg: "#ffffff",            // 섹션 배경 (색상 hex)
+    ink: "#262628",           // 글자·강조색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    line: "#e1e1e3",          // 테두리색 (색상 hex)
     cols: 3,                  // 열 수 (숫자 · 1~4)
-    gap: 20,                  // 카드 간격 (px · 8~56)
-    icon: 1,                  // 아이콘 표시 (1=켜기, 0=끄기)
-    border: 1,                // 테두리 (1=켜기, 0=끄기)
-    hover: 1,                 // 호버 효과 (1=켜기, 0=끄기)
-    isize: 28,                // 아이콘 크기 (px · 16~64)
-    bg: "#1b1b1b",            // 섹션 배경 (색상 hex)
-    card: "#262626",          // 카드 배경 (색상 hex)
-    text: "#ffffff",          // 글자색 (색상 hex)
-    sub: "#a8a8a8",           // 보조 글자색 (색상 hex)
-    accent: "#f6f3ee",        // 강조색 (색상 hex)
-    radius: 20,               // 모서리 (px · 0~40)
-    pad: 96,                  // 상하 여백 (px · 16~200)
+    gap: 20,                  // 카드 간격 (px · 0~56)
+    minh: 220,                // 카드 최소 높이 (px · 100~500)
+    radius: 32,               // 카드 모서리 (px · 0~48)
+    showicon: 1,              // 아이콘 표시 (1=켜기, 0=끄기)
+    card: "#f6f7f7",          // 카드 배경 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
       "eyebrow": "WHY AMBLE",
-      "title": "오래 곁에 둘 것만 골라 담습니다",
+      "title": "오래 곁에 둘 것만\n골라 담습니다",
       "note": "유행이 아니라 태도로 고른 사물만 소개합니다."
   },
   items: [
       {
-          "icon": "◆",
           "name": "에디터 큐레이션",
           "desc": "120개 이상의 국내외 브랜드 중, 매달 소수의 아이템만 선별합니다."
       },
       {
-          "icon": "◷",
           "name": "부담 없는 주기",
           "desc": "월간·격월·분기 중 선택하고, 언제든 건너뛰거나 멈출 수 있습니다."
       },
       {
-          "icon": "◎",
           "name": "투명한 소재 정보",
           "desc": "모든 오브제는 원산지, 소재, 생산 방식을 상세히 표기해 전달합니다."
       },
       {
-          "icon": "▣",
           "name": "무료 배송·반품",
           "desc": "배송비, 반품비 모두 무료. 마음에 들지 않으면 100% 환불해 드립니다."
       },
       {
-          "icon": "❦",
           "name": "지속가능한 소재",
           "desc": "재생 소재, 국내 소규모 공방과의 협업 비중을 매년 늘려가고 있습니다."
       },
       {
-          "icon": "✉",
-          "name": "1:1 상담",
-          "desc": "취향이 바뀌면 언제든 스타일리스트에게 문의할 수 있습니다."
+          "name": "1:1 스타일 상담",
+          "desc": "전담 큐레이터에게 취향과 공간에 맞는 조합을 상담받을 수 있습니다."
       }
   ]
 };
 </script>
 <style>
-.bw{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
-.bw{--bw-bg:#1b1b1b;--bw-card:#262626;--bw-text:#ffffff;--bw-sub:#a8a8a8;--bw-accent:#f6f3ee;--bw-radius:20px;--bw-cols:3;--bw-gap:20px;--bw-pad:96px;--bw-width:1160px;--bw-icon:28px;
- background:var(--bw-bg);color:var(--bw-text);padding:var(--bw-pad) 20px}
-.bw__in{max-width:var(--bw-width);margin:0 auto}
-.bw__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--bw-sub);margin:0 0 12px}
-.bw__title{font-size:44px;line-height:1.2;margin:0 0 12px;font-weight:700}
-.bw__note{color:var(--bw-sub);margin:0 0 48px}
-.bw__grid{display:grid;grid-template-columns:repeat(var(--bw-cols),1fr);gap:var(--bw-gap)}
-.bw__card{background:var(--bw-card);border-radius:var(--bw-radius);padding:28px;display:flex;flex-direction:column;gap:12px;border:1px solid transparent}
-.bw[data-border=true] .bw__card{border-color:color-mix(in srgb,var(--bw-text) 15%,transparent)}
-.bw[data-hover=true] .bw__card{transition:transform .2s,border-color .2s}
-.bw[data-hover=true] .bw__card:hover{transform:translateY(-4px);border-color:var(--bw-accent)}
-.bw__icon{font-size:var(--bw-icon);line-height:1;color:var(--bw-accent);margin-bottom:8px}
-.bw[data-icon=false] .bw__icon{display:none}
-.bw__name{margin:0;font-size:20px;font-weight:700}
-.bw__desc{margin:0;font-size:15px;line-height:1.65;color:var(--bw-sub)}
-@media(max-width:900px){.bw__grid{grid-template-columns:1fr}}
+.amb{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.amb{--amb-ink:#262628;--amb-sub:#5d5e5f;--amb-dis:#949597;--amb-card:#f6f7f7;--amb-line:#e1e1e3;--amb-line2:#c5c6c8;--amb-hover:#4c4c4e;--amb-bg:#ffffff;--amb-white:#ffffff;--amb-radius:32px;--amb-gap:20px;--amb-pad:140px;--amb-container:1200px;--amb-h0:32px;
+ position:relative;padding:clamp(72px,10vw,var(--amb-pad)) 0;background:var(--amb-bg);color:var(--amb-ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400;font-size:16px;line-height:1.4;letter-spacing:-0.025em;-webkit-font-smoothing:antialiased}
+.amb *,.amb *::before,.amb *::after{box-sizing:border-box}
+.amb img,.amb svg{max-width:100%;display:block}
+.amb a{color:inherit;text-decoration:none}
+.amb ul{list-style:none;margin:0;padding:0}
+.amb button{font-family:inherit;cursor:pointer}
+.amb h1,.amb h2,.amb h3,.amb h4,.amb p{margin:0}
+.amb .wrap{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb .eyebrow{display:inline-flex;align-items:center;gap:.5em;font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-sub)}
+.amb .eyebrow::before{content:'';width:16px;height:1px;background:var(--amb-dis)}
+.amb .heading0{font-size:var(--amb-h0);line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading2{font-size:20px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading3{font-size:18px;line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .body1{font-size:16px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-ink)}
+.amb .body2{font-size:14px;line-height:145%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .detail1{font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .badge-text{font-size:11px;line-height:110%;letter-spacing:0;font-weight:700}
+.amb .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-size:16px;font-weight:700;letter-spacing:-0.025em;transition:background .25s cubic-bezier(.22,.61,.36,1),color .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1);border:1px solid transparent;white-space:nowrap}
+.amb .btn-ghost{background:transparent;color:var(--amb-ink);border-color:var(--amb-line2)}
+.amb .btn-ghost:hover{border-color:var(--amb-ink)}
+.amb .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.amb .section-head .eyebrow{margin-bottom:14px}
+.amb .section-note{max-width:36ch;color:var(--amb-sub)}
+.amb[data-head=false] .section-head{display:none}
+.amb[data-note=false] .section-note{display:none}
+
+
+.amb{--amb-cols:3;--amb-minh:220px}
+.amb .benefits-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:var(--amb-gap)}
+.amb .benefit-card{background:var(--amb-card);border-radius:var(--amb-radius);padding:clamp(28px,3vw,36px);min-height:var(--amb-minh);display:flex;flex-direction:column}
+.amb .benefit-card .icon{width:44px;height:44px;border-radius:999px;background:var(--amb-white);display:flex;align-items:center;justify-content:center;color:var(--amb-ink)}
+.amb .benefit-card .icon svg{width:22px;height:22px}
+.amb .benefit-card h3{margin-top:22px}
+.amb .benefit-card p{margin-top:10px}
+.amb[data-icon=false] .benefit-card .icon{display:none}
+.amb[data-icon=false] .benefit-card h3{margin-top:0}
+@media(max-width:1000px){.amb .benefits-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.amb .benefits-grid{grid-template-columns:1fr}}
 </style>
-<section class="bw" id="cw-bw" data-icon="true" data-border="true" data-hover="true">
- <div class="bw__in">
-  <p class="bw__eyebrow" data-g="eyebrow"></p><h2 class="bw__title" data-g="title"></h2><p class="bw__note" data-g="note"></p>
-  <div class="bw__grid" id="cw-bw-grid"></div>
- </div>
-</section>
+<section class="amb" id="cw-bw" data-head="true" data-note="true" data-icon="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="benefits-grid" id="cw-bw-grid"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
   var R=window.CWWidgets=window.CWWidgets||{};
   function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
   window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
   mount:function(cfg){
     var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
@@ -130,48 +144,47 @@ window.CW_CONFIG['cw-bw'] = {
 })();
 
 (function(){
- var root=document.getElementById('cw-bw'),grid=document.getElementById('cw-bw-grid'),editing=false;
- var initMeta={eyebrow:'WHY AMBLE',title:'오래 곁에 둘 것만 골라 담습니다',note:'유행이 아니라 태도로 고른 사물만 소개합니다.'},meta=Object.assign({},initMeta);
- var init=[
-  {icon:'◆',name:'에디터 큐레이션',desc:'120개 이상의 국내외 브랜드 중, 매달 소수의 아이템만 선별합니다.'},
-  {icon:'◷',name:'부담 없는 주기',desc:'월간·격월·분기 중 선택하고, 언제든 건너뛰거나 멈출 수 있습니다.'},
-  {icon:'◎',name:'투명한 소재 정보',desc:'모든 오브제는 원산지, 소재, 생산 방식을 상세히 표기해 전달합니다.'},
-  {icon:'▣',name:'무료 배송·반품',desc:'배송비, 반품비 모두 무료. 마음에 들지 않으면 100% 환불해 드립니다.'},
-  {icon:'❦',name:'지속가능한 소재',desc:'재생 소재, 국내 소규모 공방과의 협업 비중을 매년 늘려가고 있습니다.'},
-  {icon:'✉',name:'1:1 상담',desc:'취향이 바뀌면 언제든 스타일리스트에게 문의할 수 있습니다.'}];
+ var root=document.getElementById('cw-bw'),editing=false;
+ var initMeta={"eyebrow": "WHY AMBLE", "title": "오래 곁에 둘 것만\n골라 담습니다", "note": "유행이 아니라 태도로 고른 사물만 소개합니다."},meta=Object.assign({},initMeta);
+ var init=[{"name": "에디터 큐레이션", "desc": "120개 이상의 국내외 브랜드 중, 매달 소수의 아이템만 선별합니다."}, {"name": "부담 없는 주기", "desc": "월간·격월·분기 중 선택하고, 언제든 건너뛰거나 멈출 수 있습니다."}, {"name": "투명한 소재 정보", "desc": "모든 오브제는 원산지, 소재, 생산 방식을 상세히 표기해 전달합니다."}, {"name": "무료 배송·반품", "desc": "배송비, 반품비 모두 무료. 마음에 들지 않으면 100% 환불해 드립니다."}, {"name": "지속가능한 소재", "desc": "재생 소재, 국내 소규모 공방과의 협업 비중을 매년 늘려가고 있습니다."}, {"name": "1:1 스타일 상담", "desc": "전담 큐레이터에게 취향과 공간에 맞는 조합을 상담받을 수 있습니다."}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
- function render(){
-  root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
-  grid.innerHTML=data.map(function(d,i){return '<article class="bw__card"><div class="bw__icon" data-i="'+i+'" data-f="icon">'+esc(d.icon)+'</div><h3 class="bw__name" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="bw__desc" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
-  CWPanel.setEditable(root,editing);
- }
+ function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
+
+ var grid=document.getElementById('cw-bw-grid'),ICONS=["<path d=\"M12 3 3 10l9 4 9-4-9-7Z\"/><path d=\"M3 10v7l9 4 9-4v-7\"/>", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 3\"/>", "<path d=\"M4 12a8 8 0 0 1 14-5\"/><path d=\"M20 12a8 8 0 0 1-14 5\"/><path d=\"m18 4 0 3-3 0M6 20l0-3 3 0\"/>", "<rect x=\"3\" y=\"7\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"M8 7V5a4 4 0 0 1 8 0v2\"/>", "<path d=\"M12 21s-7-4.35-9.5-8.5C.9 9 2.6 5.5 6 5c2-.3 3.5.7 6 3 2.5-2.3 4-3.3 6-3 3.4.5 5.1 4 3.5 7.5C19 16.65 12 21 12 21Z\"/>", "<path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10Z\"/>"];
+ function render(){head();
+  grid.innerHTML=data.map(function(d,i){return '<article class="benefit-card"><div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">'+ICONS[i%ICONS.length]+'</svg></div><h3 class="heading3" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="body2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
+  CWPanel.setEditable(root,editing)}
+
  var CFG=(window.CW_CONFIG||{})['cw-bw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
- CWPanel.mount({title:'혜택 위젯 설정',root:root,defaults:{edit:false},
+ CWPanel.mount({title:'혜택 위젯',root:root,defaults:{edit:false},
   getExport:function(s){return{settings:s,meta:meta,items:data}},
   onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
-  onChange:function(s){editing=!!s.edit;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
   controls:[
    {type:'group',label:'콘텐츠'},
    {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-   {type:'button',label:'+ 카드 추가',onClick:function(){data.push({icon:'★',name:'새 혜택',desc:'설명을 입력하세요.'});render()}},
-   {type:'button',label:'− 마지막 카드 삭제',onClick:function(){data.pop();render()}},
-   {type:'group',label:'레이아웃'},
-   {key:'cols',type:'range',label:'열 수',css:'--bw-cols',min:1,max:4,default:3},
-   {key:'gap',type:'range',label:'카드 간격',css:'--bw-gap',unit:'px',min:8,max:56,default:20},
-   {key:'icon',type:'toggle',label:'아이콘 표시',attr:'data-icon',default:true},
-   {key:'border',type:'toggle',label:'테두리',attr:'data-border',default:true},
-   {key:'hover',type:'toggle',label:'호버 효과',attr:'data-hover',default:true},
-   {key:'isize',type:'range',label:'아이콘 크기',css:'--bw-icon',unit:'px',min:16,max:64,default:28},
-   {type:'group',label:'스타일'},
-   {key:'bg',type:'color',label:'섹션 배경',css:'--bw-bg',default:'#1b1b1b'},
-   {key:'card',type:'color',label:'카드 배경',css:'--bw-card',default:'#262626'},
-   {key:'text',type:'color',label:'글자색',css:'--bw-text',default:'#ffffff'},
-   {key:'sub',type:'color',label:'보조 글자색',css:'--bw-sub',default:'#a8a8a8'},
-   {key:'accent',type:'color',label:'강조색',css:'--bw-accent',default:'#f6f3ee'},
-   {key:'radius',type:'range',label:'모서리',css:'--bw-radius',unit:'px',min:0,max:40,default:20},
-   {key:'pad',type:'range',label:'상하 여백',css:'--bw-pad',unit:'px',min:16,max:200,step:4,default:96}
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({name:'새 혜택',desc:'설명을 입력하세요.'});render()}},
+   {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"섹션"},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {key:'note',type:'toggle',label:"설명 문구 표시",attr:'data-note',default:true},
+   {key:'h0',type:'range',label:"제목 크기",css:'--amb-h0',unit:'px',min:18,max:64,step:1,default:32},
+   {key:'pad',type:'range',label:"상하 여백 (최대)",css:'--amb-pad',unit:'px',min:40,max:240,step:4,default:140},
+   {key:'container',type:'range',label:"콘텐츠 최대 너비",css:'--amb-container',unit:'px',min:600,max:1600,step:10,default:1200},
+   {type:'group',label:"색상"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--amb-bg',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
+   {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"레이아웃"},
+   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
+   {key:'gap',type:'range',label:"카드 간격",css:'--amb-gap',unit:'px',min:0,max:56,step:1,default:20},
+   {key:'minh',type:'range',label:"카드 최소 높이",css:'--amb-minh',unit:'px',min:100,max:500,step:5,default:220},
+   {key:'radius',type:'range',label:"카드 모서리",css:'--amb-radius',unit:'px',min:0,max:48,step:1,default:32},
+   {key:'showicon',type:'toggle',label:"아이콘 표시",attr:'data-icon',default:true},
+   {key:'card',type:'color',label:"카드 배경",css:'--amb-card',default:'#f6f7f7'}
   ]});
 })();
 </script>

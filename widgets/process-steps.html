@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>프로세스 단계 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#f4f4f2}body.cw-has-sidebar{margin-right:320px!important}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
 .cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
 .cw-sb *{box-sizing:border-box}
 .cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
@@ -31,26 +31,30 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-sw'] = {
   settings: {
-    dir: "horizontal",        // 방향 : horizontal=가로 | vertical=세로
-    icon: 1,                  // 번호 원형 아이콘 (1=켜기, 0=끄기)
-    num: 1,                   // STEP 라벨 (1=켜기, 0=끄기)
-    connector: 1,             // 연결선 (1=켜기, 0=끄기)
-    gap: 20,                  // 간격 (px · 8~56)
-    isize: 56,                // 아이콘 크기 (px · 32~96)
-    bg: "#f6f3ee",            // 섹션 배경 (색상 hex)
-    card: "#ffffff",          // 카드 배경 (색상 hex)
-    text: "#1b1b1b",          // 글자색 (색상 hex)
-    accent: "#1b1b1b",        // 강조색 (색상 hex)
-    radius: 20,               // 모서리 (px · 0~40)
-    pad: 96,                  // 상하 여백 (px · 16~200)
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    note: 1,                  // 설명 문구 표시 (1=켜기, 0=끄기)
+    h0: 32,                   // 제목 크기 (px · 18~64)
+    pad: 140,                 // 상하 여백 (최대) (px · 40~240)
+    container: 1200,          // 콘텐츠 최대 너비 (px · 600~1600)
+    bg: "#ffffff",            // 섹션 배경 (색상 hex)
+    ink: "#262628",           // 글자·강조색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    line: "#e1e1e3",          // 테두리색 (색상 hex)
+    cols: 4,                  // 열 수 (숫자 · 1~6)
+    minh: 230,                // 카드 최소 높이 (px · 100~500)
+    icon: 40,                 // 아이콘 크기 (px · 16~96)
+    radius: 32,               // 전체 모서리 (px · 0~48)
+    showicon: 1,              // 아이콘 표시 (1=켜기, 0=끄기)
+    shownum: 1,               // STEP 번호 표시 (1=켜기, 0=끄기)
+    cardbg: "#ffffff",        // 카드 배경 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
       "eyebrow": "HOW IT WORKS",
-      "title": "4단계면 충분합니다",
+      "title": "4단계면\n충분합니다",
       "note": "복잡한 절차 없이, 신청부터 배송까지 한 번에 이어집니다."
   },
-  steps: [
+  items: [
       {
           "name": "취향 진단",
           "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다."
@@ -71,38 +75,55 @@ window.CW_CONFIG['cw-sw'] = {
 };
 </script>
 <style>
-.sw{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
-.sw{--sw-bg:#f6f3ee;--sw-card:#ffffff;--sw-text:#1b1b1b;--sw-sub:#6b6b6b;--sw-accent:#1b1b1b;--sw-radius:20px;--sw-gap:20px;--sw-pad:96px;--sw-width:1160px;--sw-icon:56px;
- background:var(--sw-bg);color:var(--sw-text);padding:var(--sw-pad) 20px}
-.sw__in{max-width:var(--sw-width);margin:0 auto}
-.sw__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--sw-sub);margin:0 0 12px}
-.sw__title{font-size:44px;line-height:1.2;margin:0 0 12px;font-weight:700}
-.sw__note{color:var(--sw-sub);margin:0 0 48px}
-.sw__list{display:grid;grid-template-columns:repeat(var(--sw-n),1fr);gap:var(--sw-gap);counter-reset:s}
-.sw[data-dir=vertical] .sw__list{grid-template-columns:1fr}
-.sw__step{background:var(--sw-card);border-radius:var(--sw-radius);padding:28px;position:relative;display:flex;flex-direction:column;gap:12px}
-.sw[data-dir=vertical] .sw__step{flex-direction:row;align-items:flex-start;gap:24px}
-.sw__num{font-size:12px;letter-spacing:.08em;color:var(--sw-sub)}
-.sw__icon{width:var(--sw-icon);height:var(--sw-icon);border-radius:50%;background:var(--sw-accent);color:var(--sw-card);display:grid;place-items:center;font-size:calc(var(--sw-icon)*.4);font-weight:700;flex:none}
-.sw[data-icon=false] .sw__icon{display:none}
-.sw[data-num=false] .sw__num{display:none}
-.sw__name{margin:0;font-size:22px;font-weight:700}
-.sw__desc{margin:0;font-size:15px;line-height:1.65;color:var(--sw-sub)}
-.sw[data-connector=true]:not([data-dir=vertical]) .sw__step:not(:last-child):after{content:"";position:absolute;top:calc(28px + var(--sw-icon)/2 + 12px);left:100%;width:var(--sw-gap);border-top:2px dashed var(--sw-accent);opacity:.35}
-@media(max-width:900px){.sw__list{grid-template-columns:1fr}.sw__step:after{display:none}}
+.amb{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.amb{--amb-ink:#262628;--amb-sub:#5d5e5f;--amb-dis:#949597;--amb-card:#f6f7f7;--amb-line:#e1e1e3;--amb-line2:#c5c6c8;--amb-hover:#4c4c4e;--amb-bg:#ffffff;--amb-white:#ffffff;--amb-radius:32px;--amb-gap:20px;--amb-pad:140px;--amb-container:1200px;--amb-h0:32px;
+ position:relative;padding:clamp(72px,10vw,var(--amb-pad)) 0;background:var(--amb-bg);color:var(--amb-ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400;font-size:16px;line-height:1.4;letter-spacing:-0.025em;-webkit-font-smoothing:antialiased}
+.amb *,.amb *::before,.amb *::after{box-sizing:border-box}
+.amb img,.amb svg{max-width:100%;display:block}
+.amb a{color:inherit;text-decoration:none}
+.amb ul{list-style:none;margin:0;padding:0}
+.amb button{font-family:inherit;cursor:pointer}
+.amb h1,.amb h2,.amb h3,.amb h4,.amb p{margin:0}
+.amb .wrap{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb .eyebrow{display:inline-flex;align-items:center;gap:.5em;font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-sub)}
+.amb .eyebrow::before{content:'';width:16px;height:1px;background:var(--amb-dis)}
+.amb .heading0{font-size:var(--amb-h0);line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading2{font-size:20px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading3{font-size:18px;line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .body1{font-size:16px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-ink)}
+.amb .body2{font-size:14px;line-height:145%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .detail1{font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .badge-text{font-size:11px;line-height:110%;letter-spacing:0;font-weight:700}
+.amb .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-size:16px;font-weight:700;letter-spacing:-0.025em;transition:background .25s cubic-bezier(.22,.61,.36,1),color .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1);border:1px solid transparent;white-space:nowrap}
+.amb .btn-ghost{background:transparent;color:var(--amb-ink);border-color:var(--amb-line2)}
+.amb .btn-ghost:hover{border-color:var(--amb-ink)}
+.amb .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.amb .section-head .eyebrow{margin-bottom:14px}
+.amb .section-note{max-width:36ch;color:var(--amb-sub)}
+.amb[data-head=false] .section-head{display:none}
+.amb[data-note=false] .section-note{display:none}
+
+
+.amb{--amb-cols:4;--amb-minh:230px;--amb-icon:40px}
+.amb .process-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:1px;background:var(--amb-line);border-radius:var(--amb-radius);overflow:hidden;border:1px solid var(--amb-line)}
+.amb .process-card{background:var(--amb-white);padding:clamp(28px,3vw,36px) clamp(22px,2.4vw,28px);min-height:var(--amb-minh);display:flex;flex-direction:column;justify-content:space-between}
+.amb .process-card .step-num{font-size:13px;color:var(--amb-dis);font-weight:700}
+.amb .process-card .step-icon{width:var(--amb-icon);height:var(--amb-icon);margin:20px 0;color:var(--amb-ink)}
+.amb .process-card .step-icon svg{width:100%;height:100%}
+.amb .process-card h3{margin-top:auto}
+.amb .process-card p{margin-top:8px}
+.amb[data-icon=false] .step-icon{display:none}
+.amb[data-num=false] .step-num{display:none}
+@media(max-width:1000px){.amb .process-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.amb .process-grid{grid-template-columns:1fr}}
 </style>
-<section class="sw" id="cw-sw" data-dir="horizontal" data-icon="true" data-num="true" data-connector="true">
- <div class="sw__in">
-  <p class="sw__eyebrow" data-g="eyebrow"></p><h2 class="sw__title" data-g="title"></h2><p class="sw__note" data-g="note"></p>
-  <div class="sw__list" id="cw-sw-list"></div>
- </div>
-</section>
+<section class="amb" id="cw-sw" data-head="true" data-note="true" data-icon="true" data-num="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="process-grid" id="cw-sw-list"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
   var R=window.CWWidgets=window.CWWidgets||{};
   function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
   window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
   mount:function(cfg){
     var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
@@ -117,46 +138,48 @@ window.CW_CONFIG['cw-sw'] = {
 })();
 
 (function(){
- var root=document.getElementById('cw-sw'),list=document.getElementById('cw-sw-list'),editing=false;
- var initMeta={eyebrow:'HOW IT WORKS',title:'4단계면 충분합니다',note:'복잡한 절차 없이, 신청부터 배송까지 한 번에 이어집니다.'},meta=Object.assign({},initMeta);
- var init=[
-  {name:'취향 진단',desc:'간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다.'},
-  {name:'플랜 선택',desc:'월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다.'},
-  {name:'큐레이션 배송',desc:'에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다.'},
-  {name:'언제든 조정',desc:'다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다.'}];
+ var root=document.getElementById('cw-sw'),editing=false;
+ var initMeta={"eyebrow": "HOW IT WORKS", "title": "4단계면\n충분합니다", "note": "복잡한 절차 없이, 신청부터 배송까지 한 번에 이어집니다."},meta=Object.assign({},initMeta);
+ var init=[{"name": "취향 진단", "desc": "간단한 설문으로 리빙·웰니스·아웃도어 중 선호하는 결을 확인합니다."}, {"name": "플랜 선택", "desc": "월간·격월 등 원하는 주기와 예산에 맞는 플랜을 고릅니다."}, {"name": "큐레이션 배송", "desc": "에디터가 고른 오브제 3~5종을 48시간 내 상자에 담아 보내드립니다."}, {"name": "언제든 조정", "desc": "다음 배송 전까지 자유롭게 플랜 변경, 건너뛰기, 해지가 가능합니다."}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
- function render(){
-  root.style.setProperty('--sw-n',data.length);
-  root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
-  list.innerHTML=data.map(function(d,i){var n=i+1;return '<article class="sw__step"><div class="sw__icon">'+n+'</div><div><span class="sw__num">STEP '+(n<10?'0':'')+n+'</span><h3 class="sw__name" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="sw__desc" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></div></article>'}).join('');
-  CWPanel.setEditable(root,editing);
- }
- var CFG=(window.CW_CONFIG||{})['cw-sw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.steps){data.length=0;CFG.steps.forEach(function(d){data.push(d)})}
+ function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
+
+ var list=document.getElementById('cw-sw-list'),ICONS=["<rect x=\"7\" y=\"7\" width=\"26\" height=\"26\" rx=\"4\"/><path d=\"M14 20h12M20 14v12\"/>", "<path d=\"M20 8v9l7 4\"/><circle cx=\"20\" cy=\"20\" r=\"13\"/>", "<path d=\"M8 14h24l-2 18H10L8 14Z\"/><path d=\"M14 14V11a6 6 0 0 1 12 0v3\"/>", "<path d=\"M20 7v9l6 3\"/><path d=\"M8 20a12 12 0 1 0 3.5-8.5\"/><path d=\"M8 8v6h6\"/>"];
+ function render(){head();
+  list.innerHTML=data.map(function(d,i){var n=i+1;return '<article class="process-card"><span class="step-num detail1">STEP '+(n<10?'0':'')+n+'</span><div class="step-icon"><svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6">'+ICONS[i%ICONS.length]+'</svg></div><h3 class="heading3" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="body2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></article>'}).join('');
+  CWPanel.setEditable(root,editing)}
+
+ var CFG=(window.CW_CONFIG||{})['cw-sw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
- CWPanel.mount({title:'프로세스 위젯 설정',root:root,defaults:{edit:false},
-  getExport:function(s){return{settings:s,meta:meta,steps:data}},
+ CWPanel.mount({title:'프로세스 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
   onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
-  onChange:function(s){editing=!!s.edit;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
   controls:[
    {type:'group',label:'콘텐츠'},
    {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-   {type:'button',label:'+ 단계 추가',onClick:function(){data.push({name:'새 단계',desc:'설명을 입력하세요.'});render()}},
-   {type:'button',label:'− 마지막 단계 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
-   {type:'group',label:'레이아웃'},
-   {key:'dir',type:'select',label:'방향',attr:'data-dir',options:[{value:'horizontal',label:'가로'},{value:'vertical',label:'세로'}],default:'horizontal'},
-   {key:'icon',type:'toggle',label:'번호 원형 아이콘',attr:'data-icon',default:true},
-   {key:'num',type:'toggle',label:'STEP 라벨',attr:'data-num',default:true},
-   {key:'connector',type:'toggle',label:'연결선',attr:'data-connector',default:true},
-   {key:'gap',type:'range',label:'간격',css:'--sw-gap',unit:'px',min:8,max:56,default:20},
-   {key:'isize',type:'range',label:'아이콘 크기',css:'--sw-icon',unit:'px',min:32,max:96,default:56},
-   {type:'group',label:'스타일'},
-   {key:'bg',type:'color',label:'섹션 배경',css:'--sw-bg',default:'#f6f3ee'},
-   {key:'card',type:'color',label:'카드 배경',css:'--sw-card',default:'#ffffff'},
-   {key:'text',type:'color',label:'글자색',css:'--sw-text',default:'#1b1b1b'},
-   {key:'accent',type:'color',label:'강조색',css:'--sw-accent',default:'#1b1b1b'},
-   {key:'radius',type:'range',label:'모서리',css:'--sw-radius',unit:'px',min:0,max:40,default:20},
-   {key:'pad',type:'range',label:'상하 여백',css:'--sw-pad',unit:'px',min:16,max:200,step:4,default:96}
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({name:'새 단계',desc:'설명을 입력하세요.'});render()}},
+   {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"섹션"},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {key:'note',type:'toggle',label:"설명 문구 표시",attr:'data-note',default:true},
+   {key:'h0',type:'range',label:"제목 크기",css:'--amb-h0',unit:'px',min:18,max:64,step:1,default:32},
+   {key:'pad',type:'range',label:"상하 여백 (최대)",css:'--amb-pad',unit:'px',min:40,max:240,step:4,default:140},
+   {key:'container',type:'range',label:"콘텐츠 최대 너비",css:'--amb-container',unit:'px',min:600,max:1600,step:10,default:1200},
+   {type:'group',label:"색상"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--amb-bg',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
+   {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"레이아웃"},
+   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:6,step:1,default:4},
+   {key:'minh',type:'range',label:"카드 최소 높이",css:'--amb-minh',unit:'px',min:100,max:500,step:5,default:230},
+   {key:'icon',type:'range',label:"아이콘 크기",css:'--amb-icon',unit:'px',min:16,max:96,step:1,default:40},
+   {key:'radius',type:'range',label:"전체 모서리",css:'--amb-radius',unit:'px',min:0,max:48,step:1,default:32},
+   {key:'showicon',type:'toggle',label:"아이콘 표시",attr:'data-icon',default:true},
+   {key:'shownum',type:'toggle',label:"STEP 번호 표시",attr:'data-num',default:true},
+   {key:'cardbg',type:'color',label:"카드 배경",css:'--amb-white',default:'#ffffff'}
   ]});
 })();
 </script>

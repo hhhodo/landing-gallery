@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>요금제 위젯</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
-<style>body{margin:0;background:#f4f4f2}body.cw-has-sidebar{margin-right:320px!important}
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:320px!important}
 .cw-sb{position:fixed;top:0;right:0;bottom:0;width:320px;z-index:9999;background:#fff;color:#1a1a1a;border-left:1px solid #e3e3e3;overflow:auto;font:14px/1.4 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif}
 .cw-sb *{box-sizing:border-box}
 .cw-sb__head{position:sticky;top:0;background:#fff;padding:16px;border-bottom:1px solid #eee;font-weight:700;font-size:15px;z-index:1}
@@ -31,28 +31,29 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-pw'] = {
   settings: {
+    head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    note: 1,                  // 설명 문구 표시 (1=켜기, 0=끄기)
+    h0: 32,                   // 제목 크기 (px · 18~64)
+    pad: 140,                 // 상하 여백 (최대) (px · 40~240)
+    container: 1200,          // 콘텐츠 최대 너비 (px · 600~1600)
+    bg: "#ffffff",            // 섹션 배경 (색상 hex)
+    ink: "#262628",           // 글자·강조색 (색상 hex)
+    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    line: "#e1e1e3",          // 테두리색 (색상 hex)
+    cols: 3,                  // 열 수 (숫자 · 1~4)
+    gap: 20,                  // 카드 간격 (px · 0~56)
+    radius: 32,               // 카드 모서리 (px · 0~48)
     badge: 1,                 // 뱃지 표시 (1=켜기, 0=끄기)
     feat: 1,                  // 혜택 목록 표시 (1=켜기, 0=끄기)
-    lift: 1,                  // 강조 카드 띄우기 (1=켜기, 0=끄기)
-    align: "left",            // 제목 정렬 : left=왼쪽 | center=가운데
-    cols: 3,                  // 열 수 (숫자 · 1~4)
-    bg: "#f6f3ee",            // 섹션 배경 (색상 hex)
-    card: "#ffffff",          // 카드 배경 (색상 hex)
-    text: "#1b1b1b",          // 글자색 (색상 hex)
-    accent: "#1b1b1b",        // 강조색 (색상 hex)
-    atext: "#ffffff",         // 강조 글자색 (색상 hex)
-    line: "#e2ddd4",          // 테두리색 (색상 hex)
-    radius: 20,               // 모서리 (px · 0~40)
-    gap: 24,                  // 카드 간격 (px · 8~56)
-    pad: 96,                  // 상하 여백 (px · 16~200)
+    feat2: "#262628",         // 강조 카드 색 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
       "eyebrow": "PLANS",
-      "title": "나에게 맞는 플랜을 고르세요",
+      "title": "나에게 맞는\n플랜을 고르세요",
       "note": "모든 플랜은 언제든 변경하거나 해지할 수 있습니다."
   },
-  plans: [
+  items: [
       {
           "badge": "LIGHT",
           "name": "라이트",
@@ -79,7 +80,7 @@ window.CW_CONFIG['cw-pw'] = {
           "desc": "아웃도어까지 폭넓게 경험하고 싶은 분께.",
           "price": "79,000원",
           "unit": "/ 월",
-          "features": "오브제 5종 이상 큐레이션\n무료 배송 · 반품\n전담 스타일리스트\n언제든 해지 가능",
+          "features": "오브제 5~7종 큐레이션\n무료 배송 · 반품\n1:1 스타일 상담 무제한\n한정판 오브제 우선 구매",
           "cta": "프리미엄 시작하기",
           "featured": false
       }
@@ -87,45 +88,63 @@ window.CW_CONFIG['cw-pw'] = {
 };
 </script>
 <style>
-.pw{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
-.pw{--pw-bg:#f6f3ee;--pw-card:#ffffff;--pw-text:#1b1b1b;--pw-sub:#6b6b6b;--pw-line:#e2ddd4;--pw-accent:#1b1b1b;--pw-accent-text:#ffffff;--pw-radius:20px;--pw-cols:3;--pw-gap:24px;--pw-pad:96px;--pw-width:1160px;
- background:var(--pw-bg);color:var(--pw-text);padding:var(--pw-pad) 20px}
-.pw__in{max-width:var(--pw-width);margin:0 auto}
-.pw__eyebrow{font-size:13px;letter-spacing:.08em;color:var(--pw-sub);margin:0 0 12px}
-.pw__title{font-size:44px;line-height:1.2;margin:0 0 12px;font-weight:700}
-.pw__note{color:var(--pw-sub);margin:0 0 48px}
-.pw[data-align=center] .pw__head{text-align:center}
-.pw__grid{display:grid;grid-template-columns:repeat(var(--pw-cols),1fr);gap:var(--pw-gap);align-items:stretch}
-.pw__card{position:relative;display:flex;flex-direction:column;background:var(--pw-card);border:1px solid var(--pw-line);border-radius:var(--pw-radius);padding:32px}
-.pw__card.is-featured{background:var(--pw-accent);color:var(--pw-accent-text);border-color:var(--pw-accent)}
-.pw[data-lift=true] .pw__card.is-featured{transform:translateY(-12px)}
-.pw__badge{align-self:flex-start;font-size:12px;letter-spacing:.08em;padding:4px 10px;border-radius:999px;border:1px solid currentColor;margin-bottom:16px}
-.pw__name{font-size:26px;margin:0 0 8px;font-weight:700}
-.pw__desc{margin:0 0 24px;font-size:15px;line-height:1.6;opacity:.7;min-height:48px}
-.pw__price{display:flex;align-items:baseline;gap:6px;margin-bottom:24px}
-.pw__price b{font-size:34px}.pw__price span{opacity:.6;font-size:14px}
-.pw__feat{list-style:none;margin:0 0 28px;padding:0;display:grid;gap:10px;flex:1;font-size:15px}
-.pw__feat li{display:flex;gap:8px;align-items:flex-start}
-.pw__feat li:before{content:"✓";flex:none}
-.pw__btn{display:block;text-align:center;text-decoration:none;font-weight:600;padding:14px;border-radius:calc(var(--pw-radius)/2);border:1px solid currentColor;color:inherit}
-.pw__card.is-featured .pw__btn{background:var(--pw-accent-text);color:var(--pw-accent);border-color:var(--pw-accent-text)}
-.pw[data-badge=false] .pw__badge{display:none}
-.pw[data-feat=false] .pw__feat{display:none}
-.pw__card.is-featured .pw__feat li:before{content:"✓"}
-@media(max-width:900px){.pw__grid{grid-template-columns:1fr}.pw[data-lift=true] .pw__card.is-featured{transform:none}}
+.amb{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.amb{--amb-ink:#262628;--amb-sub:#5d5e5f;--amb-dis:#949597;--amb-card:#f6f7f7;--amb-line:#e1e1e3;--amb-line2:#c5c6c8;--amb-hover:#4c4c4e;--amb-bg:#ffffff;--amb-white:#ffffff;--amb-radius:32px;--amb-gap:20px;--amb-pad:140px;--amb-container:1200px;--amb-h0:32px;
+ position:relative;padding:clamp(72px,10vw,var(--amb-pad)) 0;background:var(--amb-bg);color:var(--amb-ink);font-family:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:400;font-size:16px;line-height:1.4;letter-spacing:-0.025em;-webkit-font-smoothing:antialiased}
+.amb *,.amb *::before,.amb *::after{box-sizing:border-box}
+.amb img,.amb svg{max-width:100%;display:block}
+.amb a{color:inherit;text-decoration:none}
+.amb ul{list-style:none;margin:0;padding:0}
+.amb button{font-family:inherit;cursor:pointer}
+.amb h1,.amb h2,.amb h3,.amb h4,.amb p{margin:0}
+.amb .wrap{max-width:var(--amb-container);margin-inline:auto;padding-inline:clamp(20px,5vw,64px)}
+.amb .eyebrow{display:inline-flex;align-items:center;gap:.5em;font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-sub)}
+.amb .eyebrow::before{content:'';width:16px;height:1px;background:var(--amb-dis)}
+.amb .heading0{font-size:var(--amb-h0);line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading2{font-size:20px;line-height:140%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .heading3{font-size:18px;line-height:130%;letter-spacing:-0.025em;font-weight:700;color:var(--amb-ink)}
+.amb .body1{font-size:16px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-ink)}
+.amb .body2{font-size:14px;line-height:145%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .detail1{font-size:12px;line-height:140%;letter-spacing:-0.025em;font-weight:400;color:var(--amb-sub)}
+.amb .badge-text{font-size:11px;line-height:110%;letter-spacing:0;font-weight:700}
+.amb .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 28px;border-radius:999px;font-size:16px;font-weight:700;letter-spacing:-0.025em;transition:background .25s cubic-bezier(.22,.61,.36,1),color .25s cubic-bezier(.22,.61,.36,1),border-color .25s cubic-bezier(.22,.61,.36,1);border:1px solid transparent;white-space:nowrap}
+.amb .btn-ghost{background:transparent;color:var(--amb-ink);border-color:var(--amb-line2)}
+.amb .btn-ghost:hover{border-color:var(--amb-ink)}
+.amb .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,64px)}
+.amb .section-head .eyebrow{margin-bottom:14px}
+.amb .section-note{max-width:36ch;color:var(--amb-sub)}
+.amb[data-head=false] .section-head{display:none}
+.amb[data-note=false] .section-note{display:none}
+
+
+.amb .plans-grid{display:grid;grid-template-columns:repeat(var(--amb-cols),1fr);gap:var(--amb-gap);align-items:stretch}
+.amb .plan-card{border:1px solid var(--amb-line);border-radius:var(--amb-radius);padding:clamp(28px,3vw,36px);display:flex;flex-direction:column}
+.amb .plan-card.featured{background:var(--amb-feat);border-color:var(--amb-feat)}
+.amb .plan-card.featured .heading2,.amb .plan-card.featured .plan-price b,.amb .plan-card.featured .plan-features li,.amb .plan-card.featured .badge-text{color:var(--amb-white)}
+.amb .plan-card.featured .plan-price span,.amb .plan-card.featured .plan-desc{color:var(--amb-dis)}
+.amb .plan-badge{display:inline-flex;align-self:flex-start;padding:5px 12px;border-radius:999px;background:var(--amb-line);color:var(--amb-ink);margin-bottom:16px}
+.amb .plan-card.featured .plan-badge{background:var(--amb-hover)}
+.amb .plan-desc{margin-top:10px;color:var(--amb-sub)}
+.amb .plan-price{margin-top:24px;display:flex;align-items:baseline;gap:6px}
+.amb .plan-price b{font-size:32px;font-weight:700}
+.amb .plan-price span{font-size:14px;color:var(--amb-sub)}
+.amb .plan-features{margin-top:24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.amb .plan-features li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--amb-ink)}
+.amb .plan-features li svg{width:16px;height:16px;flex-shrink:0;margin-top:2px}
+.amb .plan-card .btn{margin-top:28px;width:100%}
+.amb .plan-card.featured .btn-ghost{border-color:var(--amb-sub);color:var(--amb-white)}
+.amb[data-badge=false] .plan-badge{display:none}
+.amb[data-feat=false] .plan-features{display:none}
+.amb{--amb-cols:3;--amb-feat:#262628}
+@media(max-width:1000px){.amb .plans-grid{grid-template-columns:1fr}}
 </style>
-<section class="pw" id="cw-pw" data-align="left" data-lift="true" data-badge="true" data-feat="true">
- <div class="pw__in">
-  <div class="pw__head"><p class="pw__eyebrow" data-g="eyebrow"></p><h2 class="pw__title" data-g="title"></h2><p class="pw__note" data-g="note"></p></div>
-  <div class="pw__grid" id="cw-pw-grid"></div>
- </div>
-</section>
+<section class="amb" id="cw-pw" data-head="true" data-note="true" data-badge="true" data-feat="true"><div class="wrap"><div class="section-head"><div><p class="eyebrow" data-g="eyebrow"></p><h2 class="heading0" data-g="title"></h2></div><p class="body2 section-note" data-g="note"></p></div><div class="plans-grid" id="cw-pw-grid"></div></div></section>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
   var R=window.CWWidgets=window.CWWidgets||{};
   function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
-  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.textContent;else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
   window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
   mount:function(cfg){
     var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
@@ -140,49 +159,48 @@ window.CW_CONFIG['cw-pw'] = {
 })();
 
 (function(){
- var root=document.getElementById('cw-pw'),grid=document.getElementById('cw-pw-grid');
- var initMeta={eyebrow:'PLANS',title:'나에게 맞는 플랜을 고르세요',note:'모든 플랜은 언제든 변경하거나 해지할 수 있습니다.'};
- var meta=Object.assign({},initMeta);
- var init=[
-  {badge:'LIGHT',name:'라이트',desc:'가볍게 시작하고 싶은 분을 위한 격월 플랜.',price:'29,000원',unit:'/ 격월',features:'오브제 2~3종 큐레이션\n무료 배송\n언제든 해지 가능',cta:'라이트 시작하기',featured:false},
-  {badge:'STANDARD',name:'스탠다드',desc:'가장 많이 선택하는 균형 잡힌 월간 플랜.',price:'49,000원',unit:'/ 월',features:'오브제 3~5종 큐레이션\n무료 배송 · 반품\n1:1 스타일 상담 월 1회\n언제든 해지 가능',cta:'스탠다드 시작하기',featured:true},
-  {badge:'PREMIUM',name:'프리미엄',desc:'아웃도어까지 폭넓게 경험하고 싶은 분께.',price:'79,000원',unit:'/ 월',features:'오브제 5종 이상 큐레이션\n무료 배송 · 반품\n전담 스타일리스트\n언제든 해지 가능',cta:'프리미엄 시작하기',featured:false}];
- var data=JSON.parse(JSON.stringify(init)),editing=false;
+ var root=document.getElementById('cw-pw'),editing=false;
+ var initMeta={"eyebrow": "PLANS", "title": "나에게 맞는\n플랜을 고르세요", "note": "모든 플랜은 언제든 변경하거나 해지할 수 있습니다."},meta=Object.assign({},initMeta);
+ var init=[{"badge": "LIGHT", "name": "라이트", "desc": "가볍게 시작하고 싶은 분을 위한 격월 플랜.", "price": "29,000원", "unit": "/ 격월", "features": "오브제 2~3종 큐레이션\n무료 배송\n언제든 해지 가능", "cta": "라이트 시작하기", "featured": false}, {"badge": "STANDARD", "name": "스탠다드", "desc": "가장 많이 선택하는 균형 잡힌 월간 플랜.", "price": "49,000원", "unit": "/ 월", "features": "오브제 3~5종 큐레이션\n무료 배송 · 반품\n1:1 스타일 상담 월 1회\n언제든 해지 가능", "cta": "스탠다드 시작하기", "featured": true}, {"badge": "PREMIUM", "name": "프리미엄", "desc": "아웃도어까지 폭넓게 경험하고 싶은 분께.", "price": "79,000원", "unit": "/ 월", "features": "오브제 5~7종 큐레이션\n무료 배송 · 반품\n1:1 스타일 상담 무제한\n한정판 오브제 우선 구매", "cta": "프리미엄 시작하기", "featured": false}];
+ var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
- function render(){
-  root.querySelectorAll('[data-g]').forEach(function(n){n.textContent=meta[n.dataset.g]});
-  grid.innerHTML=data.map(function(d,i){return '<article class="pw__card'+(d.featured?' is-featured':'')+'"><span class="pw__badge" data-i="'+i+'" data-f="badge">'+esc(d.badge)+'</span><h3 class="pw__name" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="pw__desc" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p><div class="pw__price"><b data-i="'+i+'" data-f="price">'+esc(d.price)+'</b><span data-i="'+i+'" data-f="unit">'+esc(d.unit)+'</span></div><ul class="pw__feat">'+(editing?'<li style="display:block;white-space:pre-line" data-i="'+i+'" data-f="features">'+esc(d.features)+'</li>':d.features.split('\n').filter(Boolean).map(function(f){return '<li>'+esc(f)+'</li>'}).join(''))+'</ul><a class="pw__btn" href="#" data-i="'+i+'" data-f="cta">'+esc(d.cta)+'</a></article>'}).join('');
-  grid.querySelectorAll('.pw__btn').forEach(function(a){a.onclick=function(e){e.preventDefault()}});
-  CWPanel.setEditable(root,editing);
- }
- var CFG=(window.CW_CONFIG||{})['cw-pw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.plans){data.length=0;CFG.plans.forEach(function(d){data.push(d)})}
+ function head(){root.querySelectorAll('[data-g]').forEach(function(n){if(meta[n.dataset.g]===undefined){n.style.display='none';return}n.innerHTML=esc(meta[n.dataset.g]).replace(/\n/g,'<br>')})}
+
+ var grid=document.getElementById('cw-pw-grid'),CK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7"/></svg>';
+ function render(){head();
+  grid.innerHTML=data.map(function(d,i){return '<article class="plan-card'+(d.featured?' featured':'')+'"><span class="plan-badge badge-text" data-i="'+i+'" data-f="badge">'+esc(d.badge)+'</span><h3 class="heading2" data-i="'+i+'" data-f="name">'+esc(d.name)+'</h3><p class="plan-desc body2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p><div class="plan-price"><b data-i="'+i+'" data-f="price">'+esc(d.price)+'</b><span data-i="'+i+'" data-f="unit">'+esc(d.unit)+'</span></div><ul class="plan-features">'+(editing?'<li style="display:block;white-space:pre-line" data-i="'+i+'" data-f="features">'+esc(d.features)+'</li>':d.features.split('\n').filter(Boolean).map(function(f){return '<li>'+CK+esc(f)+'</li>'}).join(''))+'</ul><a class="btn btn-ghost" href="#" data-i="'+i+'" data-f="cta">'+esc(d.cta)+'</a></article>'}).join('');
+  grid.querySelectorAll('.btn').forEach(function(a){a.onclick=function(e){e.preventDefault()}});
+  CWPanel.setEditable(root,editing)}
+
+ var CFG=(window.CW_CONFIG||{})['cw-pw']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
  CWPanel.bindEdit(root,data,meta);
- CWPanel.mount({title:'요금제 위젯 설정',root:root,defaults:{edit:false},
-  getExport:function(s){return{settings:s,meta:meta,plans:data}},
+ CWPanel.mount({title:'요금제 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
   onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
-  onChange:function(s,k){if(k==='edit'||k===null)editing=!!s.edit;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
   controls:[
    {type:'group',label:'콘텐츠'},
    {key:'edit',type:'toggle',label:'텍스트 직접 편집',default:false},
-   {type:'button',label:'+ 플랜 추가',onClick:function(){data.push({badge:'NEW',name:'새 플랜',desc:'설명을 입력하세요.',price:'0원',unit:'/ 월',features:'혜택 1\n혜택 2',cta:'시작하기',featured:false});render()}},
-   {type:'button',label:'− 마지막 플랜 삭제',onClick:function(){data.pop();render()}},
-   {type:'button',label:'★ 강조 플랜 순환',onClick:function(){var i=data.findIndex(function(d){return d.featured});data.forEach(function(d){d.featured=false});data[(i+1)%data.length].featured=true;render()}},
-   {type:'group',label:'표시'},
-   {key:'badge',type:'toggle',label:'뱃지 표시',attr:'data-badge',default:true},
-   {key:'feat',type:'toggle',label:'혜택 목록 표시',attr:'data-feat',default:true},
-   {key:'lift',type:'toggle',label:'강조 카드 띄우기',attr:'data-lift',default:true},
-   {key:'align',type:'select',label:'제목 정렬',attr:'data-align',options:[{value:'left',label:'왼쪽'},{value:'center',label:'가운데'}],default:'left'},
-   {type:'group',label:'스타일'},
-   {key:'cols',type:'range',label:'열 수',css:'--pw-cols',min:1,max:4,default:3},
-   {key:'bg',type:'color',label:'섹션 배경',css:'--pw-bg',default:'#f6f3ee'},
-   {key:'card',type:'color',label:'카드 배경',css:'--pw-card',default:'#ffffff'},
-   {key:'text',type:'color',label:'글자색',css:'--pw-text',default:'#1b1b1b'},
-   {key:'accent',type:'color',label:'강조색',css:'--pw-accent',default:'#1b1b1b'},
-   {key:'atext',type:'color',label:'강조 글자색',css:'--pw-accent-text',default:'#ffffff'},
-   {key:'line',type:'color',label:'테두리색',css:'--pw-line',default:'#e2ddd4'},
-   {key:'radius',type:'range',label:'모서리',css:'--pw-radius',unit:'px',min:0,max:40,default:20},
-   {key:'gap',type:'range',label:'카드 간격',css:'--pw-gap',unit:'px',min:8,max:56,default:24},
-   {key:'pad',type:'range',label:'상하 여백',css:'--pw-pad',unit:'px',min:16,max:200,step:4,default:96}
+   {type:'button',label:'+ 항목 추가',onClick:function(){data.push({badge:'NEW',name:'새 플랜',desc:'설명을 입력하세요.',price:'0원',unit:'/ 월',features:'혜택 1\n혜택 2',cta:'시작하기',featured:false});render()}},
+   {type:'button',label:'− 마지막 항목 삭제',onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"섹션"},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {key:'note',type:'toggle',label:"설명 문구 표시",attr:'data-note',default:true},
+   {key:'h0',type:'range',label:"제목 크기",css:'--amb-h0',unit:'px',min:18,max:64,step:1,default:32},
+   {key:'pad',type:'range',label:"상하 여백 (최대)",css:'--amb-pad',unit:'px',min:40,max:240,step:4,default:140},
+   {key:'container',type:'range',label:"콘텐츠 최대 너비",css:'--amb-container',unit:'px',min:600,max:1600,step:10,default:1200},
+   {type:'group',label:"색상"},
+   {key:'bg',type:'color',label:"섹션 배경",css:'--amb-bg',default:'#ffffff'},
+   {key:'ink',type:'color',label:"글자·강조색",css:'--amb-ink',default:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--amb-sub',default:'#5d5e5f'},
+   {key:'line',type:'color',label:"테두리색",css:'--amb-line',default:'#e1e1e3'},
+   {type:'group',label:"레이아웃"},
+   {key:'cols',type:'range',label:"열 수",css:'--amb-cols',unit:'',min:1,max:4,step:1,default:3},
+   {key:'gap',type:'range',label:"카드 간격",css:'--amb-gap',unit:'px',min:0,max:56,step:1,default:20},
+   {key:'radius',type:'range',label:"카드 모서리",css:'--amb-radius',unit:'px',min:0,max:48,step:1,default:32},
+   {key:'badge',type:'toggle',label:"뱃지 표시",attr:'data-badge',default:true},
+   {key:'feat',type:'toggle',label:"혜택 목록 표시",attr:'data-feat',default:true},
+   {key:'feat2',type:'color',label:"강조 카드 색",css:'--amb-feat',default:'#262628'}
   ]});
 })();
 </script>
