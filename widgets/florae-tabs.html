@@ -85,43 +85,43 @@ window.CW_CONFIG['cw-fl'] = {
       {
           "title": "관엽식물",
           "desc": "공간에 깊이를 더하는 잎 넓은 식물들. 채광과 습도에 맞춰 고른 품종을 큐레이션합니다.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/kaylee-garrett-n5z2myf2Ee0-unsplash.jpg",
+          "img": "",
           "alt": "관엽식물이 놓인 공간 스타일링"
       },
       {
           "title": "다육식물",
           "desc": "물을 자주 주지 않아도 괜찮은, 관리가 쉬운 다육식물 컬렉션.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/jonas-allert-O0PYL5LgNxs-unsplash.jpg",
+          "img": "",
           "alt": "다육식물 컬렉션"
       },
       {
           "title": "허브",
           "desc": "주방과 발코니에 어울리는 허브 가든. 향과 실용을 더합니다.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-PW9q4QmTOCA-unsplash.jpg",
+          "img": "",
           "alt": "허브가든 컬렉션"
       },
       {
           "title": "화분 & 소품",
           "desc": "공간의 톤을 완성하는 화분과 소품 컬렉션.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/linh-le-FYgnwFMZBM0-unsplash.jpg",
+          "img": "",
           "alt": "화분과 소품 스타일링"
       },
       {
           "title": "식물 영양제",
           "desc": "생육 단계에 맞춘 영양 공급으로 식물을 더 건강하게.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-4uOkLlr2LpM-unsplash.jpg",
+          "img": "",
           "alt": "식물 영양제"
       },
       {
           "title": "원예 도구",
           "desc": "가지치기부터 분갈이까지, 손에 맞는 원예 도구.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-7GkGopeAuKM-unsplash.jpg",
+          "img": "",
           "alt": "원예 도구"
       },
       {
           "title": "조명",
           "desc": "빛이 부족한 공간을 위한 식물 생장 조명.",
-          "img": "https://hhhodo.github.io/florae-landing/assets/photos/engin-akyurt-6djmntSYfoE-unsplash.jpg",
+          "img": "",
           "alt": "식물 생장 조명"
       }
   ]
@@ -255,21 +255,12 @@ window.CW_CONFIG['cw-fl'] = {
 .fl .spotlight__item{cursor:pointer}
 .fl[data-editing=true] .spotlight__frame{outline:2px dashed rgba(90,90,255,.8);outline-offset:4px;cursor:pointer;position:relative}
 .fl[data-editing=true] .spotlight__frame::after{content:'클릭하거나 파일을 끌어다 놓기';position:absolute;left:12px;bottom:12px;background:rgba(0,0,0,.7);color:#fff;font-size:13px;padding:6px 10px;border-radius:999px;pointer-events:none}
-.fl .spotlight__frame.is-drag{outline-color:#ff6d0e}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
-.fl-pop{position:fixed;z-index:10001;width:320px;background:#fff;color:#262628;border:1px solid #e1e1e3;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:16px;font:14px/1.4 'Pretendard',sans-serif}
-.fl-pop *{box-sizing:border-box}.fl-pop h4{margin:0 0 10px;font-size:14px}
-.fl-pop .row{display:flex;gap:6px;margin-top:8px}
-.fl-pop input[type=text]{flex:1;min-width:0;font:inherit;padding:8px;border:1px solid #c5c6c8;border-radius:8px}
-.fl-pop button{font:inherit;font-size:13px;padding:8px 12px;border:1px solid #262628;background:#fff;color:#262628;border-radius:8px;cursor:pointer;white-space:nowrap}
-.fl-pop button.p{background:#262628;color:#fff}.fl-pop button.wide{width:100%}
-.fl-pop small{display:block;margin-top:10px;color:#838486;font-size:11px;line-height:1.45}
-.fl-pop .msg{margin-top:8px;font-size:12px;color:#d33}
 </style>
 <div class="fl" id="cw-fl" data-pos="left" data-tabstyle="underline" data-showimg="true" data-showbody="true" data-wrap="false" data-editing="false">
 <section class="section spotlight"><div class="container"><div class="grid">
  <div class="gcell spotlight__panel fl-tabs"><nav class="spotlight__list" id="cw-fl-list"></nav></div>
- <div class="gcell spotlight__panel fl-content"><h2 class="h1 spotlight__title" id="cw-fl-title"></h2><p class="spotlight__body" id="cw-fl-body"></p><div class="spotlight__frame" id="cw-fl-frame"><img class="img img--16-9" id="cw-fl-img" alt=""></div></div>
+ <div class="gcell spotlight__panel fl-content"><h2 class="h1 spotlight__title" id="cw-fl-title"></h2><p class="spotlight__body" id="cw-fl-body"></p><div class="spotlight__frame" id="cw-fl-frame"></div></div>
 </div></div></section></div>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
@@ -288,61 +279,64 @@ window.CW_CONFIG['cw-fl'] = {
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
     return api}};
+
+  /* ── 빈 이미지 자리 + 이미지 선택기(파일 업로드/주소/비우기) ── */
+  var st=document.createElement('style');
+  st.textContent=".cw-ph{background:var(--color-placeholder,#d9d9d9);position:relative;overflow:hidden}.cw-ph::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23262628' stroke-width='1.4' stroke-linejoin='round' stroke-linecap='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.8'/%3E%3Cpath d='M3 17l5-5 4 4 3-3 6 6'/%3E%3C/svg%3E\") center/contain no-repeat;opacity:.4}"+
+  ".cw-pop{position:fixed;z-index:10001;width:300px;background:#fff;color:#1d1d1f;border:1px solid #ececef;border-radius:16px;box-shadow:0 14px 36px rgba(0,0,0,.18);padding:16px;font:13px/1.4 'Pretendard',sans-serif}.cw-pop *{box-sizing:border-box}.cw-pop h4{margin:0 0 12px;font-size:14px}.cw-pop .row{display:flex;gap:6px;margin-top:8px}.cw-pop input[type=text]{flex:1;min-width:0;height:34px;font:inherit;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}.cw-pop input[type=text]:focus{outline:0;border-color:#1d1d1f;background:#fff}.cw-pop button{height:34px;font:inherit;font-size:13px;padding:0 12px;border:1px solid #e3e3e8;background:#fff;color:#1d1d1f;border-radius:8px;cursor:pointer;white-space:nowrap}.cw-pop button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}.cw-pop button.w{width:100%}.cw-pop button.d{color:#c0392b}.cw-pop small{display:block;margin-top:10px;color:#9a9aa2;font-size:11px}.cw-pop .msg{margin-top:8px;font-size:12px;color:#c0392b}";
+  document.head.appendChild(st);
+  var POP=null;
+  function closePop(){if(POP){POP.remove();POP=null}}
+  function toData(file,ok,err){
+    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
+    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+  function pickImage(anchor,cur,set){
+    closePop();POP=document.createElement('div');POP.className='cw-pop';
+    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    document.body.appendChild(POP);
+    var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
+    POP.style.left=x+'px';POP.style.top=y+'px';
+    var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
+    fi.addEventListener('change',function(){toData(fi.files[0],function(u){set(u);closePop()},function(m){msg.textContent=m})});
+    POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=b.dataset.a;
+      if(a==='file')fi.click();
+      if(a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){set(v);closePop()}}
+      if(a==='clear'){set('');closePop()}})}
+  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-img-i]'))closePop()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
+  window.CWPanel.pickImage=pickImage;window.CWPanel.imageFromFile=toData;
 })();
 
 (function(){
  var root=document.getElementById('cw-fl'),editing=false;
  var initMeta={},meta=Object.assign({},initMeta);
- var init=[{"title": "관엽식물", "desc": "공간에 깊이를 더하는 잎 넓은 식물들. 채광과 습도에 맞춰 고른 품종을 큐레이션합니다.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/kaylee-garrett-n5z2myf2Ee0-unsplash.jpg", "alt": "관엽식물이 놓인 공간 스타일링"}, {"title": "다육식물", "desc": "물을 자주 주지 않아도 괜찮은, 관리가 쉬운 다육식물 컬렉션.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/jonas-allert-O0PYL5LgNxs-unsplash.jpg", "alt": "다육식물 컬렉션"}, {"title": "허브", "desc": "주방과 발코니에 어울리는 허브 가든. 향과 실용을 더합니다.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-PW9q4QmTOCA-unsplash.jpg", "alt": "허브가든 컬렉션"}, {"title": "화분 & 소품", "desc": "공간의 톤을 완성하는 화분과 소품 컬렉션.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/linh-le-FYgnwFMZBM0-unsplash.jpg", "alt": "화분과 소품 스타일링"}, {"title": "식물 영양제", "desc": "생육 단계에 맞춘 영양 공급으로 식물을 더 건강하게.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-4uOkLlr2LpM-unsplash.jpg", "alt": "식물 영양제"}, {"title": "원예 도구", "desc": "가지치기부터 분갈이까지, 손에 맞는 원예 도구.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/loa-kon-7GkGopeAuKM-unsplash.jpg", "alt": "원예 도구"}, {"title": "조명", "desc": "빛이 부족한 공간을 위한 식물 생장 조명.", "img": "https://hhhodo.github.io/florae-landing/assets/photos/engin-akyurt-6djmntSYfoE-unsplash.jpg", "alt": "식물 생장 조명"}];
+ var init=[{"title": "관엽식물", "desc": "공간에 깊이를 더하는 잎 넓은 식물들. 채광과 습도에 맞춰 고른 품종을 큐레이션합니다.", "img": "", "alt": "관엽식물이 놓인 공간 스타일링"}, {"title": "다육식물", "desc": "물을 자주 주지 않아도 괜찮은, 관리가 쉬운 다육식물 컬렉션.", "img": "", "alt": "다육식물 컬렉션"}, {"title": "허브", "desc": "주방과 발코니에 어울리는 허브 가든. 향과 실용을 더합니다.", "img": "", "alt": "허브가든 컬렉션"}, {"title": "화분 & 소품", "desc": "공간의 톤을 완성하는 화분과 소품 컬렉션.", "img": "", "alt": "화분과 소품 스타일링"}, {"title": "식물 영양제", "desc": "생육 단계에 맞춘 영양 공급으로 식물을 더 건강하게.", "img": "", "alt": "식물 영양제"}, {"title": "원예 도구", "desc": "가지치기부터 분갈이까지, 손에 맞는 원예 도구.", "img": "", "alt": "원예 도구"}, {"title": "조명", "desc": "빛이 부족한 공간을 위한 식물 생장 조명.", "img": "", "alt": "식물 생장 조명"}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
  function T(s){return esc(s).replace(/\n/g,'<br>')}
  function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
 
  /*CW_HINT:// 항목의 img → 이미지 주소(https://…) 또는 업로드한 이미지(data:image/…). 업로드 이미지는 글자 수가 매우 길어요 — 실제 사이트에는 이미지를 호스팅하고 주소를 넣는 걸 권장 */
- var list=document.getElementById('cw-fl-list'),frame=document.getElementById('cw-fl-frame'),cur=0,POP=null;
+ var list=document.getElementById('cw-fl-list'),frame=document.getElementById('cw-fl-frame'),cur=0;
  function render(){
   if(cur>=data.length)cur=Math.max(0,data.length-1);root.setAttribute('data-editing',editing);var d=data[cur]||{};
   list.innerHTML=data.map(function(x,i){return '<div class="spotlight__item'+(i===cur?' spotlight__item--active':'')+'" role="button" tabindex="0" data-idx="'+i+'"><span data-i="'+i+'" data-f="title">'+esc(x.title)+'</span></div>'}).join('');
   var t=document.getElementById('cw-fl-title');t.textContent=d.title||'';t.setAttribute('data-i',cur);t.setAttribute('data-f','title');
   var bd=document.getElementById('cw-fl-body');bd.textContent=d.desc||'';bd.setAttribute('data-i',cur);bd.setAttribute('data-f','desc');
-  var im=document.getElementById('cw-fl-img');im.src=d.img||'';im.alt=d.alt||'';
-  if(!editing)closePop();
+  frame.setAttribute('data-img-i',cur);
+  frame.innerHTML=d.img?'<img class="img img--16-9" src="'+esc(d.img)+'" alt="'+esc(d.alt||'')+'">':'<div class="img img--16-9 cw-ph"></div>';
   CWPanel.setEditable(root,editing)}
  list.addEventListener('click',function(e){var it=e.target.closest('.spotlight__item');if(!it)return;var i=+it.dataset.idx;if(i!==cur){cur=i;render()}});
  list.addEventListener('keydown',function(e){var it=e.target.closest('.spotlight__item');if(!editing&&it&&(e.key==='Enter'||e.key===' ')){e.preventDefault();it.click()}});
  root.addEventListener('input',function(e){var n=e.target.closest('#cw-fl-title');if(n){var s=list.querySelector('.spotlight__item--active span');if(s)s.textContent=n.textContent}});
- /* ── 이미지 교체: 파일 업로드(클릭/드래그) 또는 주소 ── */
- function closePop(){if(POP){POP.remove();POP=null}}
- function setImg(url){if(data[cur]){data[cur].img=url;document.getElementById('cw-fl-img').src=url}}
- function fromFile(file,msg){
-  if(!file||!/^image\//.test(file.type)){if(msg)msg.textContent='이미지 파일만 올릴 수 있어요.';return}
-  var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
-    var MAX=1600,w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,MAX/w),c=document.createElement('canvas');c.width=Math.round(w*k);c.height=Math.round(h*k);
-    var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
-    setImg(c.toDataURL('image/jpeg',0.86));closePop()};
-   im.onerror=function(){if(msg)msg.textContent='이미지를 읽지 못했어요.'};im.src=fr.result};
-  fr.readAsDataURL(file)}
- function openPop(){
-  closePop();POP=document.createElement('div');POP.className='fl-pop';
-  POP.innerHTML='<h4>이미지 교체</h4><input type="file" accept="image/*" hidden><button type="button" class="p wide" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소(https://…)"><button type="button" data-a="url">적용</button></div><div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
-  document.body.appendChild(POP);
-  var r=frame.getBoundingClientRect(),x=Math.min(Math.max(8,r.left+16),window.innerWidth-336),y=Math.min(Math.max(8,r.top+16),window.innerHeight-POP.offsetHeight-8);
-  POP.style.left=x+'px';POP.style.top=y+'px';
-  var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
-  fi.addEventListener('change',function(){fromFile(fi.files[0],msg)});
-  POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
-   if(b.dataset.a==='file')fi.click();
-   if(b.dataset.a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){setImg(v);closePop()}}})}
- frame.addEventListener('click',function(e){if(!editing)return;e.preventDefault();openPop()});
- ['dragenter','dragover'].forEach(function(ev){frame.addEventListener(ev,function(e){if(!editing)return;e.preventDefault();frame.classList.add('is-drag')})});
- ['dragleave','drop'].forEach(function(ev){frame.addEventListener(ev,function(e){frame.classList.remove('is-drag')})});
- frame.addEventListener('drop',function(e){if(!editing)return;e.preventDefault();var f=e.dataTransfer&&e.dataTransfer.files[0];if(f)fromFile(f,null)});
- document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!frame.contains(e.target))closePop()});
- document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
 
  var CFG=(window.CW_CONFIG||{})['cw-fl']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
- root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');CWPanel.pickImage(t,data[i].img||'',function(u){data[i].img=u;render()})},true);
+ root.addEventListener('dragover',function(e){if(editing&&e.target.closest('[data-img-i]'))e.preventDefault()});
+ root.addEventListener('drop',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();var i=+t.getAttribute('data-img-i'),f=e.dataTransfer&&e.dataTransfer.files[0];if(f)CWPanel.imageFromFile(f,function(u){data[i].img=u;render()},function(m){alert(m)})});
  CWPanel.bindEdit(root,data,meta);
  CWPanel.mount({title:'탭 위젯',root:root,defaults:{edit:false},
   getExport:function(s){return{settings:s,meta:meta,items:data}},

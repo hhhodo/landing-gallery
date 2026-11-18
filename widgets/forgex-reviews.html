@@ -76,7 +76,7 @@ window.CW_CONFIG['cw-fx'] = {
   items: [
       {
           "type": "photo",
-          "img": "https://hhhodo.github.io/forgex-landing/assets/images/luke-jones-tBvF46kmwBw-unsplash.jpg",
+          "img": "",
           "alt": "A커머스 인프라 운영"
       },
       {
@@ -87,7 +87,7 @@ window.CW_CONFIG['cw-fx'] = {
       },
       {
           "type": "photo",
-          "img": "https://hhhodo.github.io/forgex-landing/assets/images/conny-schneider-xuTJZ7uD7PI-unsplash.jpg",
+          "img": "",
           "alt": "B핀테크 보안 관제"
       },
       {
@@ -98,7 +98,7 @@ window.CW_CONFIG['cw-fx'] = {
       },
       {
           "type": "photo",
-          "img": "https://hhhodo.github.io/forgex-landing/assets/images/ales-nesetril-Im7lZjxeLhg-unsplash.jpg",
+          "img": "",
           "alt": "C스타트업 데이터 파이프라인"
       },
       {
@@ -109,7 +109,7 @@ window.CW_CONFIG['cw-fx'] = {
       },
       {
           "type": "photo",
-          "img": "https://hhhodo.github.io/forgex-landing/assets/images/vackground-com-agUC-v_D1iI-unsplash.jpg",
+          "img": "",
           "alt": "D SaaS 서비스 운영"
       },
       {
@@ -224,12 +224,41 @@ window.CW_CONFIG['cw-fx'] = {
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
     return api}};
+
+  /* ── 빈 이미지 자리 + 이미지 선택기(파일 업로드/주소/비우기) ── */
+  var st=document.createElement('style');
+  st.textContent=".cw-ph{background:var(--color-placeholder,#d9d9d9);position:relative;overflow:hidden}.cw-ph::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23262628' stroke-width='1.4' stroke-linejoin='round' stroke-linecap='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.8'/%3E%3Cpath d='M3 17l5-5 4 4 3-3 6 6'/%3E%3C/svg%3E\") center/contain no-repeat;opacity:.4}"+
+  ".cw-pop{position:fixed;z-index:10001;width:300px;background:#fff;color:#1d1d1f;border:1px solid #ececef;border-radius:16px;box-shadow:0 14px 36px rgba(0,0,0,.18);padding:16px;font:13px/1.4 'Pretendard',sans-serif}.cw-pop *{box-sizing:border-box}.cw-pop h4{margin:0 0 12px;font-size:14px}.cw-pop .row{display:flex;gap:6px;margin-top:8px}.cw-pop input[type=text]{flex:1;min-width:0;height:34px;font:inherit;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}.cw-pop input[type=text]:focus{outline:0;border-color:#1d1d1f;background:#fff}.cw-pop button{height:34px;font:inherit;font-size:13px;padding:0 12px;border:1px solid #e3e3e8;background:#fff;color:#1d1d1f;border-radius:8px;cursor:pointer;white-space:nowrap}.cw-pop button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}.cw-pop button.w{width:100%}.cw-pop button.d{color:#c0392b}.cw-pop small{display:block;margin-top:10px;color:#9a9aa2;font-size:11px}.cw-pop .msg{margin-top:8px;font-size:12px;color:#c0392b}";
+  document.head.appendChild(st);
+  var POP=null;
+  function closePop(){if(POP){POP.remove();POP=null}}
+  function toData(file,ok,err){
+    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
+    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+  function pickImage(anchor,cur,set){
+    closePop();POP=document.createElement('div');POP.className='cw-pop';
+    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    document.body.appendChild(POP);
+    var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
+    POP.style.left=x+'px';POP.style.top=y+'px';
+    var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
+    fi.addEventListener('change',function(){toData(fi.files[0],function(u){set(u);closePop()},function(m){msg.textContent=m})});
+    POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=b.dataset.a;
+      if(a==='file')fi.click();
+      if(a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){set(v);closePop()}}
+      if(a==='clear'){set('');closePop()}})}
+  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-img-i]'))closePop()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
+  window.CWPanel.pickImage=pickImage;window.CWPanel.imageFromFile=toData;
 })();
 
 (function(){
  var root=document.getElementById('cw-fx'),editing=false;
  var initMeta={"eyebrow": "CUSTOMER STORY", "title": "도입 기업들의\n생생한 후기", "desc": "FORGEX 솔루션을 도입한 기업들의 실제 변화를 확인하세요."},meta=Object.assign({},initMeta);
- var init=[{"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/luke-jones-tBvF46kmwBw-unsplash.jpg", "alt": "A커머스 인프라 운영"}, {"type": "quote", "cat": "클라우드 인프라", "quote": "장애 대응 시간이 절반으로 줄었습니다. 실시간 알림 덕분에 미리 대응할 수 있었어요.", "meta": "A커머스 인프라팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/conny-schneider-xuTJZ7uD7PI-unsplash.jpg", "alt": "B핀테크 보안 관제"}, {"type": "quote", "cat": "보안", "quote": "보안 관제 자동화 이후 침해 시도 대응 속도가 눈에 띄게 빨라졌습니다.", "meta": "B핀테크 보안팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/ales-nesetril-Im7lZjxeLhg-unsplash.jpg", "alt": "C스타트업 데이터 파이프라인"}, {"type": "quote", "cat": "데이터 플랫폼", "quote": "데이터 파이프라인 오류가 사실상 사라졌고, 분석 리드타임도 크게 단축됐습니다.", "meta": "C스타트업 데이터팀"}, {"type": "photo", "img": "https://hhhodo.github.io/forgex-landing/assets/images/vackground-com-agUC-v_D1iI-unsplash.jpg", "alt": "D SaaS 서비스 운영"}, {"type": "quote", "cat": "모니터링", "quote": "트래픽이 몰리는 시즌에도 서비스를 안정적으로 운영할 수 있게 됐습니다.", "meta": "D SaaS 대표"}];
+ var init=[{"type": "photo", "img": "", "alt": "A커머스 인프라 운영"}, {"type": "quote", "cat": "클라우드 인프라", "quote": "장애 대응 시간이 절반으로 줄었습니다. 실시간 알림 덕분에 미리 대응할 수 있었어요.", "meta": "A커머스 인프라팀"}, {"type": "photo", "img": "", "alt": "B핀테크 보안 관제"}, {"type": "quote", "cat": "보안", "quote": "보안 관제 자동화 이후 침해 시도 대응 속도가 눈에 띄게 빨라졌습니다.", "meta": "B핀테크 보안팀"}, {"type": "photo", "img": "", "alt": "C스타트업 데이터 파이프라인"}, {"type": "quote", "cat": "데이터 플랫폼", "quote": "데이터 파이프라인 오류가 사실상 사라졌고, 분석 리드타임도 크게 단축됐습니다.", "meta": "C스타트업 데이터팀"}, {"type": "photo", "img": "", "alt": "D SaaS 서비스 운영"}, {"type": "quote", "cat": "모니터링", "quote": "트래픽이 몰리는 시즌에도 서비스를 안정적으로 운영할 수 있게 됐습니다.", "meta": "D SaaS 대표"}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
  function T(s){return esc(s).replace(/\n/g,'<br>')}
@@ -237,7 +266,7 @@ window.CW_CONFIG['cw-fx'] = {
 
  var track=document.getElementById('cw-fx-track');
  function pill(d,i,hid){var h=hid?' aria-hidden="true"':'';
-  if(d.type==='photo')return '<div class="review-pill review-pill--photo"'+h+' data-imgbox data-img-i="'+i+'"><img src="'+esc(d.img)+'" alt="'+(hid?'':esc(d.alt))+'"></div>';
+  if(d.type==='photo')return '<div class="review-pill review-pill--photo"'+h+' data-imgbox data-img-i="'+i+'">'+(d.img?'<img src="'+esc(d.img)+'" alt="'+(hid?'':esc(d.alt))+'">':'<div class="cw-ph" style="width:100%;height:100%"></div>')+'</div>';
   return '<div class="review-pill review-pill--quote"'+h+'><p class="review-pill__cat" data-i="'+i+'" data-f="cat">'+esc(d.cat)+'</p><p class="review-pill__quote" data-i="'+i+'" data-f="quote">&ldquo;'+esc(d.quote)+'&rdquo;</p><p class="review-pill__meta" data-i="'+i+'" data-f="meta">'+esc(d.meta)+'</p></div>'}
  function render(){metaFill();root.setAttribute('data-editing',editing);
   var one=data.map(function(d,i){return pill(d,i,false)}).join('');
@@ -245,7 +274,9 @@ window.CW_CONFIG['cw-fx'] = {
   CWPanel.setEditable(root,editing)}
 
  var CFG=(window.CW_CONFIG||{})['cw-fx']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
- root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');CWPanel.pickImage(t,data[i].img||'',function(u){data[i].img=u;render()})},true);
+ root.addEventListener('dragover',function(e){if(editing&&e.target.closest('[data-img-i]'))e.preventDefault()});
+ root.addEventListener('drop',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();var i=+t.getAttribute('data-img-i'),f=e.dataTransfer&&e.dataTransfer.files[0];if(f)CWPanel.imageFromFile(f,function(u){data[i].img=u;render()},function(m){alert(m)})});
  CWPanel.bindEdit(root,data,meta);
  CWPanel.mount({title:'리뷰 마키 위젯',root:root,defaults:{edit:false},
   getExport:function(s){return{settings:s,meta:meta,items:data}},

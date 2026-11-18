@@ -74,17 +74,17 @@ window.CW_CONFIG['cw-bc'] = {
   },
   items: [
       {
-          "img": "https://hhhodo.github.io/beacon-landing/assets/images/2.jpg",
+          "img": "",
           "title": "1인 스킨케어 브랜드",
           "stats": "전환율 개선 | +156%\n광고비 절감 | -41%\n운영 기간 | 4개월"
       },
       {
-          "img": "https://hhhodo.github.io/beacon-landing/assets/images/3.jpg",
+          "img": "",
           "title": "1인 편집숍 브랜드",
           "stats": "신규 고객 유입 | +72%\n재구매율 | +38%\n운영 기간 | 3개월"
       },
       {
-          "img": "https://hhhodo.github.io/beacon-landing/assets/images/4.jpg",
+          "img": "",
           "title": "1인 디지털 굿즈 브랜드",
           "stats": "매출 성장 | +85%\n고객 획득 비용 | -28%\n운영 기간 | 5개월"
       }
@@ -195,12 +195,41 @@ window.CW_CONFIG['cw-bc'] = {
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
     return api}};
+
+  /* ── 빈 이미지 자리 + 이미지 선택기(파일 업로드/주소/비우기) ── */
+  var st=document.createElement('style');
+  st.textContent=".cw-ph{background:var(--color-placeholder,#d9d9d9);position:relative;overflow:hidden}.cw-ph::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23262628' stroke-width='1.4' stroke-linejoin='round' stroke-linecap='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.8'/%3E%3Cpath d='M3 17l5-5 4 4 3-3 6 6'/%3E%3C/svg%3E\") center/contain no-repeat;opacity:.4}"+
+  ".cw-pop{position:fixed;z-index:10001;width:300px;background:#fff;color:#1d1d1f;border:1px solid #ececef;border-radius:16px;box-shadow:0 14px 36px rgba(0,0,0,.18);padding:16px;font:13px/1.4 'Pretendard',sans-serif}.cw-pop *{box-sizing:border-box}.cw-pop h4{margin:0 0 12px;font-size:14px}.cw-pop .row{display:flex;gap:6px;margin-top:8px}.cw-pop input[type=text]{flex:1;min-width:0;height:34px;font:inherit;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}.cw-pop input[type=text]:focus{outline:0;border-color:#1d1d1f;background:#fff}.cw-pop button{height:34px;font:inherit;font-size:13px;padding:0 12px;border:1px solid #e3e3e8;background:#fff;color:#1d1d1f;border-radius:8px;cursor:pointer;white-space:nowrap}.cw-pop button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}.cw-pop button.w{width:100%}.cw-pop button.d{color:#c0392b}.cw-pop small{display:block;margin-top:10px;color:#9a9aa2;font-size:11px}.cw-pop .msg{margin-top:8px;font-size:12px;color:#c0392b}";
+  document.head.appendChild(st);
+  var POP=null;
+  function closePop(){if(POP){POP.remove();POP=null}}
+  function toData(file,ok,err){
+    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
+    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+  function pickImage(anchor,cur,set){
+    closePop();POP=document.createElement('div');POP.className='cw-pop';
+    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    document.body.appendChild(POP);
+    var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
+    POP.style.left=x+'px';POP.style.top=y+'px';
+    var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
+    fi.addEventListener('change',function(){toData(fi.files[0],function(u){set(u);closePop()},function(m){msg.textContent=m})});
+    POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=b.dataset.a;
+      if(a==='file')fi.click();
+      if(a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){set(v);closePop()}}
+      if(a==='clear'){set('');closePop()}})}
+  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-img-i]'))closePop()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
+  window.CWPanel.pickImage=pickImage;window.CWPanel.imageFromFile=toData;
 })();
 
 (function(){
  var root=document.getElementById('cw-bc'),editing=false;
  var initMeta={"title": "놓치면 아쉬운 성과"},meta=Object.assign({},initMeta);
- var init=[{"img": "https://hhhodo.github.io/beacon-landing/assets/images/2.jpg", "title": "1인 스킨케어 브랜드", "stats": "전환율 개선 | +156%\n광고비 절감 | -41%\n운영 기간 | 4개월"}, {"img": "https://hhhodo.github.io/beacon-landing/assets/images/3.jpg", "title": "1인 편집숍 브랜드", "stats": "신규 고객 유입 | +72%\n재구매율 | +38%\n운영 기간 | 3개월"}, {"img": "https://hhhodo.github.io/beacon-landing/assets/images/4.jpg", "title": "1인 디지털 굿즈 브랜드", "stats": "매출 성장 | +85%\n고객 획득 비용 | -28%\n운영 기간 | 5개월"}];
+ var init=[{"img": "", "title": "1인 스킨케어 브랜드", "stats": "전환율 개선 | +156%\n광고비 절감 | -41%\n운영 기간 | 4개월"}, {"img": "", "title": "1인 편집숍 브랜드", "stats": "신규 고객 유입 | +72%\n재구매율 | +38%\n운영 기간 | 3개월"}, {"img": "", "title": "1인 디지털 굿즈 브랜드", "stats": "매출 성장 | +85%\n고객 획득 비용 | -28%\n운영 기간 | 5개월"}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
  function T(s){return esc(s).replace(/\n/g,'<br>')}
@@ -209,14 +238,16 @@ window.CW_CONFIG['cw-bc'] = {
  var row=document.getElementById('cw-bc-row');
  function render(){metaFill();root.setAttribute('data-editing',editing);
   row.innerHTML=data.map(function(d,i){var st=editing?'<div class="work-card__stats"><div style="white-space:pre-line" data-i="'+i+'" data-f="stats">'+esc(d.stats)+'</div></div>':'<div class="work-card__stats">'+String(d.stats||'').split('\n').filter(Boolean).map(function(l){var p=l.split('|');return '<div class="work-card__stat"><span class="subtle">'+esc((p[0]||'').trim())+'</span><span>'+esc((p.slice(1).join('|')||'').trim())+'</span></div>'}).join('')+'</div>';
-   return '<article class="work-card"><div class="work-card__media" data-img-i="'+i+'"><img class="work-card__photo" src="'+esc(d.img)+'" alt=""></div><div class="work-card__body"><h3 class="work-card__title" data-i="'+i+'" data-f="title">'+esc(d.title)+'</h3>'+st+'</div></article>'}).join('');
+   return '<article class="work-card"><div class="work-card__media" data-img-i="'+i+'">'+(d.img?'<img class="work-card__photo" src="'+esc(d.img)+'" alt="">':'<div class="work-card__photo cw-ph"></div>')+'</div><div class="work-card__body"><h3 class="work-card__title" data-i="'+i+'" data-f="title">'+esc(d.title)+'</h3>'+st+'</div></article>'}).join('');
   CWPanel.setEditable(root,editing)}
  function step(){var c=row.querySelector('.work-card');var gap=parseFloat(getComputedStyle(row).columnGap||0);return (c?c.offsetWidth:row.clientWidth)+gap}
  document.getElementById('cw-bc-prev').addEventListener('click',function(){row.scrollBy({left:-step(),behavior:'smooth'})});
  document.getElementById('cw-bc-next').addEventListener('click',function(){row.scrollBy({left:step(),behavior:'smooth'})});
 
  var CFG=(window.CW_CONFIG||{})['cw-bc']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
- root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');var v=window.prompt('이미지 주소(URL)를 입력하세요',data[i].img||'');if(v!==null){data[i].img=v.trim();render()}},true);
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');CWPanel.pickImage(t,data[i].img||'',function(u){data[i].img=u;render()})},true);
+ root.addEventListener('dragover',function(e){if(editing&&e.target.closest('[data-img-i]'))e.preventDefault()});
+ root.addEventListener('drop',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();var i=+t.getAttribute('data-img-i'),f=e.dataTransfer&&e.dataTransfer.files[0];if(f)CWPanel.imageFromFile(f,function(u){data[i].img=u;render()},function(m){alert(m)})});
  CWPanel.bindEdit(root,data,meta);
  CWPanel.mount({title:'사례 캐러셀 위젯',root:root,defaults:{edit:false},
   getExport:function(s){return{settings:s,meta:meta,items:data}},
