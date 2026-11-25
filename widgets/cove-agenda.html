@@ -57,16 +57,18 @@ window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-cv'] = {
   settings: {
     bg: "#ffffff",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    pad: 160,                 // 상하 여백 (px · 0~400)
-    px: 60,                   // 좌우 여백 (px · 0~300)
+    ink: "#191919",           // 글자색 (색상 hex)
+    pad: 96,                  // 상하 여백 (px · 0~400)
+    px: 40,                   // 좌우 여백 (px · 0~300)
     cols: 4,                  // 열 수 (숫자 · 1~6)
-    ratio: "1",               // 타일 비율 : 1=1:1 | 4/3=4:3 | 3/2=3:2 | 4/5=4:5
-    icon: 80,                 // 아이콘 크기 (px · 24~200)
-    motif: "#a2a3a5",         // 아이콘 색 (색상 hex)
-    hover: "#262628",         // 호버 배경 (색상 hex)
+    ratio: "4/3",             // 타일 비율 : 1=1:1 | 4/3=4:3 | 3/2=3:2 | 4/5=4:5
+    icon: 64,                 // 아이콘 크기 (px · 24~200)
+    motif: "#c8c8c8",         // 아이콘 색 (색상 hex)
+    hover: "#191919",         // 호버 배경 (색상 hex)
     head: 1,                  // 제목 표시 (1=켜기, 0=끄기)
     labels: 1,                // 타일 글자 표시 (1=켜기, 0=끄기)
+    tsz: 32,                  // 제목 (px · 14~100)
+    bsz: 16,                  // 타일 글자 (px · 11~30)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -219,7 +221,7 @@ window.CW_CONFIG['cw-cv'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -291,18 +293,21 @@ window.CW_CONFIG['cw-cv'] = {
    {type:'button',label:"+ 타일 추가",onClick:function(){data.push({icon:'diamond',label:'새 항목'});render()}},
    {type:'button',label:"− 마지막 타일 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:160},
-   {key:'px',type:'range',label:"좌우 여백",css:'--cv-px',unit:'px',min:0,max:300,step:2,default:60},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff',orig:'#ffffff'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:160},
+   {key:'px',type:'range',label:"좌우 여백",css:'--cv-px',unit:'px',min:0,max:300,step:2,default:40,orig:60},
    {type:'group',label:"타일"},
    {key:'cols',type:'range',label:"열 수",css:'--cv-cols',unit:'',min:1,max:6,step:1,default:4},
-   {key:'ratio',type:'select',label:"타일 비율",css:'--cv-ratio',options:[{"value": "1", "label": "1:1"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "4/5", "label": "4:5"}],default:'1'},
-   {key:'icon',type:'range',label:"아이콘 크기",css:'--cv-icon',unit:'px',min:24,max:200,step:2,default:80},
-   {key:'motif',type:'color',label:"아이콘 색",css:'--cv-motif',default:'#a2a3a5'},
-   {key:'hover',type:'color',label:"호버 배경",css:'--cv-hover',default:'#262628'},
+   {key:'ratio',type:'select',label:"타일 비율",css:'--cv-ratio',options:[{"value": "1", "label": "1:1"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "4/5", "label": "4:5"}],default:'4/3',orig:'1'},
+   {key:'icon',type:'range',label:"아이콘 크기",css:'--cv-icon',unit:'px',min:24,max:200,step:2,default:64,orig:80},
+   {key:'motif',type:'color',label:"아이콘 색",css:'--cv-motif',default:'#c8c8c8',orig:'#a2a3a5'},
+   {key:'hover',type:'color',label:"호버 배경",css:'--cv-hover',default:'#191919',orig:'#262628'},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
-   {key:'labels',type:'toggle',label:"타일 글자 표시",attr:'data-labels',default:true}
+   {key:'labels',type:'toggle',label:"타일 글자 표시",attr:'data-labels',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'tsz',type:'range',label:"제목",css:'--fs-h2',unit:'px',min:14,max:100,step:1,default:32,orig:40},
+   {key:'bsz',type:'range',label:"타일 글자",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:16,orig:18}
   ]});
 })();
 </script>
@@ -313,6 +318,7 @@ window.CW_CONFIG['cw-cv'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -320,7 +326,7 @@ window.CW_CONFIG['cw-cv'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

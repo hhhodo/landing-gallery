@@ -61,16 +61,18 @@ window.CW_CONFIG['cw-nk'] = {
     dur: 0.6,                 // 뒤집는 시간 (s · 0.1~3)
     cols: 3,                  // 열 수 (숫자 · 1~4)
     gap: 24,                  // 카드 간격 (px · 0~80)
-    h: 560,                   // 카드 높이 (px · 300~900)
-    media: 340,               // 이미지 높이 (px · 100~600)
-    rad: 32,                  // 모서리 (px · 0~80)
+    h: 520,                   // 카드 높이 (px · 300~900)
+    media: 300,               // 이미지 높이 (px · 100~600)
+    rad: 16,                  // 모서리 (px · 0~80)
     badge: 1,                 // 뱃지 표시 (1=켜기, 0=끄기)
-    bg: "#fefff0",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    tfs: 102,                 // 제목 크기 (px · 24~200)
+    bg: "#f7f7f7",            // 배경색 (색상 hex)
+    ink: "#191919",           // 글자색 (색상 hex)
+    tfs: 48,                  // 제목 크기 (px · 24~200)
     head: 1,                  // 제목 표시 (1=켜기, 0=끄기)
-    pad: 160,                 // 상하 여백 (px · 0~400)
-    gutter: 80,               // 좌우 여백 (px · 0~300)
+    pad: 96,                  // 상하 여백 (px · 0~400)
+    gutter: 40,               // 좌우 여백 (px · 0~300)
+    ctsz: 22,                 // 카드 제목 (px · 12~60)
+    bsz: 15,                  // 카드 설명 (px · 11~30)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -85,7 +87,7 @@ window.CW_CONFIG['cw-nk'] = {
           "backBadge": "TIP",
           "backTitle": "이렇게 즐겨보세요",
           "backDesc": "차갑게 칠링한 잔에 가득 따라, 거품까지 함께 즐겨보세요.",
-          "color": "#e30413"
+          "color": "#191919"
       },
       {
           "img": "",
@@ -95,7 +97,7 @@ window.CW_CONFIG['cw-nk'] = {
           "backBadge": "TIP",
           "backTitle": "이렇게 즐겨보세요",
           "backDesc": "잔 가득 채워 청량하게, 거품 한 모금부터 천천히 음미해보세요.",
-          "color": "#007fdd"
+          "color": "#1428a0"
       },
       {
           "img": "",
@@ -105,7 +107,7 @@ window.CW_CONFIG['cw-nk'] = {
           "backBadge": "TIP",
           "backTitle": "이렇게 즐겨보세요",
           "backDesc": "차갑게 칠링한 잔에 따라, 마시기 전 향부터 가볍게 즐겨보세요.",
-          "color": "#ff3157"
+          "color": "#555555"
       }
   ]
 };
@@ -238,7 +240,7 @@ window.CW_CONFIG['cw-nk'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -277,7 +279,7 @@ window.CW_CONFIG['cw-nk'] = {
 (function(){
  var root=document.getElementById('cw-nk'),editing=false;
  var initMeta={"title": "FIND YOUR\nFLAVOR"},meta=Object.assign({},initMeta);
- var init=[{"img": "", "badge": "PAIRING", "title": "바삭한 프레첼과 함께", "desc": "짭짤한 프레첼에 상큼한 홉 향이 어우러지는 조합.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 가득 따라, 거품까지 함께 즐겨보세요.", "color": "#e30413"}, {"img": "", "badge": "PAIRING", "title": "고소한 치즈 플래터엔 역시", "desc": "진한 풍미를 개운하게 마무리하는 한 잔.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "잔 가득 채워 청량하게, 거품 한 모금부터 천천히 음미해보세요.", "color": "#007fdd"}, {"img": "", "badge": "PAIRING", "title": "상큼한 프루트 가니시엔", "desc": "산뜻하게 감도는 과일 향이 청량감을 더해요.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 따라, 마시기 전 향부터 가볍게 즐겨보세요.", "color": "#ff3157"}];
+ var init=[{"img": "", "badge": "PAIRING", "title": "바삭한 프레첼과 함께", "desc": "짭짤한 프레첼에 상큼한 홉 향이 어우러지는 조합.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 가득 따라, 거품까지 함께 즐겨보세요.", "color": "#191919"}, {"img": "", "badge": "PAIRING", "title": "고소한 치즈 플래터엔 역시", "desc": "진한 풍미를 개운하게 마무리하는 한 잔.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "잔 가득 채워 청량하게, 거품 한 모금부터 천천히 음미해보세요.", "color": "#1428a0"}, {"img": "", "badge": "PAIRING", "title": "상큼한 프루트 가니시엔", "desc": "산뜻하게 감도는 과일 향이 청량감을 더해요.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 따라, 마시기 전 향부터 가볍게 즐겨보세요.", "color": "#555555"}];
  var data=JSON.parse(JSON.stringify(init));
  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
  function T(s){return esc(s).replace(/\n/g,'<br>')}
@@ -311,18 +313,21 @@ window.CW_CONFIG['cw-nk'] = {
    {key:'dir',type:'select',label:"뒤집는 방향",attr:'data-dir',options:[{"value": "h", "label": "가로"}, {"value": "v", "label": "세로"}],default:'h'},
    {key:'dur',type:'range',label:"뒤집는 시간",css:'--nk-dur',unit:'s',min:0.1,max:3,step:0.1,default:0.6},
    {key:'cols',type:'range',label:"열 수",css:'--nk-cols',unit:'',min:1,max:4,step:1,default:3},
-   {key:'gap',type:'range',label:"카드 간격",css:'--nk-gap',unit:'px',min:0,max:80,step:1,default:24},
-   {key:'h',type:'range',label:"카드 높이",css:'--nk-h',unit:'px',min:300,max:900,step:10,default:560},
-   {key:'media',type:'range',label:"이미지 높이",css:'--nk-media',unit:'px',min:100,max:600,step:10,default:340},
-   {key:'rad',type:'range',label:"모서리",css:'--nk-radius',unit:'px',min:0,max:80,step:1,default:32},
+   {key:'gap',type:'range',label:"카드 간격",css:'--nk-gap',unit:'px',min:0,max:80,step:1,default:24,orig:24},
+   {key:'h',type:'range',label:"카드 높이",css:'--nk-h',unit:'px',min:300,max:900,step:10,default:520,orig:560},
+   {key:'media',type:'range',label:"이미지 높이",css:'--nk-media',unit:'px',min:100,max:600,step:10,default:300,orig:340},
+   {key:'rad',type:'range',label:"모서리",css:'--nk-radius',unit:'px',min:0,max:80,step:1,default:16,orig:32},
    {key:'badge',type:'toggle',label:"뱃지 표시",attr:'data-badge',default:true},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--brand-cream',default:'#fefff0'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'tfs',type:'range',label:"제목 크기",css:'--fs-display-lg',unit:'px',min:24,max:200,step:1,default:102},
+   {key:'bg',type:'color',label:"배경색",css:'--brand-cream',default:'#f7f7f7',orig:'#fefff0'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'tfs',type:'range',label:"제목 크기",css:'--fs-display-lg',unit:'px',min:24,max:200,step:1,default:48,orig:102},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:160},
-   {key:'gutter',type:'range',label:"좌우 여백",css:'--nk-gutter',unit:'px',min:0,max:300,step:2,default:80}
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:160},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--nk-gutter',unit:'px',min:0,max:300,step:2,default:40,orig:80},
+   {type:'group',label:"글자 크기"},
+   {key:'ctsz',type:'range',label:"카드 제목",css:'--fs-h3',unit:'px',min:12,max:60,step:1,default:22,orig:32},
+   {key:'bsz',type:'range',label:"카드 설명",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:15,orig:18}
   ]});
 })();
 </script>
@@ -333,6 +338,7 @@ window.CW_CONFIG['cw-nk'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -340,7 +346,7 @@ window.CW_CONFIG['cw-nk'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

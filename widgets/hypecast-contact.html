@@ -62,20 +62,22 @@ window.CW_CONFIG['cw-hc'] = {
     gap: 32,                  // 입력칸 간격 (px · 0~80)
     ih: 48,                   // 입력칸 높이 (px · 30~100)
     th: 200,                  // 문의칸 높이 (px · 80~500)
-    line: "#a2a3a5",          // 밑줄 색 (색상 hex)
-    focus: "#262628",         // 선택 시 밑줄 색 (색상 hex)
+    line: "#b2b2b2",          // 밑줄 색 (색상 hex)
+    focus: "#000000",         // 선택 시 밑줄 색 (색상 hex)
     btnpos: "right",          // 위치 : left=왼쪽 | right=오른쪽 | full=꽉 채움
-    btn: "#262628",           // 버튼 색 (색상 hex)
-    bh: 58,                   // 버튼 높이 (px · 30~100)
-    br: 0,                    // 버튼 모서리 (px · 0~60)
+    btn: "#191919",           // 버튼 색 (색상 hex)
+    bh: 48,                   // 버튼 높이 (px · 30~100)
+    br: 999,                  // 버튼 모서리 (px · 0~60)
     bg: "#ffffff",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    pt: 96,                   // 위 여백 (px · 0~400)
-    pb: 160,                  // 아래 여백 (px · 0~400)
-    gutter: 80,               // 좌우 여백 (px · 0~300)
+    ink: "#191919",           // 글자색 (색상 hex)
+    pt: 80,                   // 위 여백 (px · 0~400)
+    pb: 96,                   // 아래 여백 (px · 0~400)
+    gutter: 40,               // 좌우 여백 (px · 0~300)
     lede: 1,                  // 안내 문구 표시 (1=켜기, 0=끄기)
     note: 1,                  // 소요 시간 표시 (1=켜기, 0=끄기)
     consent: 1,               // 동의 체크 표시 (1=켜기, 0=끄기)
+    tsz: 40,                  // 제목 (px · 16~140)
+    bsz: 16,                  // 본문 (px · 11~30)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -238,7 +240,7 @@ window.CW_CONFIG['cw-hc'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -320,22 +322,25 @@ window.CW_CONFIG['cw-hc'] = {
    {key:'gap',type:'range',label:"입력칸 간격",css:'--hc-gap',unit:'px',min:0,max:80,step:1,default:32},
    {key:'ih',type:'range',label:"입력칸 높이",css:'--hc-ih',unit:'px',min:30,max:100,step:1,default:48},
    {key:'th',type:'range',label:"문의칸 높이",css:'--hc-th',unit:'px',min:80,max:500,step:10,default:200},
-   {key:'line',type:'color',label:"밑줄 색",css:'--hc-line',default:'#a2a3a5'},
-   {key:'focus',type:'color',label:"선택 시 밑줄 색",css:'--hc-focus',default:'#262628'},
+   {key:'line',type:'color',label:"밑줄 색",css:'--hc-line',default:'#b2b2b2',orig:'#a2a3a5'},
+   {key:'focus',type:'color',label:"선택 시 밑줄 색",css:'--hc-focus',default:'#000000',orig:'#262628'},
    {type:'group',label:"버튼"},
    {key:'btnpos',type:'select',label:"위치",attr:'data-btn',options:[{"value": "left", "label": "왼쪽"}, {"value": "right", "label": "오른쪽"}, {"value": "full", "label": "꽉 채움"}],default:'right'},
-   {key:'btn',type:'color',label:"버튼 색",css:'--hc-btn',default:'#262628'},
-   {key:'bh',type:'range',label:"버튼 높이",css:'--hc-bh',unit:'px',min:30,max:100,step:1,default:58},
-   {key:'br',type:'range',label:"버튼 모서리",css:'--hc-btnr',unit:'px',min:0,max:60,step:1,default:0},
+   {key:'btn',type:'color',label:"버튼 색",css:'--hc-btn',default:'#191919',orig:'#262628'},
+   {key:'bh',type:'range',label:"버튼 높이",css:'--hc-bh',unit:'px',min:30,max:100,step:1,default:48,orig:58},
+   {key:'br',type:'range',label:"버튼 모서리",css:'--hc-btnr',unit:'px',min:0,max:60,step:1,default:999,orig:0},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'pt',type:'range',label:"위 여백",css:'--hc-pt',unit:'px',min:0,max:400,step:4,default:96},
-   {key:'pb',type:'range',label:"아래 여백",css:'--hc-pb',unit:'px',min:0,max:400,step:4,default:160},
-   {key:'gutter',type:'range',label:"좌우 여백",css:'--hc-gutter',unit:'px',min:0,max:300,step:2,default:80},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff',orig:'#ffffff'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'pt',type:'range',label:"위 여백",css:'--hc-pt',unit:'px',min:0,max:400,step:4,default:80,orig:96},
+   {key:'pb',type:'range',label:"아래 여백",css:'--hc-pb',unit:'px',min:0,max:400,step:4,default:96,orig:160},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--hc-gutter',unit:'px',min:0,max:300,step:2,default:40,orig:80},
    {key:'lede',type:'toggle',label:"안내 문구 표시",attr:'data-lede',default:true},
    {key:'note',type:'toggle',label:"소요 시간 표시",attr:'data-note',default:true},
-   {key:'consent',type:'toggle',label:"동의 체크 표시",attr:'data-consent',default:true}
+   {key:'consent',type:'toggle',label:"동의 체크 표시",attr:'data-consent',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'tsz',type:'range',label:"제목",css:'--fs-display-sm',unit:'px',min:16,max:140,step:1,default:40,orig:80},
+   {key:'bsz',type:'range',label:"본문",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:16,orig:18}
   ]});
 })();
 </script>
@@ -346,6 +351,7 @@ window.CW_CONFIG['cw-hc'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -353,7 +359,7 @@ window.CW_CONFIG['cw-hc'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

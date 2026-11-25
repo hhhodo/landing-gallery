@@ -56,20 +56,21 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-oa'] = {
   settings: {
-    bg: "#000000",            // 배경색 (색상 hex)
-    ink: "#ffffff",           // 글자·아이콘 색 (색상 hex)
-    line: "#3d3d3d",          // 구분선 색 (색상 hex)
-    pt: 120,                  // 위 여백 (px · 0~300)
-    pb: 0,                    // 아래 여백 (px · 0~300)
+    bg: "#ffffff",            // 배경색 (색상 hex)
+    ink: "#191919",           // 글자·아이콘 색 (색상 hex)
+    line: "#e5e5e5",          // 구분선 색 (색상 hex)
+    pt: 96,                   // 위 여백 (px · 0~300)
+    pb: 96,                   // 아래 여백 (px · 0~300)
     px: 40,                   // 좌우 여백 (px · 0~200)
     head: 1,                  // 제목 표시 (1=켜기, 0=끄기)
-    hfs: 96,                  // 제목 크기 (px · 24~200)
-    gap: 80,                  // 제목-목록 간격 (px · 0~200)
-    tfs: 64,                  // 항목 글자 크기 (px · 16~120)
-    row: 40,                  // 행 위아래 여백 (px · 8~100)
+    hfs: 48,                  // 제목 크기 (px · 24~200)
+    gap: 48,                  // 제목-목록 간격 (px · 0~200)
+    tfs: 28,                  // 항목 글자 크기 (px · 16~120)
+    row: 28,                  // 행 위아래 여백 (px · 8~100)
     single: 1,                // 하나만 열기 (1=켜기, 0=끄기)
     img: 1,                   // 이미지 표시 (1=켜기, 0=끄기)
     labels: 1,                // 키워드 표시 (1=켜기, 0=끄기)
+    sub: "#666666",           // 보조 글자색 (색상 hex)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -247,7 +248,7 @@ window.CW_CONFIG['cw-oa'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -317,21 +318,23 @@ window.CW_CONFIG['cw-oa'] = {
    {type:'button',label:"+ 항목 추가",onClick:function(){data.push({title:'새 서비스',copy:'설명을 입력하세요.',a:'키워드 1\n키워드 2\n키워드 3',b:'키워드 4\n키워드 5\n키워드 6',img:''});render()}},
    {type:'button',label:"− 마지막 항목 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--bg-black',default:'#000000'},
-   {key:'ink',type:'color',label:"글자·아이콘 색",css:'--white',default:'#ffffff'},
-   {key:'line',type:'color',label:"구분선 색",css:'--line-services',default:'#3d3d3d'},
-   {key:'pt',type:'range',label:"위 여백",css:'--oa-pt',unit:'px',min:0,max:300,step:4,default:120},
-   {key:'pb',type:'range',label:"아래 여백",css:'--oa-pb',unit:'px',min:0,max:300,step:4,default:0},
-   {key:'px',type:'range',label:"좌우 여백",css:'--oa-px',unit:'px',min:0,max:200,step:2,default:40},
+   {key:'bg',type:'color',label:"배경색",css:'--bg-black',default:'#ffffff',orig:'#000000'},
+   {key:'ink',type:'color',label:"글자·아이콘 색",css:'--white',default:'#191919',orig:'#ffffff'},
+   {key:'line',type:'color',label:"구분선 색",css:'--line-services',default:'#e5e5e5',orig:'#3d3d3d'},
+   {key:'pt',type:'range',label:"위 여백",css:'--oa-pt',unit:'px',min:0,max:300,step:4,default:96,orig:120},
+   {key:'pb',type:'range',label:"아래 여백",css:'--oa-pb',unit:'px',min:0,max:300,step:4,default:96,orig:0},
+   {key:'px',type:'range',label:"좌우 여백",css:'--oa-px',unit:'px',min:0,max:200,step:2,default:40,orig:40},
    {type:'group',label:"목록"},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
-   {key:'hfs',type:'range',label:"제목 크기",css:'--fs-services-h',unit:'px',min:24,max:200,step:1,default:96},
-   {key:'gap',type:'range',label:"제목-목록 간격",css:'--oa-gap',unit:'px',min:0,max:200,step:4,default:80},
-   {key:'tfs',type:'range',label:"항목 글자 크기",css:'--fs-accordion-title',unit:'px',min:16,max:120,step:1,default:64},
-   {key:'row',type:'range',label:"행 위아래 여백",css:'--oa-row',unit:'px',min:8,max:100,step:2,default:40},
+   {key:'hfs',type:'range',label:"제목 크기",css:'--fs-services-h',unit:'px',min:24,max:200,step:1,default:48,orig:96},
+   {key:'gap',type:'range',label:"제목-목록 간격",css:'--oa-gap',unit:'px',min:0,max:200,step:4,default:48,orig:80},
+   {key:'tfs',type:'range',label:"항목 글자 크기",css:'--fs-accordion-title',unit:'px',min:16,max:120,step:1,default:28,orig:64},
+   {key:'row',type:'range',label:"행 위아래 여백",css:'--oa-row',unit:'px',min:8,max:100,step:2,default:28,orig:40},
    {key:'single',type:'toggle',label:"하나만 열기",attr:'data-single',default:true},
    {key:'img',type:'toggle',label:"이미지 표시",attr:'data-img',default:true},
-   {key:'labels',type:'toggle',label:"키워드 표시",attr:'data-labels',default:true}
+   {key:'labels',type:'toggle',label:"키워드 표시",attr:'data-labels',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--white-60',default:'#666666',orig:'#999999'}
   ]});
 })();
 </script>
@@ -342,6 +345,7 @@ window.CW_CONFIG['cw-oa'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -349,7 +353,7 @@ window.CW_CONFIG['cw-oa'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

@@ -57,17 +57,19 @@ window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-fx'] = {
   settings: {
     bg: "#ffffff",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
+    ink: "#191919",           // 글자색 (색상 hex)
+    sub: "#666666",           // 보조 글자색 (색상 hex)
     pad: 96,                  // 상하 여백 (px · 0~400)
     dir: "left",              // 흐르는 방향 : left=← 왼쪽으로 | right=→ 오른쪽으로
     speed: 44,                // 한 바퀴 시간 (클수록 느림) (s · 5~200)
     pause: 1,                 // 마우스 올리면 멈춤 (1=켜기, 0=끄기)
     w: 300,                   // 카드 너비 (px · 160~600)
-    h: 430,                   // 카드 높이 (px · 200~700)
-    radius: 999,              // 카드 모서리 (px · 0~999)
-    gap: 32,                  // 카드 간격 (px · 0~80)
+    h: 400,                   // 카드 높이 (px · 200~700)
+    radius: 24,               // 카드 모서리 (px · 0~999)
+    gap: 16,                  // 카드 간격 (px · 0~80)
     head: 1,                  // 제목 영역 표시 (1=켜기, 0=끄기)
+    tsz: 36,                  // 제목 (px · 14~120)
+    bsz: 16,                  // 본문 (px · 12~32)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -221,7 +223,7 @@ window.CW_CONFIG['cw-fx'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -291,20 +293,23 @@ window.CW_CONFIG['cw-fx'] = {
    {type:'button',label:"+ 사진 카드 추가",onClick:function(){data.push({type:'photo',img:'',alt:''});render()}},
    {type:'button',label:"− 마지막 카드 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"색상·여백"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff',orig:'#ffffff'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#666666',orig:'#5d5e5f'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:96},
    {type:'group',label:"흐름"},
    {key:'dir',type:'select',label:"흐르는 방향",attr:'data-dir',options:[{"value": "left", "label": "← 왼쪽으로"}, {"value": "right", "label": "→ 오른쪽으로"}],default:'left'},
    {key:'speed',type:'range',label:"한 바퀴 시간 (클수록 느림)",css:'--fx-speed',unit:'s',min:5,max:200,step:1,default:44},
    {key:'pause',type:'toggle',label:"마우스 올리면 멈춤",attr:'data-pause',default:true},
    {type:'group',label:"카드"},
    {key:'w',type:'range',label:"카드 너비",css:'--fx-w',unit:'px',min:160,max:600,step:5,default:300},
-   {key:'h',type:'range',label:"카드 높이",css:'--fx-h',unit:'px',min:200,max:700,step:5,default:430},
-   {key:'radius',type:'range',label:"카드 모서리",css:'--fx-radius',unit:'px',min:0,max:999,step:1,default:999},
-   {key:'gap',type:'range',label:"카드 간격",css:'--fx-gap',unit:'px',min:0,max:80,step:1,default:32},
-   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true}
+   {key:'h',type:'range',label:"카드 높이",css:'--fx-h',unit:'px',min:200,max:700,step:5,default:400,orig:430},
+   {key:'radius',type:'range',label:"카드 모서리",css:'--fx-radius',unit:'px',min:0,max:999,step:1,default:24,orig:999},
+   {key:'gap',type:'range',label:"카드 간격",css:'--fx-gap',unit:'px',min:0,max:80,step:1,default:16,orig:32},
+   {key:'head',type:'toggle',label:"제목 영역 표시",attr:'data-head',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'tsz',type:'range',label:"제목",css:'--fs-h1',unit:'px',min:14,max:120,step:1,default:36,orig:56},
+   {key:'bsz',type:'range',label:"본문",css:'--fs-body-2',unit:'px',min:12,max:32,step:1,default:16,orig:18}
   ]});
 })();
 </script>
@@ -315,6 +320,7 @@ window.CW_CONFIG['cw-fx'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -322,7 +328,7 @@ window.CW_CONFIG['cw-fx'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

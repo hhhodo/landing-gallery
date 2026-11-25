@@ -57,16 +57,18 @@ window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-kq'] = {
   settings: {
     bg: "#ffffff",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    sub: "#5d5e5f",           // 보조 글자색 (색상 hex)
-    pad: 160,                 // 상하 여백 (px · 0~400)
+    ink: "#191919",           // 글자색 (색상 hex)
+    sub: "#666666",           // 보조 글자색 (색상 hex)
+    pad: 96,                  // 상하 여백 (px · 0~400)
     cols: 4,                  // 열 수 (숫자 · 1~6)
-    gap: 16,                  // 카드 간격 (px · 0~80)
-    ratio: "5/6",             // 이미지 비율 : 5/6=5:6 (기본) | 1/1=1:1 | 4/5=4:5 | 3/4=3:4 | 4/3=4:3 | 16/9=16:9
-    radius: 24,               // 이미지 모서리 (px · 0~60)
+    gap: 20,                  // 카드 간격 (px · 0~80)
+    ratio: "4/5",             // 이미지 비율 : 5/6=5:6 (기본) | 1/1=1:1 | 4/5=4:5 | 3/4=3:4 | 4/3=4:3 | 16/9=16:9
+    radius: 16,               // 이미지 모서리 (px · 0~60)
     tt: 1,                    // 제목(LINEUP) 표시 (1=켜기, 0=끄기)
     kr: 1,                    // 한글 캡션 표시 (1=켜기, 0=끄기)
     en: 1,                    // 영문 캡션 표시 (1=켜기, 0=끄기)
+    tsz: 36,                  // 제목 (px · 16~120)
+    bsz: 16,                  // 캡션 (px · 12~28)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -144,7 +146,7 @@ window.CW_CONFIG['cw-kq'] = {
 .kq{overflow-x:hidden;max-width:100vw;scroll-behavior:smooth;scroll-padding-top:88px;}
 .kq .wrap{width:100%;max-width:1920px;margin-inline:auto;padding-inline:var(--gutter);}
 .kq .display-thin{font-weight:var(--fw-base);line-height:0.94;letter-spacing:-0.02em;
-  font-size:clamp(32px,5.2vw,64px);}
+  font-size:var(--kq-title,clamp(32px,5.2vw,64px));}
 .kq .section-head{text-align:center;margin-bottom:var(--space-8);}
 
 .kq .gallery-grid{display:grid;grid-template-columns:repeat(var(--kq-cols,4),1fr);gap:var(--kq-gap,var(--grid-gutter-md));}
@@ -175,7 +177,7 @@ window.CW_CONFIG['cw-kq'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -240,18 +242,21 @@ window.CW_CONFIG['cw-kq'] = {
    {type:'button',label:"+ 카드 추가",onClick:function(){data.push({img:data[0]?data[0].img:'',kr:'새 제품',en:'NEW'});render()}},
    {type:'button',label:"− 마지막 카드 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"색상·여백"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#5d5e5f'},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:160},
+   {key:'bg',type:'color',label:"배경색",css:'--color-canvas',default:'#ffffff',orig:'#ffffff'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'sub',type:'color',label:"보조 글자색",css:'--text-subtle',default:'#666666',orig:'#5d5e5f'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:160},
    {type:'group',label:"레이아웃"},
    {key:'cols',type:'range',label:"열 수",css:'--kq-cols',unit:'',min:1,max:6,step:1,default:4},
-   {key:'gap',type:'range',label:"카드 간격",css:'--kq-gap',unit:'px',min:0,max:80,step:1,default:16},
-   {key:'ratio',type:'select',label:"이미지 비율",css:'--kq-ratio',options:[{"value": "5/6", "label": "5:6 (기본)"}, {"value": "1/1", "label": "1:1"}, {"value": "4/5", "label": "4:5"}, {"value": "3/4", "label": "3:4"}, {"value": "4/3", "label": "4:3"}, {"value": "16/9", "label": "16:9"}],default:'5/6'},
-   {key:'radius',type:'range',label:"이미지 모서리",css:'--kq-radius',unit:'px',min:0,max:60,step:1,default:24},
+   {key:'gap',type:'range',label:"카드 간격",css:'--kq-gap',unit:'px',min:0,max:80,step:1,default:20,orig:16},
+   {key:'ratio',type:'select',label:"이미지 비율",css:'--kq-ratio',options:[{"value": "5/6", "label": "5:6 (기본)"}, {"value": "1/1", "label": "1:1"}, {"value": "4/5", "label": "4:5"}, {"value": "3/4", "label": "3:4"}, {"value": "4/3", "label": "4:3"}, {"value": "16/9", "label": "16:9"}],default:'4/5',orig:'5/6'},
+   {key:'radius',type:'range',label:"이미지 모서리",css:'--kq-radius',unit:'px',min:0,max:60,step:1,default:16,orig:24},
    {key:'tt',type:'toggle',label:"제목(LINEUP) 표시",attr:'data-title',default:true},
    {key:'kr',type:'toggle',label:"한글 캡션 표시",attr:'data-kr',default:true},
-   {key:'en',type:'toggle',label:"영문 캡션 표시",attr:'data-en',default:true}
+   {key:'en',type:'toggle',label:"영문 캡션 표시",attr:'data-en',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'tsz',type:'range',label:"제목",css:'--kq-title',unit:'px',min:16,max:120,step:1,default:36,orig:64},
+   {key:'bsz',type:'range',label:"캡션",css:'--fs-body-2',unit:'px',min:12,max:28,step:1,default:16,orig:18}
   ]});
 })();
 </script>
@@ -262,6 +267,7 @@ window.CW_CONFIG['cw-kq'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -269,7 +275,7 @@ window.CW_CONFIG['cw-kq'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}

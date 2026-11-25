@@ -56,22 +56,26 @@
 window.CW_CONFIG = window.CW_CONFIG || {};
 window.CW_CONFIG['cw-fs'] = {
   settings: {
-    bg: "#e3f3f1",            // 배경색 (색상 hex)
-    ink: "#262628",           // 글자색 (색상 hex)
-    pad: 160,                 // 상하 여백 (px · 0~400)
-    gutter: 80,               // 좌우 여백 (px · 0~300)
+    bg: "#f7f7f7",            // 배경색 (색상 hex)
+    ink: "#191919",           // 글자색 (색상 hex)
+    pad: 96,                  // 상하 여백 (px · 0~400)
+    gutter: 40,               // 좌우 여백 (px · 0~300)
     head: 1,                  // 제목 표시 (1=켜기, 0=끄기)
     cols: 3,                  // 열 수 (숫자 · 1~4)
     gap: 16,                  // 카드 간격 (px · 0~80)
-    h: 280,                   // 카드 최소 높이 (px · 120~600)
-    rad: 24,                  // 모서리 (px · 0~60)
-    padc: 48,                 // 카드 안쪽 여백 (px · 8~80)
+    h: 260,                   // 카드 최소 높이 (px · 120~600)
+    rad: 16,                  // 모서리 (px · 0~60)
+    padc: 32,                 // 카드 안쪽 여백 (px · 8~80)
     card: "#ffffff",          // 카드 배경 (색상 hex)
-    brand: "#2f8f86",         // 포인트 색 (색상 hex)
-    tint: "#eef6f5",          // 연한 포인트 색 (색상 hex)
-    accent: "#23716a",        // 강조 글자색 (색상 hex)
+    brand: "#191919",         // 포인트 색 (색상 hex)
+    tint: "#eeeeee",          // 연한 포인트 색 (색상 hex)
+    accent: "#191919",        // 강조 글자색 (색상 hex)
     step: 1,                  // 번호 표시 (1=켜기, 0=끄기)
     lift: 1,                  // 호버 시 떠오르기 (1=켜기, 0=끄기)
+    tsz: 36,                  // 제목 (px · 14~120)
+    ctsz: 22,                 // 카드 제목 (px · 12~60)
+    nsz: 56,                  // 큰 숫자 (px · 24~160)
+    bsz: 15,                  // 설명 (px · 11~30)
   },
   // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
   meta: {
@@ -220,7 +224,7 @@ window.CW_CONFIG['cw-fs'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -295,23 +299,28 @@ window.CW_CONFIG['cw-fs'] = {
    {type:'button',label:"+ 큰 숫자 카드",onClick:function(){data.push({step:String(data.length+1).padStart(2,'0'),title:'새 단계',desc:'설명을 입력하세요.',kind:'stat',values:'',stat:'0',unit:'원'});render()}},
    {type:'button',label:"− 마지막 카드 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--color-surface-tint',default:'#e3f3f1'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:160},
-   {key:'gutter',type:'range',label:"좌우 여백",css:'--fs-gutter',unit:'px',min:0,max:300,step:2,default:80},
+   {key:'bg',type:'color',label:"배경색",css:'--color-surface-tint',default:'#f7f7f7',orig:'#e3f3f1'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:160},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--fs-gutter',unit:'px',min:0,max:300,step:2,default:40,orig:80},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
    {type:'group',label:"카드"},
    {key:'cols',type:'range',label:"열 수",css:'--fs-cols',unit:'',min:1,max:4,step:1,default:3},
-   {key:'gap',type:'range',label:"카드 간격",css:'--fs-gap',unit:'px',min:0,max:80,step:1,default:16},
-   {key:'h',type:'range',label:"카드 최소 높이",css:'--fs-h',unit:'px',min:120,max:600,step:10,default:280},
-   {key:'rad',type:'range',label:"모서리",css:'--fs-radius',unit:'px',min:0,max:60,step:1,default:24},
-   {key:'padc',type:'range',label:"카드 안쪽 여백",css:'--fs-pad',unit:'px',min:8,max:80,step:1,default:48},
+   {key:'gap',type:'range',label:"카드 간격",css:'--fs-gap',unit:'px',min:0,max:80,step:1,default:16,orig:16},
+   {key:'h',type:'range',label:"카드 최소 높이",css:'--fs-h',unit:'px',min:120,max:600,step:10,default:260,orig:280},
+   {key:'rad',type:'range',label:"모서리",css:'--fs-radius',unit:'px',min:0,max:60,step:1,default:16,orig:24},
+   {key:'padc',type:'range',label:"카드 안쪽 여백",css:'--fs-pad',unit:'px',min:8,max:80,step:1,default:32,orig:48},
    {key:'card',type:'color',label:"카드 배경",css:'--fs-card',default:'#ffffff'},
-   {key:'brand',type:'color',label:"포인트 색",css:'--color-brand',default:'#2f8f86'},
-   {key:'tint',type:'color',label:"연한 포인트 색",css:'--color-brand-tint',default:'#eef6f5'},
-   {key:'accent',type:'color',label:"강조 글자색",css:'--color-brand-600',default:'#23716a'},
+   {key:'brand',type:'color',label:"포인트 색",css:'--color-brand',default:'#191919',orig:'#2f8f86'},
+   {key:'tint',type:'color',label:"연한 포인트 색",css:'--color-brand-tint',default:'#eeeeee',orig:'#eef6f5'},
+   {key:'accent',type:'color',label:"강조 글자색",css:'--color-brand-600',default:'#191919',orig:'#23716a'},
    {key:'step',type:'toggle',label:"번호 표시",attr:'data-step',default:true},
-   {key:'lift',type:'toggle',label:"호버 시 떠오르기",attr:'data-lift',default:true}
+   {key:'lift',type:'toggle',label:"호버 시 떠오르기",attr:'data-lift',default:true},
+   {type:'group',label:"글자 크기"},
+   {key:'tsz',type:'range',label:"제목",css:'--fs-h1',unit:'px',min:14,max:120,step:1,default:36,orig:56},
+   {key:'ctsz',type:'range',label:"카드 제목",css:'--fs-h3',unit:'px',min:12,max:60,step:1,default:22,orig:32},
+   {key:'nsz',type:'range',label:"큰 숫자",css:'--fs-display-sm',unit:'px',min:24,max:160,step:1,default:56,orig:80},
+   {key:'bsz',type:'range',label:"설명",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:15,orig:18}
   ]});
 })();
 </script>
@@ -322,6 +331,7 @@ window.CW_CONFIG['cw-fs'] = {
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
     var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
       var g=null,any=false;
@@ -329,7 +339,7 @@ window.CW_CONFIG['cw-fs'] = {
         if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
         var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
       if(g)g.el.classList.toggle('hide',!any)}
-    var syncs=[];
+    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
