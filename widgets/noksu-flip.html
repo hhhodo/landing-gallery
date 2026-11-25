@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>플립 카드 (noksu) 위젯</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>body{margin:0;background:#fff}body.cw-has-sidebar{margin-right:304px!important}
+.cw-sb{position:fixed;top:0;right:0;bottom:0;width:304px;z-index:9999;background:#fff;color:#1d1d1f;border-left:1px solid #ececef;display:flex;flex-direction:column;font:13px/1.35 'Pretendard','Apple SD Gothic Neo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.cw-sb *{box-sizing:border-box}
+.cw-sb__head{flex:none;padding:18px 20px 14px;font-weight:700;font-size:15px;letter-spacing:-.01em}
+.cw-sb__body{flex:1;overflow:auto;padding:0 20px 16px}
+.cw-sb__body::-webkit-scrollbar{width:6px}.cw-sb__body::-webkit-scrollbar-thumb{background:#dcdce0;border-radius:3px}
+.cw-sb__g{margin:22px 0 6px;padding-top:16px;border-top:1px solid #f0f0f2;font-size:11px;font-weight:700;letter-spacing:.06em;color:#9a9aa2}
+.cw-sb__g:first-child{margin-top:4px;padding-top:0;border-top:0}
+.cw-sb__r{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:34px}
+.cw-sb__r>label{color:#4a4a52;white-space:nowrap}
+.cw-sb__r.col{flex-direction:column;align-items:stretch;gap:6px;padding:6px 0}
+.cw-sb__r.hide,.cw-sb__g.hide{display:none}
+/* 숫자 입력 */
+.cw-sb__n{position:relative;width:96px}
+.cw-sb__n input{width:100%;height:32px;padding:0 28px 0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb;font:inherit;font-size:13px;text-align:right;color:#1d1d1f;transition:border-color .15s,background .15s}
+.cw-sb__n input:focus{outline:0;border-color:#1d1d1f;background:#fff}
+.cw-sb__n i{position:absolute;right:9px;top:50%;transform:translateY(-50%);font-style:normal;font-size:11px;color:#9a9aa2;pointer-events:none}
+.cw-sb__n input::-webkit-outer-spin-button,.cw-sb__n input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.cw-sb__n input[type=number]{-moz-appearance:textfield}
+/* 색상 */
+.cw-sb__c{display:flex;align-items:center;gap:8px;height:32px;padding:0 6px 0 4px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}
+.cw-sb__c input[type=color]{width:22px;height:22px;padding:0;border:0;border-radius:50%;background:none;cursor:pointer;-webkit-appearance:none;appearance:none}
+.cw-sb__c input[type=color]::-webkit-color-swatch-wrapper{padding:0}.cw-sb__c input[type=color]::-webkit-color-swatch{border:1px solid rgba(0,0,0,.12);border-radius:50%}
+.cw-sb__c input[type=text]{width:66px;border:0;background:none;font:inherit;font-size:12px;color:#4a4a52;text-transform:uppercase;padding:0}.cw-sb__c input[type=text]:focus{outline:0;color:#1d1d1f}
+/* 선택 버튼 (드롭다운 대신) */
+.cw-sb__seg{display:flex;flex-wrap:wrap;gap:4px;padding:3px;background:#f1f1f4;border-radius:10px}
+.cw-sb__seg button{flex:1 1 auto;min-width:0;height:28px;padding:0 10px;border:0;border-radius:7px;background:transparent;font:inherit;font-size:12.5px;color:#6a6a72;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s,box-shadow .15s}
+.cw-sb__seg button:hover{color:#1d1d1f}
+.cw-sb__seg button.on{background:#fff;color:#1d1d1f;font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* 스위치 */
+.cw-sb__sw{position:relative;width:38px;height:22px;flex:none}
+.cw-sb__sw input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
+.cw-sb__sw span{position:absolute;inset:0;border-radius:11px;background:#d8d8de;transition:background .2s}
+.cw-sb__sw span::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.25);transition:transform .2s}
+.cw-sb__sw input:checked+span{background:#1d1d1f}.cw-sb__sw input:checked+span::after{transform:translateX(16px)}
+/* 버튼 */
+.cw-sb__b{display:flex;gap:6px;margin:8px 0 2px}
+.cw-sb__b button{flex:1;height:32px;border:1px solid #e3e3e8;background:#fff;border-radius:8px;font:inherit;font-size:12.5px;color:#1d1d1f;cursor:pointer;transition:background .15s}
+.cw-sb__b button:hover{background:#f6f6f8}
+.cw-sb__foot{flex:none;display:flex;gap:8px;padding:12px 20px 16px;border-top:1px solid #ececef;background:#fff}
+.cw-sb__foot button{flex:1;height:38px;border-radius:10px;border:1px solid #e3e3e8;background:#fff;font:inherit;font-size:13px;cursor:pointer}
+.cw-sb__foot button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}
+.cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
+@media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:50vh}.cw-sb{top:auto;width:auto;left:0;height:48vh;border-left:0;border-top:1px solid #ececef}}
+
+.cw-sb__t2 input{width:100%;height:32px;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb;font:inherit;font-size:13px;color:#1d1d1f}.cw-sb__t2 input:focus{outline:0;border-color:#1d1d1f;background:#fff}
+</style></head><body>
+<!-- 플립 카드 (noksu) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
+<script>
+/* ============================================================
+   플립 카드 (noksu) 위젯 설정값 — 아래 숫자/값만 고치면 위젯에 반영됩니다.
+   ============================================================ */
+window.CW_CONFIG = window.CW_CONFIG || {};
+window.CW_CONFIG['cw-nk'] = {
+  settings: {
+    trigger: "hover",         // 뒤집는 방법 : hover=마우스 올리기 | click=클릭
+    dir: "h",                 // 뒤집는 방향 : h=가로 | v=세로
+    dur: 0.6,                 // 뒤집는 시간 (s · 0.1~3)
+    cols: 3,                  // 열 수 (숫자 · 1~4)
+    gap: 24,                  // 카드 간격 (px · 0~80)
+    h: 560,                   // 카드 높이 (px · 300~900)
+    media: 340,               // 이미지 높이 (px · 100~600)
+    rad: 32,                  // 모서리 (px · 0~80)
+    badge: 1,                 // 뱃지 표시 (1=켜기, 0=끄기)
+    bg: "#fefff0",            // 배경색 (색상 hex)
+    ink: "#262628",           // 글자색 (색상 hex)
+    tfs: 102,                 // 제목 크기 (px · 24~200)
+    head: 1,                  // 제목 표시 (1=켜기, 0=끄기)
+    pad: 160,                 // 상하 여백 (px · 0~400)
+    gutter: 80,               // 좌우 여백 (px · 0~300)
+  },
+  // 문구 (따옴표 안의 글자만 수정 · 항목 추가/삭제는 { } 블록 단위로)
+  meta: {
+      "title": "FIND YOUR\nFLAVOR"
+  },
+  items: [
+      {
+          "img": "",
+          "badge": "PAIRING",
+          "title": "바삭한 프레첼과 함께",
+          "desc": "짭짤한 프레첼에 상큼한 홉 향이 어우러지는 조합.",
+          "backBadge": "TIP",
+          "backTitle": "이렇게 즐겨보세요",
+          "backDesc": "차갑게 칠링한 잔에 가득 따라, 거품까지 함께 즐겨보세요.",
+          "color": "#e30413"
+      },
+      {
+          "img": "",
+          "badge": "PAIRING",
+          "title": "고소한 치즈 플래터엔 역시",
+          "desc": "진한 풍미를 개운하게 마무리하는 한 잔.",
+          "backBadge": "TIP",
+          "backTitle": "이렇게 즐겨보세요",
+          "backDesc": "잔 가득 채워 청량하게, 거품 한 모금부터 천천히 음미해보세요.",
+          "color": "#007fdd"
+      },
+      {
+          "img": "",
+          "badge": "PAIRING",
+          "title": "상큼한 프루트 가니시엔",
+          "desc": "산뜻하게 감도는 과일 향이 청량감을 더해요.",
+          "backBadge": "TIP",
+          "backTitle": "이렇게 즐겨보세요",
+          "backDesc": "차갑게 칠링한 잔에 따라, 마시기 전 향부터 가볍게 즐겨보세요.",
+          "color": "#ff3157"
+      }
+  ]
+};
+</script>
+<style>
+.nk{font-family:'Pretendard','Apple SD Gothic Neo',sans-serif}
+.nk{--color-primary-050:#f6f7f7; --color-primary-100:#e1e1e3; --color-primary-200:#c5c6c8;
+  --color-primary-300:#a2a3a5; --color-primary-400:#949597; --color-primary-500:#838486;
+  --color-primary-600:#5d5e5f; --color-primary-700:#4c4c4e; --color-primary-800:#393a3b;
+  --color-primary-900:#262628; --color-canvas:#fff; --color-placeholder:#d9d9d9;
+
+  --text-default:var(--color-primary-900); --text-subtle:var(--color-primary-600);
+  --text-disabled:var(--color-primary-400);
+  --text-default-inverse:#fff; --text-subtle-inverse:var(--color-primary-200);
+
+  
+  --fs-display-lg:102px; --fs-display-md:96px; --fs-display-sm:80px;
+  --fs-h0:64px; --fs-h1:56px; --fs-h2:40px; --fs-h3:32px;
+  --fs-body-1:20px; --fs-body-2:18px;
+  --fs-badge:14px;
+  --fw-strong:700; --fw-base:400;
+  --tracking-kr:-0.025em; --display-tracking:-0.02em;
+  --lh-display:1.25; --lh-h0:1.25; --lh-h1:1.3; --lh-h2:1.35; --lh-h3:1.4; --lh-body:1.5;
+  --measure:38ch;
+
+  
+  --radius-0:0px; --radius-sm:12px; --radius-md:24px; --radius-lg:32px; --radius-circle:999px;
+  --border-0:none; --border-1:1px solid var(--color-primary-100); --border-2:2px solid var(--color-primary-900);
+
+  
+  --container-narrow:1280px; --container-default:1440px; --container-wide:1600px;
+  --gutter:80px;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:24px; --space-6:32px;
+  --space-7:48px; --space-8:64px; --space-9:96px; --space-10:120px; --space-11:160px; --space-12:200px; --space-13:240px;
+  --space-section:var(--space-11);
+  --grid-gutter-0:0px; --grid-gutter-sm:8px; --grid-gutter-md:16px; --grid-gutter-lg:24px;}
+.nk *{box-sizing:border-box;margin:0;padding:0;}
+.nk{font-family:'Pretendard',sans-serif;font-weight:var(--fw-base);
+  font-size:var(--fs-body-1);line-height:var(--lh-body);letter-spacing:var(--tracking-kr);
+  color:var(--text-default);background:var(--color-canvas);}
+.nk h2,.nk .h1{font-size:var(--fs-h1);font-weight:var(--fw-strong);line-height:var(--lh-h1);}
+.nk h3,.nk .h2{font-size:var(--fs-h2);font-weight:var(--fw-strong);line-height:var(--lh-h2);}
+.nk h4,.nk .h3{font-size:var(--fs-h3);font-weight:var(--fw-strong);line-height:var(--lh-h3);}
+.nk .body-2,.nk .sub{font-size:var(--fs-body-2);}
+.nk .container{width:100%;max-width:var(--container-default);margin-inline:auto;padding-inline:var(--nk-gutter,var(--gutter));}
+.nk .container--wide{max-width:var(--container-wide);}
+.nk .container--narrow{max-width:var(--container-narrow);}
+.nk .grid{display:grid;grid-template-columns:repeat(var(--nk-cols,3),1fr);gap:var(--nk-gap,var(--grid-gutter-lg));}
+.nk .grid--flush{gap:var(--grid-gutter-0);}
+.nk .grid--tight{gap:var(--grid-gutter-sm);}
+.nk .grid--snug{gap:var(--grid-gutter-md);}
+.nk .section{padding-block:var(--space-section);}
+.nk .img{background:var(--color-placeholder);display:block;width:100%;}
+.nk .img--16-9{aspect-ratio:16/9;}
+.nk .img--4-3{aspect-ratio:4/3;}
+.nk .img--1-1{aspect-ratio:1/1;}
+@media (max-width:1024px){.nk{--gutter:40px;}.nk .grid{gap:var(--grid-gutter-md);}}
+@media (max-width:768px){.nk{--gutter:20px;
+    --fs-display-lg:48px; --fs-display-md:44px; --fs-display-sm:40px;
+    --fs-h0:32px; --fs-h1:28px; --fs-h2:24px; --fs-h3:20px;
+    --fs-body-1:18px; --fs-body-2:16px;
+    --space-section:var(--space-9);}}
+.nk{--brand-cream:#fefff0;
+  --brand-yellow:#fff200;
+  --brand-red:#e30413;
+  --brand-pink:#ff3157;
+  --brand-ink:#121212;
+  --brand-bubble-1:#ffd633;
+  --brand-bubble-2:#ff6a6f;
+  --brand-bubble-3:#99ed47;
+  --brand-bubble-4:#e01770;
+  --brand-bubble-5:#f23045;
+  --brand-bubble-6:#f082b2;
+  --brand-bubble-7:#007fdd;}
+.nk{background:var(--brand-cream);}
+.nk .badge-outline{display:inline-flex;align-items:center;height:40px;padding-inline:var(--space-4);
+  border:1px solid currentColor;border-radius:var(--radius-sm);white-space:nowrap;
+  font-size:var(--fs-body-1);font-weight:var(--fw-strong);letter-spacing:.04em;text-transform:uppercase;}
+.nk .section-head{text-align:center;margin-bottom:var(--space-8);}
+.nk .section-head h2{font-size:var(--fs-display-lg);letter-spacing:var(--display-tracking);}
+.nk .flip-card{perspective:1600px;-webkit-perspective:1600px;min-height:var(--nk-h,560px);}
+.nk .flip-card__inner{position:relative;width:100%;height:100%;
+  transition:transform var(--nk-dur,.6s) cubic-bezier(.4,.1,.2,1);
+  transform-style:preserve-3d;-webkit-transform-style:preserve-3d;}
+
+.nk .flip-card__face{position:absolute;inset:0;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:var(--nk-radius,var(--radius-lg));overflow:hidden;display:flex;flex-direction:column;}
+.nk .flip-card__face--front{background:#fff;}
+.nk .flip-card__face--back{transform:rotateY(180deg);color:#fff;display:flex;flex-direction:column;justify-content:center;}
+.nk .flip-card__media{flex:0 0 var(--nk-media,340px);height:var(--nk-media,340px);}
+.nk .flip-card__body{flex:1;min-height:0;padding:var(--space-6);text-align:left;
+  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;}
+.nk .flip-card__body .badge-outline{margin-bottom:var(--space-4);border-color:var(--color-primary-200);}
+.nk .flip-card__body h4{font-size:var(--fs-h3);margin-bottom:var(--space-3);}
+.nk .flip-card__body p{color:var(--text-subtle);}
+.nk .flip-card__face--back .flip-card__body .badge-outline{border-color:#fff;}
+.nk .flip-card__face--back .flip-card__body p{color:#fff;}
+.nk .flip-card__face--back .flip-card__body{flex:0 1 auto;margin-block:auto;
+  align-items:center;text-align:center;}
+@media (max-width:1024px){}
+@media (max-width:768px){.nk .section-head{margin-bottom:var(--space-5);}}
+.nk[data-trigger=hover][data-dir=h] .flip-card:hover .flip-card__inner,.nk .flip-card.is-flipped .flip-card__inner{transform:rotateY(180deg)}
+.nk[data-dir=v] .flip-card__face--back{transform:rotateX(180deg)}
+.nk[data-trigger=hover][data-dir=v] .flip-card:hover .flip-card__inner,.nk[data-dir=v] .flip-card.is-flipped .flip-card__inner{transform:rotateX(180deg)}
+.nk .flip-card{cursor:pointer}
+.nk .flip-card__media{background-size:cover;background-position:center}
+@media(max-width:1024px){.nk .grid{grid-template-columns:1fr}.nk .container{padding-inline:var(--gutter)}}
+.nk[data-editing=true] .flip-card{min-height:0;perspective:none}
+.nk[data-editing=true] .flip-card__inner{transform:none!important;display:grid;gap:12px}
+.nk[data-editing=true] .flip-card__face{position:relative;transform:none!important;backface-visibility:visible;-webkit-backface-visibility:visible;min-height:280px}
+.nk[data-editing=true] .flip-card__face--front{min-height:auto}
+.nk[data-editing=true] .flip-card__media{outline:1px dashed rgba(90,90,255,.8);outline-offset:-4px;cursor:pointer}
+.nk .nk-color{position:absolute;right:12px;top:12px;width:34px;height:34px;padding:0;border:2px solid #fff;border-radius:50%;background:none;cursor:pointer;display:none}
+.nk[data-editing=true] .nk-color{display:block}
+.nk[data-badge=false] .badge-outline{display:none}
+.nk[data-head=false] .section-head{display:none}
+[contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
+</style>
+<div class="nk" id="cw-nk" data-trigger="hover" data-dir="h" data-badge="true" data-head="true" data-editing="false"><section class="section"><div class="container container--wide"><div class="section-head"><h2 data-g="title"></h2></div><div class="grid" id="cw-nk-grid"></div></div></section></div>
+<script>
+/* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
+(function(){
+  var R=window.CWWidgets=window.CWWidgets||{};
+  function setEditable(container,on){container.querySelectorAll('[data-f],[data-g]').forEach(function(n){n.contentEditable=on?'true':'false'})}
+  function bindEdit(container,data,meta){container.addEventListener('input',function(e){var n=e.target.closest('[data-f],[data-g]');if(!n)return;if(n.dataset.g)meta[n.dataset.g]=n.innerText.replace(/\n+$/,'');else data[+n.dataset.i][n.dataset.f]=n.innerText.replace(/\n+$/,'')});container.addEventListener('keydown',function(e){if(e.target.isContentEditable&&e.key===' ')e.stopPropagation()})}
+  window.CWPanel={toast:function(){},setEditable:setEditable,bindEdit:bindEdit,
+  mount:function(cfg){
+    var root=cfg.root,state={},map={},C=((window.CW_CONFIG||{})[root.id]||{}).settings||{};
+    function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
+    function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
+    cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
+    cfg.onChange&&cfg.onChange(state,null);
+    var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
+    return api}};
+
+  /* ── 빈 이미지 자리 + 이미지 선택기(파일 업로드/주소/비우기) ── */
+  var st=document.createElement('style');
+  st.textContent=".cw-ph{background:var(--color-placeholder,#d9d9d9);position:relative;overflow:hidden}.cw-ph::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;background:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23262628' stroke-width='1.4' stroke-linejoin='round' stroke-linecap='round'%3E%3Crect x='3' y='4' width='18' height='16' rx='2'/%3E%3Ccircle cx='9' cy='10' r='1.8'/%3E%3Cpath d='M3 17l5-5 4 4 3-3 6 6'/%3E%3C/svg%3E\") center/contain no-repeat;opacity:.4}"+
+  ".cw-pop{position:fixed;z-index:10001;width:300px;background:#fff;color:#1d1d1f;border:1px solid #ececef;border-radius:16px;box-shadow:0 14px 36px rgba(0,0,0,.18);padding:16px;font:13px/1.4 'Pretendard',sans-serif}.cw-pop *{box-sizing:border-box}.cw-pop h4{margin:0 0 12px;font-size:14px}.cw-pop .row{display:flex;gap:6px;margin-top:8px}.cw-pop input[type=text]{flex:1;min-width:0;height:34px;font:inherit;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb}.cw-pop input[type=text]:focus{outline:0;border-color:#1d1d1f;background:#fff}.cw-pop button{height:34px;font:inherit;font-size:13px;padding:0 12px;border:1px solid #e3e3e8;background:#fff;color:#1d1d1f;border-radius:8px;cursor:pointer;white-space:nowrap}.cw-pop button.p{background:#1d1d1f;border-color:#1d1d1f;color:#fff;font-weight:600}.cw-pop button.w{width:100%}.cw-pop button.d{color:#c0392b}.cw-pop small{display:block;margin-top:10px;color:#9a9aa2;font-size:11px}.cw-pop .msg{margin-top:8px;font-size:12px;color:#c0392b}";
+  document.head.appendChild(st);
+  var POP=null;
+  function closePop(){if(POP){POP.remove();POP=null}}
+  function toData(file,ok,err){
+    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
+    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
+      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+  function pickImage(anchor,cur,set){
+    closePop();POP=document.createElement('div');POP.className='cw-pop';
+    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    document.body.appendChild(POP);
+    var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
+    POP.style.left=x+'px';POP.style.top=y+'px';
+    var fi=POP.querySelector('input[type=file]'),msg=POP.querySelector('.msg');
+    fi.addEventListener('change',function(){toData(fi.files[0],function(u){set(u);closePop()},function(m){msg.textContent=m})});
+    POP.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;var a=b.dataset.a;
+      if(a==='file')fi.click();
+      if(a==='url'){var v=POP.querySelector('input[type=text]').value.trim();if(v){set(v);closePop()}}
+      if(a==='clear'){set('');closePop()}})}
+  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-img-i]'))closePop()});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')closePop()});
+  window.CWPanel.pickImage=pickImage;window.CWPanel.imageFromFile=toData;
+})();
+
+(function(){
+ var root=document.getElementById('cw-nk'),editing=false;
+ var initMeta={"title": "FIND YOUR\nFLAVOR"},meta=Object.assign({},initMeta);
+ var init=[{"img": "", "badge": "PAIRING", "title": "바삭한 프레첼과 함께", "desc": "짭짤한 프레첼에 상큼한 홉 향이 어우러지는 조합.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 가득 따라, 거품까지 함께 즐겨보세요.", "color": "#e30413"}, {"img": "", "badge": "PAIRING", "title": "고소한 치즈 플래터엔 역시", "desc": "진한 풍미를 개운하게 마무리하는 한 잔.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "잔 가득 채워 청량하게, 거품 한 모금부터 천천히 음미해보세요.", "color": "#007fdd"}, {"img": "", "badge": "PAIRING", "title": "상큼한 프루트 가니시엔", "desc": "산뜻하게 감도는 과일 향이 청량감을 더해요.", "backBadge": "TIP", "backTitle": "이렇게 즐겨보세요", "backDesc": "차갑게 칠링한 잔에 따라, 마시기 전 향부터 가볍게 즐겨보세요.", "color": "#ff3157"}];
+ var data=JSON.parse(JSON.stringify(init));
+ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function T(s){return esc(s).replace(/\n/g,'<br>')}
+ function metaFill(){root.querySelectorAll('[data-g]').forEach(function(n){var v=meta[n.dataset.g];if(v===undefined){n.style.display='none';return}n.innerHTML=T(v)})}
+
+ var grid=document.getElementById('cw-nk-grid');
+ function media(d,i){return d.img?'<div class="flip-card__media img" style="background-image:url(\''+esc(d.img).replace(/'/g,'%27')+'\')" data-img-i="'+i+'"></div>':'<div class="flip-card__media img cw-ph" data-img-i="'+i+'"></div>'}
+ function render(){metaFill();root.setAttribute('data-editing',editing);
+  grid.innerHTML=data.map(function(d,i){return '<article class="flip-card"><div class="flip-card__inner"><div class="flip-card__face flip-card__face--front">'+media(d,i)+'<div class="flip-card__body"><span class="badge-outline" data-i="'+i+'" data-f="badge">'+esc(d.badge)+'</span><h4 data-i="'+i+'" data-f="title">'+esc(d.title)+'</h4><p class="body-2" data-i="'+i+'" data-f="desc">'+esc(d.desc)+'</p></div></div><div class="flip-card__face flip-card__face--back" style="background:'+esc(d.color)+'"><input type="color" class="nk-color" data-ci="'+i+'" value="'+esc(d.color)+'" title="뒷면 색"><div class="flip-card__body"><span class="badge-outline" data-i="'+i+'" data-f="backBadge">'+esc(d.backBadge)+'</span><h4 data-i="'+i+'" data-f="backTitle">'+esc(d.backTitle)+'</h4><p class="body-2" data-i="'+i+'" data-f="backDesc">'+esc(d.backDesc)+'</p></div></div></div></article>'}).join('');
+  CWPanel.setEditable(root,editing)}
+ grid.addEventListener('input',function(e){var c=e.target.closest('[data-ci]');if(!c)return;data[+c.dataset.ci].color=c.value;c.closest('.flip-card__face').style.background=c.value});
+ grid.addEventListener('click',function(e){if(editing)return;var cardEl=e.target.closest('.flip-card');if(!cardEl)return;
+  if(root.getAttribute('data-trigger')==='click'||!window.matchMedia('(hover:hover)').matches)cardEl.classList.toggle('is-flipped')});
+
+ var CFG=(window.CW_CONFIG||{})['cw-nk']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
+ root.addEventListener('click',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();e.stopPropagation();var i=+t.getAttribute('data-img-i');CWPanel.pickImage(t,data[i].img||'',function(u){data[i].img=u;render()})},true);
+ root.addEventListener('dragover',function(e){if(editing&&e.target.closest('[data-img-i]'))e.preventDefault()});
+ root.addEventListener('drop',function(e){var t=e.target.closest('[data-img-i]');if(!editing||!t)return;e.preventDefault();var i=+t.getAttribute('data-img-i'),f=e.dataTransfer&&e.dataTransfer.files[0];if(f)CWPanel.imageFromFile(f,function(u){data[i].img=u;render()},function(m){alert(m)})});
+ CWPanel.bindEdit(root,data,meta);
+ CWPanel.mount({title:'플립 카드 위젯',root:root,defaults:{edit:false},
+  getExport:function(s){return{settings:s,meta:meta,items:data}},
+  onReset:function(){data.length=0;JSON.parse(JSON.stringify(init)).forEach(function(d){data.push(d)});Object.assign(meta,initMeta);editing=false;render()},
+  onChange:function(s,k){editing=!!s.edit;render()},
+  controls:[
+   {type:'group',label:'콘텐츠'},
+   {key:'edit',type:'toggle',label:'글자·이미지 편집',default:false},
+   {type:'button',label:"+ 카드 추가",onClick:function(){data.push({img:'',badge:'PAIRING',title:'새 카드',desc:'설명을 입력하세요.',backBadge:'TIP',backTitle:'뒷면 제목',backDesc:'뒷면 설명을 입력하세요.',color:'#e30413'});render()}},
+   {type:'button',label:"− 마지막 카드 삭제",onClick:function(){if(data.length>1)data.pop();render()}},
+   {type:'group',label:"카드"},
+   {key:'trigger',type:'select',label:"뒤집는 방법",attr:'data-trigger',options:[{"value": "hover", "label": "마우스 올리기"}, {"value": "click", "label": "클릭"}],default:'hover'},
+   {key:'dir',type:'select',label:"뒤집는 방향",attr:'data-dir',options:[{"value": "h", "label": "가로"}, {"value": "v", "label": "세로"}],default:'h'},
+   {key:'dur',type:'range',label:"뒤집는 시간",css:'--nk-dur',unit:'s',min:0.1,max:3,step:0.1,default:0.6},
+   {key:'cols',type:'range',label:"열 수",css:'--nk-cols',unit:'',min:1,max:4,step:1,default:3},
+   {key:'gap',type:'range',label:"카드 간격",css:'--nk-gap',unit:'px',min:0,max:80,step:1,default:24},
+   {key:'h',type:'range',label:"카드 높이",css:'--nk-h',unit:'px',min:300,max:900,step:10,default:560},
+   {key:'media',type:'range',label:"이미지 높이",css:'--nk-media',unit:'px',min:100,max:600,step:10,default:340},
+   {key:'rad',type:'range',label:"모서리",css:'--nk-radius',unit:'px',min:0,max:80,step:1,default:32},
+   {key:'badge',type:'toggle',label:"뱃지 표시",attr:'data-badge',default:true},
+   {type:'group',label:"섹션"},
+   {key:'bg',type:'color',label:"배경색",css:'--brand-cream',default:'#fefff0'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#262628'},
+   {key:'tfs',type:'range',label:"제목 크기",css:'--fs-display-lg',unit:'px',min:24,max:200,step:1,default:102},
+   {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:160},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--nk-gutter',unit:'px',min:0,max:300,step:2,default:80}
+  ]});
+})();
+</script>
+<script>/* 커스텀 사이드바 (미리보기 전용) */
+(function(){
+  function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+  function mount(id){
+    var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
+    sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
+    function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
+    function refresh(){
+      var g=null,any=false;
+      rows.forEach(function(r){
+        if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
+        var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
+      if(g)g.el.classList.toggle('hide',!any)}
+    var syncs=[];
+    w.controls.forEach(function(c){
+      if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
+      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
+      var seg=c.type==='select'&&c.options.length<=6,wide=c.type==='text';
+      var row=el('div','cw-sb__r'+((seg||wide)?' col':''));row.appendChild(el('label','',c.label));
+      var ctl;
+      if(seg){
+        ctl=el('div','cw-sb__seg');
+        var btns=c.options.map(function(o){var v=o.value!==undefined?o.value:o,bt=el('button','',o.label||o);bt.type='button';bt.dataset.v=v;bt.onclick=function(){w.set(c.key,v);show();refresh()};ctl.appendChild(bt);return bt});
+        var show=function(){btns.forEach(function(b){b.classList.toggle('on',b.dataset.v===String(w.state[c.key]))})};
+      }else if(c.type==='select'){
+        ctl=el('select');c.options.forEach(function(o){var op=el('option','',o.label||o);op.value=o.value!==undefined?o.value:o;ctl.appendChild(op)});
+        ctl.onchange=function(){w.set(c.key,ctl.value);refresh()};var show=function(){ctl.value=w.state[c.key]};
+      }else if(c.type==='toggle'){
+        ctl=el('label','cw-sb__sw','<input type="checkbox"><span></span>');var cb=ctl.querySelector('input');
+        cb.onchange=function(){w.set(c.key,cb.checked);refresh()};var show=function(){cb.checked=!!w.state[c.key]};
+      }else if(c.type==='color'){
+        ctl=el('div','cw-sb__c','<input type="color"><input type="text" maxlength="7">');var ci=ctl.children[0],ht=ctl.children[1];
+        ci.oninput=function(){ht.value=ci.value;w.set(c.key,ci.value)};
+        ht.onchange=function(){if(/^#[0-9a-f]{6}$/i.test(ht.value)){ci.value=ht.value;w.set(c.key,ht.value)}else show()};
+        var show=function(){ci.value=w.state[c.key];ht.value=w.state[c.key]};
+      }else if(c.type==='text'){
+        ctl=el('div','cw-sb__t2','<input type="text">');var ti=ctl.querySelector('input');
+        ti.oninput=function(){w.set(c.key,ti.value)};var show=function(){ti.value=w.state[c.key]||''};
+      }else{
+        ctl=el('div','cw-sb__n','<input type="number" min="'+c.min+'" max="'+c.max+'" step="'+(c.step||1)+'" inputmode="decimal">'+(c.unit?'<i>'+c.unit+'</i>':''));var ni=ctl.querySelector('input');
+        ni.oninput=function(){if(ni.value===''||isNaN(Number(ni.value)))return;w.set(c.key,Math.min(c.max,Math.max(c.min,Number(ni.value))))};
+        ni.onblur=function(){show()};var show=function(){ni.value=w.state[c.key]};
+      }
+      row.appendChild(ctl);body.appendChild(row);rows.push({c:c,el:row});syncs.push(show);show();
+    });
+    var foot=el('div','cw-sb__foot','<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>');
+    foot.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();syncs.forEach(function(f){f()});refresh()}
+      if(a==='c'){var ex=w.export(),st={};Object.keys(w.state).forEach(function(k){if(k==='edit')return;var v=w.state[k];st[k]=v===true?1:v===false?0:v});
+        var lk=Object.keys(ex).filter(function(k){return k!=='settings'&&k!=='meta'})[0],o={settings:st,meta:ex.meta};o[lk]=ex[lk];
+        var txt="window.CW_CONFIG['"+id+"'] = "+JSON.stringify(o,null,2)+';';
+        (navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(function(){toast('복사됨 · widget.html 상단 CW_CONFIG에 붙여넣기')},function(){window.prompt('복사하세요',txt)})}};
+    sb.appendChild(foot);document.body.appendChild(sb);refresh();
+    if(!/[?&]nosidebar/.test(location.search))document.body.classList.add('cw-has-sidebar');else sb.style.display='none';
+  }
+  function toast(m){var t=el('div','cw-sb__t',m);document.body.appendChild(t);setTimeout(function(){t.remove()},1800)}
+  window.CWSidebar={mount:mount};
+})();
+
+CWSidebar.mount('cw-nk');</script></body></html>

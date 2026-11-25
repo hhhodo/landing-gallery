@@ -45,6 +45,8 @@
 .cw-sb__t{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#1d1d1f;color:#fff;padding:9px 16px;border-radius:999px;font:13px 'Pretendard',sans-serif;z-index:10000}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px;cursor:text}
 @media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:50vh}.cw-sb{top:auto;width:auto;left:0;height:48vh;border-left:0;border-top:1px solid #ececef}}
+
+.cw-sb__t2 input{width:100%;height:32px;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb;font:inherit;font-size:13px;color:#1d1d1f}.cw-sb__t2 input:focus{outline:0;border-color:#1d1d1f;background:#fff}
 </style></head><body>
 <!-- 사례 캐러셀 (beacon) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
 <script>
@@ -295,8 +297,8 @@ window.CW_CONFIG['cw-bc'] = {
     w.controls.forEach(function(c){
       if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
       if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
-      var seg=c.type==='select'&&c.options.length<=6;
-      var row=el('div','cw-sb__r'+(seg?' col':''));row.appendChild(el('label','',c.label));
+      var seg=c.type==='select'&&c.options.length<=6,wide=c.type==='text';
+      var row=el('div','cw-sb__r'+((seg||wide)?' col':''));row.appendChild(el('label','',c.label));
       var ctl;
       if(seg){
         ctl=el('div','cw-sb__seg');
@@ -313,6 +315,9 @@ window.CW_CONFIG['cw-bc'] = {
         ci.oninput=function(){ht.value=ci.value;w.set(c.key,ci.value)};
         ht.onchange=function(){if(/^#[0-9a-f]{6}$/i.test(ht.value)){ci.value=ht.value;w.set(c.key,ht.value)}else show()};
         var show=function(){ci.value=w.state[c.key];ht.value=w.state[c.key]};
+      }else if(c.type==='text'){
+        ctl=el('div','cw-sb__t2','<input type="text">');var ti=ctl.querySelector('input');
+        ti.oninput=function(){w.set(c.key,ti.value)};var show=function(){ti.value=w.state[c.key]||''};
       }else{
         ctl=el('div','cw-sb__n','<input type="number" min="'+c.min+'" max="'+c.max+'" step="'+(c.step||1)+'" inputmode="decimal">'+(c.unit?'<i>'+c.unit+'</i>':''));var ni=ctl.querySelector('input');
         ni.oninput=function(){if(ni.value===''||isNaN(Number(ni.value)))return;w.set(c.key,Math.min(c.max,Math.max(c.min,Number(ni.value))))};
