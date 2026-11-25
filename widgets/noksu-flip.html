@@ -47,6 +47,14 @@
 @media(max-width:760px){body.cw-has-sidebar{margin-right:0!important;padding-bottom:50vh}.cw-sb{top:auto;width:auto;left:0;height:48vh;border-left:0;border-top:1px solid #ececef}}
 
 .cw-sb__t2 input{width:100%;height:32px;padding:0 10px;border:1px solid #e3e3e8;border-radius:8px;background:#fafafb;font:inherit;font-size:13px;color:#1d1d1f}.cw-sb__t2 input:focus{outline:0;border-color:#1d1d1f;background:#fff}
+
+.cw-sb__grp{border-top:1px solid #f0f0f2}.cw-sb__grp:first-child{border-top:0}
+.cw-sb__grp.hide{display:none}
+.cw-sb__gh{display:flex;align-items:center;justify-content:space-between;width:100%;height:46px;padding:0;border:0;background:none;font:inherit;font-size:13px;font-weight:700;color:#1d1d1f;cursor:pointer;text-align:left}
+.cw-sb__gh i{width:8px;height:8px;border:solid #9a9aa2;border-width:0 2px 2px 0;transform:rotate(-135deg);margin-right:4px;transition:transform .2s}
+.cw-sb__grp.closed .cw-sb__gh i{transform:rotate(45deg);margin-top:-3px}
+.cw-sb__grp.closed .cw-sb__gc{display:none}
+.cw-sb__gc{padding:0 0 14px}
 </style></head><body>
 <!-- 플립 카드 (noksu) 커스텀 위젯 · 코드 삽입/커스텀 위젯에 통째로 붙여넣기 (외부 의존성 없음 · 폰트는 사이트 폰트 사용) -->
 <script>
@@ -240,7 +248,7 @@ window.CW_CONFIG['cw-nk'] = {
     function coerce(c,v){if(c.type==='toggle')return v===true||v===1||v==='1'||v==='true';if(c.type==='range')return Number(v);return v}
     function ap(c){var v=state[c.key];if(c.css)root.style.setProperty(c.css,(c.type==='range'&&c.unit)?v+c.unit:v);if(c.attr)root.setAttribute(c.attr,c.type==='toggle'?String(!!v):v)}
     cfg.controls.forEach(function(c){if(!c.key)return;map[c.key]=c;state[c.key]=coerce(c,C[c.key]!==undefined?C[c.key]:c.default);ap(c)});
-    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','orig','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
+    var sc=cfg.controls.filter(function(c){return c.key&&c.key!=='edit'}).map(function(c){var o={};['key','type','label','css','attr','unit','min','max','step','options','default','when'].forEach(function(k){if(c[k]!==undefined)o[k]=c[k]});return o});
     document.documentElement.setAttribute('data-cw-schema-'+root.id,JSON.stringify({title:cfg.title,controls:sc}));
     cfg.onChange&&cfg.onChange(state,null);
     var api=R[root.id]={state:state,controls:cfg.controls,defaults:sc.reduce(function(o,c){o[c.key]=c.default;return o},{}),reset:function(){cfg.onReset&&cfg.onReset();Object.keys(map).forEach(function(k){state[k]=coerce(map[k],map[k].default);ap(map[k])});cfg.onChange&&cfg.onChange(state,null)},set:function(k,v){var c=map[k];if(!c)return;state[k]=coerce(c,v);ap(c);cfg.onChange&&cfg.onChange(state,k)},export:function(){return cfg.getExport?cfg.getExport(state):state}};
@@ -313,21 +321,21 @@ window.CW_CONFIG['cw-nk'] = {
    {key:'dir',type:'select',label:"뒤집는 방향",attr:'data-dir',options:[{"value": "h", "label": "가로"}, {"value": "v", "label": "세로"}],default:'h'},
    {key:'dur',type:'range',label:"뒤집는 시간",css:'--nk-dur',unit:'s',min:0.1,max:3,step:0.1,default:0.6},
    {key:'cols',type:'range',label:"열 수",css:'--nk-cols',unit:'',min:1,max:4,step:1,default:3},
-   {key:'gap',type:'range',label:"카드 간격",css:'--nk-gap',unit:'px',min:0,max:80,step:1,default:24,orig:24},
-   {key:'h',type:'range',label:"카드 높이",css:'--nk-h',unit:'px',min:300,max:900,step:10,default:520,orig:560},
-   {key:'media',type:'range',label:"이미지 높이",css:'--nk-media',unit:'px',min:100,max:600,step:10,default:300,orig:340},
-   {key:'rad',type:'range',label:"모서리",css:'--nk-radius',unit:'px',min:0,max:80,step:1,default:16,orig:32},
+   {key:'gap',type:'range',label:"카드 간격",css:'--nk-gap',unit:'px',min:0,max:80,step:1,default:24},
+   {key:'h',type:'range',label:"카드 높이",css:'--nk-h',unit:'px',min:300,max:900,step:10,default:520},
+   {key:'media',type:'range',label:"이미지 높이",css:'--nk-media',unit:'px',min:100,max:600,step:10,default:300},
+   {key:'rad',type:'range',label:"모서리",css:'--nk-radius',unit:'px',min:0,max:80,step:1,default:16},
    {key:'badge',type:'toggle',label:"뱃지 표시",attr:'data-badge',default:true},
    {type:'group',label:"섹션"},
-   {key:'bg',type:'color',label:"배경색",css:'--brand-cream',default:'#f7f7f7',orig:'#fefff0'},
-   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919',orig:'#262628'},
-   {key:'tfs',type:'range',label:"제목 크기",css:'--fs-display-lg',unit:'px',min:24,max:200,step:1,default:48,orig:102},
+   {key:'bg',type:'color',label:"배경색",css:'--brand-cream',default:'#f7f7f7'},
+   {key:'ink',type:'color',label:"글자색",css:'--text-default',default:'#191919'},
+   {key:'tfs',type:'range',label:"제목 크기",css:'--fs-display-lg',unit:'px',min:24,max:200,step:1,default:48},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
-   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96,orig:160},
-   {key:'gutter',type:'range',label:"좌우 여백",css:'--nk-gutter',unit:'px',min:0,max:300,step:2,default:40,orig:80},
+   {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96},
+   {key:'gutter',type:'range',label:"좌우 여백",css:'--nk-gutter',unit:'px',min:0,max:300,step:2,default:40},
    {type:'group',label:"글자 크기"},
-   {key:'ctsz',type:'range',label:"카드 제목",css:'--fs-h3',unit:'px',min:12,max:60,step:1,default:22,orig:32},
-   {key:'bsz',type:'range',label:"카드 설명",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:15,orig:18}
+   {key:'ctsz',type:'range',label:"카드 제목",css:'--fs-h3',unit:'px',min:12,max:60,step:1,default:22},
+   {key:'bsz',type:'range',label:"카드 설명",css:'--fs-body-2',unit:'px',min:11,max:30,step:1,default:15}
   ]});
 })();
 </script>
@@ -336,20 +344,17 @@ window.CW_CONFIG['cw-nk'] = {
   function el(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
   function mount(id){
     var w=window.CWWidgets&&CWWidgets[id];if(!w)return;
-    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[];
+    var sb=el('aside','cw-sb'),body=el('div','cw-sb__body'),rows=[],groups=[],cur=null;
     sb.appendChild(el('div','cw-sb__head','커스텀'));sb.appendChild(body);
-    var hasOrig=w.controls.some(function(c){return c.orig!==undefined}),preset='std',syncs=[];
+    var syncs=[];
     function visible(c){if(!c.when)return true;var v=String(w.state[c.when.key]);return c.when.is.map(String).indexOf(v)>-1}
     function refresh(){
-      var g=null,any=false;
-      rows.forEach(function(r){
-        if(r.isGroup){if(g)g.el.classList.toggle('hide',!any);g=r;any=false;return}
-        var ok=visible(r.c);r.el.classList.toggle('hide',!ok);if(ok)any=true});
-      if(g)g.el.classList.toggle('hide',!any)}
-    if(hasOrig){var pr=el('div','cw-sb__r col'),seg0=el('div','cw-sb__seg'),pb=[['std','기본 디자인'],['orig','원본 디자인']].map(function(p){var b=el('button','',p[1]);b.type='button';b.dataset.p=p[0];b.onclick=function(){preset=p[0];w.controls.forEach(function(c){if(c.key&&c.orig!==undefined)w.set(c.key,preset==='std'?c.default:c.orig)});syncs.forEach(function(f){f()});pb.forEach(function(x){x.classList.toggle('on',x.dataset.p===preset)});refresh()};seg0.appendChild(b);return b});pb[0].classList.add('on');pr.appendChild(el('label','','디자인 프리셋'));pr.appendChild(seg0);body.appendChild(pr)}
+      rows.forEach(function(r){r.el.classList.toggle('hide',!visible(r.c))});
+      groups.forEach(function(g){g.el.classList.toggle('hide',!g.rows.some(function(r){return visible(r.c)})&&!g.hasBtn)})}
     w.controls.forEach(function(c){
-      if(c.type==='group'){var ge=el('div','cw-sb__g',c.label);body.appendChild(ge);rows.push({isGroup:true,el:ge});return}
-      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);body.appendChild(b);return}
+      if(c.type==='group'){var ge=el('div','cw-sb__grp'+(groups.length?' closed':'')),gh=el('button','cw-sb__gh','<span>'+c.label+'</span><i></i>'),gc=el('div','cw-sb__gc');gh.type='button';gh.onclick=function(){ge.classList.toggle('closed')};ge.appendChild(gh);ge.appendChild(gc);body.appendChild(ge);cur={el:ge,box:gc,rows:[],hasBtn:false};groups.push(cur);return}
+      if(!cur){var g0=el('div','cw-sb__grp'),c0=el('div','cw-sb__gc');g0.appendChild(c0);body.appendChild(g0);cur={el:g0,box:c0,rows:[],hasBtn:false};groups.push(cur)}
+      if(c.type==='button'){var b=el('div','cw-sb__b');var bt=el('button','',c.label);bt.type='button';bt.onclick=c.onClick;b.appendChild(bt);cur.box.appendChild(b);cur.hasBtn=true;return}
       var seg=c.type==='select'&&c.options.length<=6,wide=c.type==='text';
       var row=el('div','cw-sb__r'+((seg||wide)?' col':''));row.appendChild(el('label','',c.label));
       var ctl;
@@ -376,7 +381,7 @@ window.CW_CONFIG['cw-nk'] = {
         ni.oninput=function(){if(ni.value===''||isNaN(Number(ni.value)))return;w.set(c.key,Math.min(c.max,Math.max(c.min,Number(ni.value))))};
         ni.onblur=function(){show()};var show=function(){ni.value=w.state[c.key]};
       }
-      row.appendChild(ctl);body.appendChild(row);rows.push({c:c,el:row});syncs.push(show);show();
+      row.appendChild(ctl);cur.box.appendChild(row);var rr={c:c,el:row};rows.push(rr);cur.rows.push(rr);syncs.push(show);show();
     });
     var foot=el('div','cw-sb__foot','<button type="button" data-a="r">초기화</button><button type="button" class="p" data-a="c">설정값 복사</button>');
     foot.onclick=function(e){var a=e.target.dataset.a;if(a==='r'){w.reset();syncs.forEach(function(f){f()});refresh()}
