@@ -68,6 +68,7 @@ window.CW_CONFIG['cw-cv'] = {
     ink: "#191919",           // 글자색 (색상 hex)
     pad: 96,                  // 상하 여백 (px · 0~400)
     px: 40,                   // 좌우 여백 (px · 0~300)
+    mode: "icon",             // 타일 유형 : icon=아이콘 | image=호버 이미지
     cols: 4,                  // 열 수 (숫자 · 1~6)
     ratio: "4/3",             // 타일 비율 : 1=1:1 | 4/3=4:3 | 3/2=3:2 | 4/5=4:5
     icon: 64,                 // 아이콘 크기 (px · 24~200)
@@ -215,13 +216,17 @@ window.CW_CONFIG['cw-cv'] = {
 .cv .agenda-cell .cw-hv::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.1))}
 .cv .agenda-cell:hover .cw-hv,.cv .agenda-cell:focus-visible .cw-hv{opacity:1}
 .cv .agenda-cell .motif,.cv .agenda-cell span:not(.cw-hv){position:relative;z-index:1}
-.cv[data-editing=true] .agenda-cell .cw-hv{opacity:.0}
+.cv[data-mode=image] .motif,.cv[data-mode=icon] .cw-hv{display:none}
+.cv[data-mode=image][data-editing=true] .agenda-cell .cw-hv{opacity:1}
+.cv[data-mode=image][data-editing=true] .agenda-cell{cursor:pointer}
+.cv .agenda-cell .cw-hv.cw-ph{opacity:0}
+.cv[data-mode=image] .agenda-cell .cw-hv.cw-ph::after{display:none}
 .cv[data-head=false] .section-head{display:none}
 .cv[data-labels=false] .agenda-cell span:not(.motif){display:none}
 .cv[data-editing=true] .agenda-cell .motif{outline:1px dashed rgba(90,90,255,.8);outline-offset:6px;cursor:pointer}
 [contenteditable=true]{outline:1px dashed rgba(90,90,255,.7);outline-offset:2px}
 </style>
-<div class="cv" id="cw-cv" data-head="true" data-labels="true" data-editing="false"><section class="section"><div class="frame"><div class="section-head"><span class="motif" aria-hidden="true"></span><h2 data-g="title"></h2></div><div class="agenda-grid" id="cw-cv-grid"></div></div></section></div>
+<div class="cv" id="cw-cv" data-mode="icon" data-head="true" data-labels="true" data-editing="false"><section class="section"><div class="frame"><div class="section-head"><span class="motif" aria-hidden="true"></span><h2 data-g="title"></h2></div><div class="agenda-grid" id="cw-cv-grid"></div></div></section></div>
 <script>
 /* 위젯 런타임 (조작 패널 없음). 설정값은 widget.html 상단 CW_CONFIG 숫자/값만 고치면 반영된다. */
 (function(){
@@ -290,16 +295,17 @@ window.CW_CONFIG['cw-cv'] = {
 
  var grid=document.getElementById('cw-cv-grid'),SH=["leaf", "ring", "diamond", "chevron", "hexagon", "triangle", "cross", "shield"],POP=null;
  function render(){metaFill();root.setAttribute('data-editing',editing);
-  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell">'+(d.hoverImg?'<span class="cw-hv" aria-hidden="true" style="background-image:url(\''+esc(d.hoverImg).replace(/'/g,'%27')+'\')"></span>':'')+(d.iconImg?'<span class="motif cw-icimg" aria-hidden="true" data-ic="'+i+'" style="background:url(\''+esc(d.iconImg).replace(/'/g,'%27')+'\') center/contain no-repeat"></span>':'<span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span>')+'<span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
+  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell" data-ci="'+i+'">'+(d.hoverImg?'<span class="cw-hv" aria-hidden="true" style="background-image:url(\''+esc(d.hoverImg).replace(/'/g,'%27')+'\')"></span>':'<span class="cw-hv cw-ph" aria-hidden="true"></span>')+(d.iconImg?'<span class="motif cw-icimg" aria-hidden="true" data-ic="'+i+'" style="background:url(\''+esc(d.iconImg).replace(/'/g,'%27')+'\') center/contain no-repeat"></span>':'<span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span>')+'<span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
   CWPanel.setEditable(root,editing)}
  function closeP(){if(POP){POP.remove();POP=null}}
- grid.addEventListener('click',function(e){e.preventDefault();var ic=e.target.closest('[data-ic]');if(!editing||!ic)return;
+ grid.addEventListener('click',function(e){e.preventDefault();
+  if(root.getAttribute('data-mode')==='image'){var cc=e.target.closest('[data-ci]');if(!editing||!cc||e.target.closest('[data-f]'))return;var k=+cc.dataset.ci;CWPanel.pickImage(cc,data[k].hoverImg||'',function(u){if(u)data[k].hoverImg=u;else delete data[k].hoverImg;render()});return}
+  var ic=e.target.closest('[data-ic]');if(!editing||!ic)return;
   closeP();var i=+ic.dataset.ic;POP=document.createElement('div');POP.className='cw-pop';
-  POP.innerHTML='<h4>아이콘 (SVG · PNG 업로드)</h4><input type="file" accept="image/svg+xml,image/png,.svg,.png" hidden><button type="button" class="p w" data-up="1">SVG / PNG 파일 선택</button>'+(data[i].iconImg?'<button type="button" class="w d" data-rm="1" style="margin-top:6px">업로드 아이콘 지우기</button>':'')+'<div class="msg"></div><h4 style="margin-top:12px">호버 이미지 (마우스 올리면 카드로 변신)</h4><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp,image/gif,.svg,.png" hidden data-hf><button type="button" class="p w" data-hup="1">이미지 선택</button>'+(data[i].hoverImg?'<button type="button" class="w d" data-hrm="1" style="margin-top:6px">호버 이미지 지우기</button>':'')+'<h4 style="margin-top:12px">기본 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
+  POP.innerHTML='<h4>아이콘 (SVG · PNG 업로드)</h4><input type="file" accept="image/svg+xml,image/png,.svg,.png" hidden><button type="button" class="p w" data-up="1">SVG / PNG 파일 선택</button>'+(data[i].iconImg?'<button type="button" class="w d" data-rm="1" style="margin-top:6px">업로드 아이콘 지우기</button>':'')+'<div class="msg"></div><h4 style="margin-top:12px">기본 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
   document.body.appendChild(POP);var r=ic.getBoundingClientRect();POP.style.left=Math.min(Math.max(8,r.left),window.innerWidth-316)+'px';POP.style.top=Math.min(r.bottom+10,Math.max(8,window.innerHeight-POP.offsetHeight-8))+'px';
-  var hf=POP.querySelector('[data-hf]');hf.addEventListener('change',function(){CWPanel.imageFromFile(hf.files[0],function(u){data[i].hoverImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
-  var fi=POP.querySelector('input[type=file]');fi.addEventListener('change',function(){CWPanel.imageFromFile(fi.files[0],function(u){data[i].iconImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
-  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.up){fi.click();return}if(b.dataset.hup){hf.click();return}if(b.dataset.hrm){delete data[i].hoverImg;closeP();render();return}if(b.dataset.rm){delete data[i].iconImg;closeP();render();return}data[i].icon=b.dataset.s;delete data[i].iconImg;closeP();render()})});
+    var fi=POP.querySelector('input[type=file]');fi.addEventListener('change',function(){CWPanel.imageFromFile(fi.files[0],function(u){data[i].iconImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
+  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.up){fi.click();return}if(b.dataset.rm){delete data[i].iconImg;closeP();render();return}data[i].icon=b.dataset.s;delete data[i].iconImg;closeP();render()})});
  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-ic]'))closeP()});
 
  var CFG=(window.CW_CONFIG||{})['cw-cv']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
@@ -322,10 +328,11 @@ window.CW_CONFIG['cw-cv'] = {
    {key:'pad',type:'range',label:"상하 여백",css:'--space-section',unit:'px',min:0,max:400,step:4,default:96},
    {key:'px',type:'range',label:"좌우 여백",css:'--cv-px',unit:'px',min:0,max:300,step:2,default:40},
    {type:'group',label:"타일"},
+   {key:'mode',type:'select',label:"타일 유형",attr:'data-mode',options:[{"value": "icon", "label": "아이콘"}, {"value": "image", "label": "호버 이미지"}],default:'icon'},
    {key:'cols',type:'range',label:"열 수",css:'--cv-cols',unit:'',min:1,max:6,step:1,default:4},
    {key:'ratio',type:'select',label:"타일 비율",css:'--cv-ratio',options:[{"value": "1", "label": "1:1"}, {"value": "4/3", "label": "4:3"}, {"value": "3/2", "label": "3:2"}, {"value": "4/5", "label": "4:5"}],default:'4/3'},
-   {key:'icon',type:'range',label:"아이콘 크기",css:'--cv-icon',unit:'px',min:24,max:200,step:2,default:64},
-   {key:'motif',type:'color',label:"아이콘 색",css:'--cv-motif',default:'#c8c8c8'},
+   {key:'icon',type:'range',label:"아이콘 크기",css:'--cv-icon',unit:'px',min:24,max:200,step:2,default:64,when:{"key": "mode", "is": ["icon"]}},
+   {key:'motif',type:'color',label:"아이콘 색",css:'--cv-motif',default:'#c8c8c8',when:{"key": "mode", "is": ["icon"]}},
    {key:'hover',type:'color',label:"호버 배경",css:'--cv-hover',default:'#191919'},
    {key:'head',type:'toggle',label:"제목 표시",attr:'data-head',default:true},
    {key:'labels',type:'toggle',label:"타일 글자 표시",attr:'data-labels',default:true},
