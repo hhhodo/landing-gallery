@@ -211,6 +211,11 @@ window.CW_CONFIG['cw-cv'] = {
 .cw-pop .shp--cross{clip-path:polygon(38% 0%,62% 0%,62% 38%,100% 38%,100% 62%,62% 62%,62% 100%,38% 100%,38% 62%,0% 62%,0% 38%,38% 38%);}
 .cw-pop .shp--shield{clip-path:polygon(50% 0%,100% 15%,100% 55%,50% 100%,0% 55%,0% 15%);}
 
+.cv .agenda-cell .cw-hv{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .35s ease;pointer-events:none}
+.cv .agenda-cell .cw-hv::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6),rgba(0,0,0,.1))}
+.cv .agenda-cell:hover .cw-hv,.cv .agenda-cell:focus-visible .cw-hv{opacity:1}
+.cv .agenda-cell .motif,.cv .agenda-cell span:not(.cw-hv){position:relative;z-index:1}
+.cv[data-editing=true] .agenda-cell .cw-hv{opacity:.0}
 .cv[data-head=false] .section-head{display:none}
 .cv[data-labels=false] .agenda-cell span:not(.motif){display:none}
 .cv[data-editing=true] .agenda-cell .motif{outline:1px dashed rgba(90,90,255,.8);outline-offset:6px;cursor:pointer}
@@ -285,15 +290,16 @@ window.CW_CONFIG['cw-cv'] = {
 
  var grid=document.getElementById('cw-cv-grid'),SH=["leaf", "ring", "diamond", "chevron", "hexagon", "triangle", "cross", "shield"],POP=null;
  function render(){metaFill();root.setAttribute('data-editing',editing);
-  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell">'+(d.iconImg?'<span class="motif cw-icimg" aria-hidden="true" data-ic="'+i+'" style="background:url(\''+esc(d.iconImg).replace(/'/g,'%27')+'\') center/contain no-repeat"></span>':'<span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span>')+'<span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
+  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell">'+(d.hoverImg?'<span class="cw-hv" aria-hidden="true" style="background-image:url(\''+esc(d.hoverImg).replace(/'/g,'%27')+'\')"></span>':'')+(d.iconImg?'<span class="motif cw-icimg" aria-hidden="true" data-ic="'+i+'" style="background:url(\''+esc(d.iconImg).replace(/'/g,'%27')+'\') center/contain no-repeat"></span>':'<span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span>')+'<span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
   CWPanel.setEditable(root,editing)}
  function closeP(){if(POP){POP.remove();POP=null}}
  grid.addEventListener('click',function(e){e.preventDefault();var ic=e.target.closest('[data-ic]');if(!editing||!ic)return;
   closeP();var i=+ic.dataset.ic;POP=document.createElement('div');POP.className='cw-pop';
-  POP.innerHTML='<h4>아이콘 (SVG · PNG 업로드)</h4><input type="file" accept="image/svg+xml,image/png,.svg,.png" hidden><button type="button" class="p w" data-up="1">SVG / PNG 파일 선택</button>'+(data[i].iconImg?'<button type="button" class="w d" data-rm="1" style="margin-top:6px">업로드 아이콘 지우기</button>':'')+'<div class="msg"></div><h4 style="margin-top:12px">기본 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
+  POP.innerHTML='<h4>아이콘 (SVG · PNG 업로드)</h4><input type="file" accept="image/svg+xml,image/png,.svg,.png" hidden><button type="button" class="p w" data-up="1">SVG / PNG 파일 선택</button>'+(data[i].iconImg?'<button type="button" class="w d" data-rm="1" style="margin-top:6px">업로드 아이콘 지우기</button>':'')+'<div class="msg"></div><h4 style="margin-top:12px">호버 이미지 (마우스 올리면 카드로 변신)</h4><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp,image/gif,.svg,.png" hidden data-hf><button type="button" class="p w" data-hup="1">이미지 선택</button>'+(data[i].hoverImg?'<button type="button" class="w d" data-hrm="1" style="margin-top:6px">호버 이미지 지우기</button>':'')+'<h4 style="margin-top:12px">기본 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
   document.body.appendChild(POP);var r=ic.getBoundingClientRect();POP.style.left=Math.min(Math.max(8,r.left),window.innerWidth-316)+'px';POP.style.top=Math.min(r.bottom+10,Math.max(8,window.innerHeight-POP.offsetHeight-8))+'px';
+  var hf=POP.querySelector('[data-hf]');hf.addEventListener('change',function(){CWPanel.imageFromFile(hf.files[0],function(u){data[i].hoverImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
   var fi=POP.querySelector('input[type=file]');fi.addEventListener('change',function(){CWPanel.imageFromFile(fi.files[0],function(u){data[i].iconImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
-  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.up){fi.click();return}if(b.dataset.rm){delete data[i].iconImg;closeP();render();return}data[i].icon=b.dataset.s;delete data[i].iconImg;closeP();render()})});
+  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.up){fi.click();return}if(b.dataset.hup){hf.click();return}if(b.dataset.hrm){delete data[i].hoverImg;closeP();render();return}if(b.dataset.rm){delete data[i].iconImg;closeP();render();return}data[i].icon=b.dataset.s;delete data[i].iconImg;closeP();render()})});
  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-ic]'))closeP()});
 
  var CFG=(window.CW_CONFIG||{})['cw-cv']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}
