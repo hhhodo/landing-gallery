@@ -243,14 +243,23 @@ window.CW_CONFIG['cw-cv'] = {
   var POP=null;
   function closePop(){if(POP){POP.remove();POP=null}}
   function toData(file,ok,err){
-    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
-    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
-      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
-      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
-      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+    var t=file&&file.type||'',n=file&&file.name||'';
+    if(!file||!(/^image\//.test(t)||/\.(svg|png|jpe?g|webp|gif)$/i.test(n))){err&&err('PNG·SVG·JPG 이미지 파일만 올릴 수 있어요.');return}
+    var svg=t==='image/svg+xml'||/\.svg$/i.test(n);
+    if(svg&&file.size>1500000){err&&err('SVG가 너무 커요(1.5MB 이하).');return}
+    var fr=new FileReader();fr.onerror=function(){err&&err('파일을 읽지 못했어요.')};
+    fr.onload=function(){
+      if(svg){var r=fr.result;if(r.indexOf('data:image/svg+xml')!==0)r='data:image/svg+xml'+r.slice(r.indexOf(';'));ok(r);return}
+      var im=new Image();im.onload=function(){
+        var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+        var x=c.getContext('2d'),png=t==='image/png'||t==='image/webp'||t==='image/gif';
+        if(!png){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}
+        x.drawImage(im,0,0,c.width,c.height);ok(png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};
+    fr.readAsDataURL(file)}
   function pickImage(anchor,cur,set){
     closePop();POP=document.createElement('div');POP.className='cw-pop';
-    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    POP.innerHTML='<h4>이미지 (PNG · SVG · JPG)</h4><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp,image/gif,.svg,.png" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>PNG는 투명 배경이 유지되고 SVG는 원본 그대로 들어가요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
     document.body.appendChild(POP);
     var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
     POP.style.left=x+'px';POP.style.top=y+'px';
@@ -276,14 +285,15 @@ window.CW_CONFIG['cw-cv'] = {
 
  var grid=document.getElementById('cw-cv-grid'),SH=["leaf", "ring", "diamond", "chevron", "hexagon", "triangle", "cross", "shield"],POP=null;
  function render(){metaFill();root.setAttribute('data-editing',editing);
-  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell"><span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span><span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
+  grid.innerHTML=data.map(function(d,i){return '<a href="#" class="agenda-cell">'+(d.iconImg?'<span class="motif cw-icimg" aria-hidden="true" data-ic="'+i+'" style="background:url(\''+esc(d.iconImg).replace(/'/g,'%27')+'\') center/contain no-repeat"></span>':'<span class="motif agenda-icon--'+esc(d.icon)+'" aria-hidden="true" data-ic="'+i+'"></span>')+'<span data-i="'+i+'" data-f="label">'+esc(d.label)+'</span></a>'}).join('');
   CWPanel.setEditable(root,editing)}
  function closeP(){if(POP){POP.remove();POP=null}}
  grid.addEventListener('click',function(e){e.preventDefault();var ic=e.target.closest('[data-ic]');if(!editing||!ic)return;
   closeP();var i=+ic.dataset.ic;POP=document.createElement('div');POP.className='cw-pop';
-  POP.innerHTML='<h4>아이콘 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
+  POP.innerHTML='<h4>아이콘 (SVG · PNG 업로드)</h4><input type="file" accept="image/svg+xml,image/png,.svg,.png" hidden><button type="button" class="p w" data-up="1">SVG / PNG 파일 선택</button>'+(data[i].iconImg?'<button type="button" class="w d" data-rm="1" style="margin-top:6px">업로드 아이콘 지우기</button>':'')+'<div class="msg"></div><h4 style="margin-top:12px">기본 모양</h4><div class="shp-grid">'+SH.map(function(s){return '<button type="button" data-s="'+s+'"><span class="shp shp--'+s+'"></span></button>'}).join('')+'</div>';
   document.body.appendChild(POP);var r=ic.getBoundingClientRect();POP.style.left=Math.min(Math.max(8,r.left),window.innerWidth-316)+'px';POP.style.top=Math.min(r.bottom+10,Math.max(8,window.innerHeight-POP.offsetHeight-8))+'px';
-  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;data[i].icon=b.dataset.s;closeP();render()})});
+  var fi=POP.querySelector('input[type=file]');fi.addEventListener('change',function(){CWPanel.imageFromFile(fi.files[0],function(u){data[i].iconImg=u;closeP();render()},function(m){POP.querySelector('.msg').textContent=m})});
+  POP.addEventListener('click',function(ev){var b=ev.target.closest('button');if(!b)return;if(b.dataset.up){fi.click();return}if(b.dataset.rm){delete data[i].iconImg;closeP();render();return}data[i].icon=b.dataset.s;delete data[i].iconImg;closeP();render()})});
  document.addEventListener('mousedown',function(e){if(POP&&!POP.contains(e.target)&&!e.target.closest('[data-ic]'))closeP()});
 
  var CFG=(window.CW_CONFIG||{})['cw-cv']||{};if(CFG.meta)Object.assign(meta,CFG.meta);if(CFG.items){data.length=0;CFG.items.forEach(function(d){data.push(d)})}

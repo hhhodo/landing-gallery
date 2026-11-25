@@ -245,14 +245,23 @@ window.CW_CONFIG['cw-fx'] = {
   var POP=null;
   function closePop(){if(POP){POP.remove();POP=null}}
   function toData(file,ok,err){
-    if(!file||!/^image\//.test(file.type)){err&&err('이미지 파일만 올릴 수 있어요.');return}
-    var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){
-      var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
-      var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.86))};
-      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};fr.readAsDataURL(file)}
+    var t=file&&file.type||'',n=file&&file.name||'';
+    if(!file||!(/^image\//.test(t)||/\.(svg|png|jpe?g|webp|gif)$/i.test(n))){err&&err('PNG·SVG·JPG 이미지 파일만 올릴 수 있어요.');return}
+    var svg=t==='image/svg+xml'||/\.svg$/i.test(n);
+    if(svg&&file.size>1500000){err&&err('SVG가 너무 커요(1.5MB 이하).');return}
+    var fr=new FileReader();fr.onerror=function(){err&&err('파일을 읽지 못했어요.')};
+    fr.onload=function(){
+      if(svg){var r=fr.result;if(r.indexOf('data:image/svg+xml')!==0)r='data:image/svg+xml'+r.slice(r.indexOf(';'));ok(r);return}
+      var im=new Image();im.onload=function(){
+        var k=Math.min(1,1600/im.naturalWidth),c=document.createElement('canvas');c.width=Math.round(im.naturalWidth*k);c.height=Math.round(im.naturalHeight*k);
+        var x=c.getContext('2d'),png=t==='image/png'||t==='image/webp'||t==='image/gif';
+        if(!png){x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height)}
+        x.drawImage(im,0,0,c.width,c.height);ok(png?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.86))};
+      im.onerror=function(){err&&err('이미지를 읽지 못했어요.')};im.src=fr.result};
+    fr.readAsDataURL(file)}
   function pickImage(anchor,cur,set){
     closePop();POP=document.createElement('div');POP.className='cw-pop';
-    POP.innerHTML='<h4>이미지</h4><input type="file" accept="image/*" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>1600px 이하로 줄여 위젯에 포함돼요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
+    POP.innerHTML='<h4>이미지 (PNG · SVG · JPG)</h4><input type="file" accept="image/png,image/svg+xml,image/jpeg,image/webp,image/gif,.svg,.png" hidden><button type="button" class="p w" data-a="file">파일 선택</button><div class="row"><input type="text" placeholder="이미지 주소 https://…"><button type="button" data-a="url">적용</button></div>'+(cur?'<div class="row"><button type="button" class="w d" data-a="clear">이미지 비우기</button></div>':'')+'<div class="msg"></div><small>PNG는 투명 배경이 유지되고 SVG는 원본 그대로 들어가요. 새로고침하면 사라지니 「설정값 복사」로 보관하세요.</small>';
     document.body.appendChild(POP);
     var rc=anchor.getBoundingClientRect(),x=Math.min(Math.max(8,rc.left+16),window.innerWidth-316),y=Math.min(Math.max(8,rc.top+16),Math.max(8,window.innerHeight-POP.offsetHeight-8));
     POP.style.left=x+'px';POP.style.top=y+'px';
